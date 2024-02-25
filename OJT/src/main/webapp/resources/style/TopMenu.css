@@ -3,7 +3,12 @@
 	padding: 0px;
 }
 
-.nav {
+a {
+	color: black;
+	text-decoration: black;
+}
+
+.top-nav {
 	width: 100%;
 	height: 60px;
 	top: 0%;
@@ -17,47 +22,56 @@
 	z-index: 5;
 }
 
-.btn {
+.top-btn {
 	border-radius: 10px;
-    padding: 15px 18px;
+    padding: 5px 4px;
     font-size: 15px;
     font-weight: 900;
     background-color: unset;
-    border-color: white;
-    border: 2px solid white;
-    color: white;
+    border: 2px solid black;
+    color: black;
     margin: 5px;
 }
 
-.logo {
+.top-btn-white {
+	color: white;
+	border-color: white;
+}
+
+.top-btn-balck{
+	color: black;
+	border-color: black;
+}
+
+.top-logo {
 	color: lightcyan;
     font-size: 20px;
     font-weight: 600;
     text-decoration: none;
 }
 
-.side-menu-bar {
+.top-side-menu-bar {
 	height: 100%;
 	width: 300px;
 	background-color: gray;
 	position: fixed;
 	left: -500px;
-	margin-top: 60px;
+	top:  60px;
 	transition-duration: 0.7s;
+	z-index: 5;
 }
 
-.show {
+.top-show {
 	left: 0px;
 }
 
-.side-menu {
+.top-side-menu {
 	margin: 10px 10px;
 	font-size: 20px;
 }
 
 #side_btn:hover {
-	border-color: black;
-	color: black;
+	border-color: #F1F3F4;
 	transition-duration: 0.2s;
 }
 
@@ -67,6 +81,5 @@
 }
 
 #logout:hover {
-	border-color: purple;
-	color: purple;
+	border-color: #F1F3F4;
 }

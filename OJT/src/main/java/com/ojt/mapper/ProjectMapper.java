@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Select;
 
 import com.ojt.bean.CustomerBean;
 import com.ojt.bean.ProjectBean;
+import com.ojt.bean.ProjectMemberBean;
 
 public interface ProjectMapper {
 
@@ -48,4 +49,33 @@ public interface ProjectMapper {
 			+ "and ${arg2} between to_date(#{arg3}) and to_date(#{arg4}))")
 	
 	public int getMaxSearchCount(String prj_nm, String cust_nm, String prj_dt_type, String firstDate, String secondDate);
+	
+	// 프로젝트에 참여한 인원 검색 리스트
+	@Select("select *from "
+			+ "(select mi.mem_seq, mi.mem_nm, to_char(mi.mem_hire_date, 'yyyy.mm.dd') as mem_hire_date, "
+			+ "pmt.st_dt, pmt.ed_dt, row_number() over (order by mi.mem_seq) as rn, "
+			+ "dept.dtl_cd_nm as prj_dept, position.dtl_cd_nm as prj_position, role.dtl_cd_nm as prj_role "
+			+ "from member_info mi "
+			+ "left join project_member_table pmt on pmt.prj_seq = #{prj_seq} "
+			+ "left join code_detail dept on dept.mst_cd = 'DP01' and dept.dtl_cd = mi.dp_cd "
+			+ "left join code_detail position on position.mst_cd = 'RA01' and position.dtl_cd = mi.ra_cd "
+			+ "left join code_detail role on role.mst_cd = 'RO01' and role.dtl_cd = pmt.ro_cd "
+			+ "where mi.mem_seq = pmt.mem_seq and mi.mem_nm || mi.mem_seq like #{searchWord} "
+			+ "and role.dtl_cd_nm like #{dtl_cd_nm} "
+			+ "and pmt.${dateType} between to_date(#{firstDate}) and to_date(#{secondDate})) "
+			+ "where rn between #{index} and #{endIndex}")
+	public ArrayList<ProjectMemberBean> getProjectMember(@Param("prj_seq") int prj_seq,
+														@Param("searchWord") String searchWord,
+														@Param("dtl_cd_nm") String dtl_cd_nm,
+														@Param("firstDate") String firstDate,
+														@Param("secondDate") String secondDate,
+														@Param("dateType") String dateType,
+														@Param("index") int index, @Param("endIndex") int endIndex);
+	
+	// 프로젝트에 참여한 인원의 기술 리스트
+	@Select("select dtl_cd_nm "
+			+ "from code_detail cd "
+			+ "inner join member_sk ms on ms.mem_seq = #{mem_seq} "
+			+ "where cd.mst_cd = 'SK01' and cd.dtl_cd = ms.sk_cd")
+	public ArrayList<String> getProjectMemberSKList(int mem_seq);
 }

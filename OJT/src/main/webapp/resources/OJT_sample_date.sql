@@ -20,11 +20,13 @@ insert into project_info values(PROJECT_SEQUENCE.nextval, '농협은행 S/W 개�
 select * from project_info;
 
 ------ 고객사
-insert into customer values( CUSTOMER_SEQUNCE.nextval, '현대자동차');
-insert into customer values( CUSTOMER_SEQUNCE.nextval, '농협');
-insert into customer values( CUSTOMER_SEQUNCE.nextval, '삼성 전자');
-insert into customer values( CUSTOMER_SEQUNCE.nextval, 'SK매직');
-insert into customer values( CUSTOMER_SEQUNCE.nextval, '아모레퍼시픽');
+insert into customer values( CUSTOMER_SEQUENCE.nextval, '현대자동차');
+insert into customer values( CUSTOMER_SEQUENCE.nextval, '농협');
+insert into customer values( CUSTOMER_SEQUENCE.nextval, '삼성 전자');
+insert into customer values( CUSTOMER_SEQUENCE.nextval, 'SK매직');
+insert into customer values( CUSTOMER_SEQUENCE.nextval, '아모레퍼시픽');
+
+insert into customer values( CUSTOMER_SEQUENCE.nextval, '-테스트데이터''"');
 
 select * from customer;
 
@@ -88,17 +90,15 @@ insert into project_sk values(5, '10');
 select * from project_sk;
 
 ------ 프로젝트 - 멤버 샘플 데이터
-insert into project_member_table values(1, 1, to_date('2023-11-07'), to_date('2024-06-27'));
-insert into project_member_table values(1, 2, to_date('2023-11-07'), to_date('2024-06-27'));
-insert into project_member_table values(2, 4, to_date('2023-12-29'), to_date('2024-03-02'));
-insert into project_member_table values(2, 7, to_date('2023-12-29'), to_date('2024-03-02'));
-insert into project_member_table values(3, 3, to_date('2024-01-11'), to_date('2024-04-27'));
-insert into project_member_table values(3, 5, to_date('2024-01-11'), to_date('2024-04-27'));
-insert into project_member_table values(4, 6, to_date('2024-02-25'), to_date('2024-05-25'));
-insert into project_member_table values(5, 7, to_date('2024-03-01'), to_date('2024-06-01'));
+insert into project_member_table values(1, 1, to_date('2023-11-07'), to_date('2024-06-27'), 1);
+insert into project_member_table values(1, 2, to_date('2023-11-07'), to_date('2024-06-27'), 2);
+insert into project_member_table values(2, 4, to_date('2023-12-29'), to_date('2024-03-02'), 3);
+insert into project_member_table values(2, 7, to_date('2023-12-29'), to_date('2024-03-02'), 4);
+insert into project_member_table values(3, 3, to_date('2024-01-11'), to_date('2024-04-27'), 1);
+insert into project_member_table values(3, 5, to_date('2024-01-11'), to_date('2024-04-27'), 2);
+insert into project_member_table values(4, 6, to_date('2024-02-25'), to_date('2024-05-25'), 3);
+insert into project_member_table values(5, 7, to_date('2024-03-01'), to_date('2024-06-01'), 4);
 
 select * from project_member_table;
 
 commit;
-
-

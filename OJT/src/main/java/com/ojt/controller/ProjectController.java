@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.ojt.bean.ProjectBean;
 import com.ojt.service.ProjectService;
@@ -50,11 +51,6 @@ public class ProjectController {
 		
 		// 프로젝트 정보를 데이터 베이스로 부터 받아옴
 		ArrayList<ProjectBean> projectList = projectService.getProjectInfoList(prj_nm, cust_nm, prj_dt_type, firstDate, secondDate, startIndex, endIndex);
-		// 가져온 프로젝트리스트의 각 번호를 이용하여 필요기술 목록 가져오기
-		for(int i = 0; i < projectList.size(); i++) {
-			int prj_seq = projectList.get(i).getPrj_seq();
-			projectList.get(i).setPrj_sk_list(projectService.getProjectSKList(prj_seq));
-		}
 		
 		// 페이징 처리
 		int maxView = projectService.getMaxSearchCount(prj_nm, cust_nm, prj_dt_type, firstDate, secondDate);
@@ -68,6 +64,16 @@ public class ProjectController {
 		model.addAttribute("minDate", minDate);
 		model.addAttribute("maxDate", maxDate);
 		
+		System.out.println(pageBtn.length);
+		
 		return "/project/Main";
+	}
+	
+	@GetMapping(value = "/projectMemberRegi")
+	public String projectMemberRegi(@RequestParam(value = "prj_seq") int prj_seq,
+									Model model) {
+		
+		
+		
 	}
 }

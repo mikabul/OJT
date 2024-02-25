@@ -1,33 +1,34 @@
-insert into code_master values('DP01','ºÎ¼­ ÄÚµå');
-insert into code_master values('RA01','Á÷±Ş ÄÚµå');
-insert into code_master values('ST01','ÀçÁ÷ »óÅÂ ÄÚµå');
-insert into code_master values('SK01','±â¼ú ÄÚµå');
-insert into code_master values('PS01','ÇÁ·ÎÁ§Æ® »óÅÂ ÄÚµå');
+insert into code_master values('DP01','ë¶€ì„œ ì½”ë“œ');
+insert into code_master values('RA01','ì§ê¸‰ ì½”ë“œ');
+insert into code_master values('ST01','ì¬ì§ ìƒíƒœ ì½”ë“œ');
+insert into code_master values('SK01','ê¸°ìˆ  ì½”ë“œ');
+insert into code_master values('PS01','í”„ë¡œì íŠ¸ ìƒíƒœ ì½”ë“œ');
+insert into code_master values('RO01','ì—­í•  ì½”ë“œ');
 
 select * from code_master;
 
------- ºÎ¼­
-insert into code_detail values('DP01','1','°³¹ß');
-insert into code_detail values('DP01','2','µğÀÚÀÎ');
-insert into code_detail values('DP01','3','Å×½ºÅÍ');
-insert into code_detail values('DP01','4','ÀÎ»ç');
+------ ë¶€ì„œ
+insert into code_detail values('DP01','1','ê°œë°œ');
+insert into code_detail values('DP01','2','ë””ìì¸');
+insert into code_detail values('DP01','3','í…ŒìŠ¤í„°');
+insert into code_detail values('DP01','4','ì¸ì‚¬');
 
-------- Á÷±Ş
-insert into code_detail values('RA01','1','»çÀå');
-insert into code_detail values('RA01','2','»ó¹«');
-insert into code_detail values('RA01','3','ÀÌ»ç');
-insert into code_detail values('RA01','4','ºÎÀå');
-insert into code_detail values('RA01','5','Â÷Àå');
-insert into code_detail values('RA01','6','°úÀå');
-insert into code_detail values('RA01','7','´ë¸®');
-insert into code_detail values('RA01','8','»ç¿ø');
+------- ì§ê¸‰
+insert into code_detail values('RA01','1','ì‚¬ì¥');
+insert into code_detail values('RA01','2','ìƒë¬´');
+insert into code_detail values('RA01','3','ì´ì‚¬');
+insert into code_detail values('RA01','4','ë¶€ì¥');
+insert into code_detail values('RA01','5','ì°¨ì¥');
+insert into code_detail values('RA01','6','ê³¼ì¥');
+insert into code_detail values('RA01','7','ëŒ€ë¦¬');
+insert into code_detail values('RA01','8','ì‚¬ì›');
 
-------- ÀçÁ÷ »óÅÂ
-insert into code_detail values('ST01','1','ÀçÁ÷');
-insert into code_detail values('ST01','2','ÈŞÁ÷');
-insert into code_detail values('ST01','3','ÅğÁ÷');
+------- ì¬ì§ ìƒíƒœ
+insert into code_detail values('ST01','1','ì¬ì§');
+insert into code_detail values('ST01','2','íœ´ì§');
+insert into code_detail values('ST01','3','í‡´ì§');
 
-------- ±â¼ú
+------- ê¸°ìˆ 
 insert into code_detail values('SK01','1','Java');
 insert into code_detail values('SK01','2','HTML/CSS');
 insert into code_detail values('SK01','3','Javascript');
@@ -39,11 +40,17 @@ insert into code_detail values('SK01','8','SQL');
 insert into code_detail values('SK01','9','Kotlin');
 insert into code_detail values('SK01','10','C#');
 
-------- ÇÁ·ÎÁ§Æ® »óÅÂ
-insert into code_detail values('PS01','1','ÁøÇà ¿¹Á¤');
-insert into code_detail values('PS01','2','ÁøÇà Áß');
-insert into code_detail values('PS01','3','À¯Áöº¸¼ö');
-insert into code_detail values('PS01','4','¿Ï·á');
+------- í”„ë¡œì íŠ¸ ìƒíƒœ
+insert into code_detail values('PS01','1','ì§„í–‰ ì˜ˆì •');
+insert into code_detail values('PS01','2','ì§„í–‰ ì¤‘');
+insert into code_detail values('PS01','3','ìœ ì§€ë³´ìˆ˜');
+insert into code_detail values('PS01','4','ì™„ë£Œ');
+
+------- ì—­í• 
+insert into code_detail values('RO01','1','PM');
+insert into code_detail values('RO01','2','PL');
+insert into code_detail values('RO01','3','PE');
+insert into code_detail values('RO01','4','QA');
 
 select * from code_detail;
 

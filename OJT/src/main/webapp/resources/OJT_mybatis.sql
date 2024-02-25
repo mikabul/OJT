@@ -54,6 +54,28 @@ where prj_nm like '%%' and cust_nm like '%%'
 and prj_st_dt between to_date('2000-01-01') and to_date('9999-12-31'))
 where rn between 1 and 5;
 
+select * from member_info;
+select * from project_member_table;
+
+
+select *from 
+(select mi.mem_seq, mi.mem_nm, to_char(mi.mem_hire_date, 'yyyy.mm.dd') as mem_hire_date,
+pmt.st_dt, pmt.ed_dt, row_number() over (order by mi.mem_seq) as rn,
+dept.dtl_cd_nm as prj_dept, position.dtl_cd_nm as prj_position, role.dtl_cd_nm as prj_role
+from member_info mi
+left join project_member_table pmt on pmt.prj_seq = 1
+left join code_detail dept on dept.mst_cd = 'DP01' and dept.dtl_cd = mi.dp_cd
+left join code_detail position on position.mst_cd = 'RA01' and position.dtl_cd = mi.ra_cd
+left join code_detail role on role.mst_cd = 'RO01' and role.dtl_cd = pmt.ro_cd
+where mi.mem_seq = pmt.mem_seq and mi.mem_nm || mi.mem_seq like '%%'
+and role.dtl_cd_nm like '%%'
+and pmt.st_dt between to_date('2000-01-01') and to_date('9999-12-31'))
+where rn between 1 and 5;
+
+select dtl_cd_nm
+from code_detail cd
+inner join member_sk ms on ms.mem_seq = 1
+where cd.mst_cd = 'SK01' and cd.dtl_cd = ms.sk_cd;
 
 
 

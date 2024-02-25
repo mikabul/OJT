@@ -1,7 +1,7 @@
--- ª˝º∫¿⁄ Oracle SQL Developer Data Modeler 21.4.2.059.0838
---   ¿ßƒ°:        2024-02-21 15:33:04 KST
---   ªÁ¿Ã∆Æ:      Oracle Database 11g
---   ¿Ø«¸:      Oracle Database 11g
+-- ÏÉùÏÑ±Ïûê Oracle SQL Developer Data Modeler 21.4.2.059.0838
+--   ÏúÑÏπò:        2024-02-21 15:33:04 KST
+--   ÏÇ¨Ïù¥Ìä∏:      Oracle Database 11g
+--   Ïú†Ìòï:      Oracle Database 11g
 
 
 
@@ -64,7 +64,8 @@ CREATE TABLE project_member_table (
     prj_seq NUMBER(10) NOT NULL,
     mem_seq NUMBER(10) NOT NULL,
     st_dt   DATE NOT NULL,
-    ed_dt   DATE NOT NULL
+    ed_dt   DATE NOT NULL,
+    ro_cd varchar(10)
 );
 
 ALTER TABLE project_member_table ADD CONSTRAINT project_member_table_pk PRIMARY KEY ( prj_seq,
@@ -88,7 +89,7 @@ CREATE TABLE project_info (
     ed_cd     VARCHAR2(10) NOT NULL
 );
 
-ALTER TABLE prokect_info ADD CONSTRAINT prokect_info_pk PRIMARY KEY ( prj_seq );
+ALTER TABLE project_info ADD CONSTRAINT prokect_info_pk PRIMARY KEY ( prj_seq );
 
 ALTER TABLE code_detail
     ADD CONSTRAINT code_detail_code_master_fk FOREIGN KEY ( mst_cd )
@@ -96,7 +97,15 @@ ALTER TABLE code_detail
 
 CREATE SEQUENCE MEMBER_SEQUENCE START WITH 1 INCREMENT BY 1 MINVALUE 1;
 CREATE SEQUENCE PROJECT_SEQUENCE START WITH 1 INCREMENT BY 1 MINVALUE 1;
-CREATE SEQUENCE CUSTOMER_SEQUNCE START WITH 1 INCREMENT BY 1 MINVALUE 1;
+CREATE SEQUENCE CUSTOMER_SEQUENCE START WITH 1 INCREMENT BY 1 MINVALUE 1;
+
+create trigger deleted_project
+after delete on project_info
+FOR EACH ROW
+begin
+delete project_sk where project_sk.prj_seq=:old.prj_seq;
+end;
+/
 
 COMMIT;
 
