@@ -14,6 +14,7 @@ public class ProjectBean {
 	
 	private String cust_nm;
 	private ArrayList<String> prj_sk_list;
+	private String dtl_cd_nm;
 	
 	public int getPrj_seq() {
 		return prj_seq;
@@ -68,6 +69,12 @@ public class ProjectBean {
 	}
 	public void setPrj_sk_list(ArrayList<String> prj_sk_list) {
 		this.prj_sk_list = prj_sk_list;
+	}
+	public String getDtl_cd_nm() {
+		return dtl_cd_nm;
+	}
+	public void setDtl_cd_nm(String dtl_cd_nm) {
+		this.dtl_cd_nm = dtl_cd_nm;
 	}
 	
 }

@@ -24,7 +24,7 @@ a {
 
 .top-btn {
 	border-radius: 10px;
-    padding: 5px 4px;
+    padding: 5px 7px;
     font-size: 15px;
     font-weight: 900;
     background-color: unset;
@@ -71,7 +71,8 @@ a {
 }
 
 #side_btn:hover {
-	border-color: #F1F3F4;
+	background-color: #F1F3F4;
+	color: black;
 	transition-duration: 0.2s;
 }
 
@@ -81,5 +82,5 @@ a {
 }
 
 #logout:hover {
-	border-color: #F1F3F4;
+	background-color: #F1F3F4;
 }

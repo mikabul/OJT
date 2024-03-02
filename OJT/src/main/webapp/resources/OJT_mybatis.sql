@@ -78,10 +78,17 @@ inner join member_sk ms on ms.mem_seq = 1
 where cd.mst_cd = 'SK01' and cd.dtl_cd = ms.sk_cd;
 
 
-
-
-
-
+select * from (
+select prj.prj_seq, prj.prj_nm, cust.cust_nm, prj.prj_st_dt, prj.prj_ed_dt, 
+dtl_cd_nm, row_number() over(order by prj.prj_seq) as rn
+from project_info prj
+left join code_detail cd on cd.mst_cd = 'PS01' and cd.dtl_cd = prj.ed_cd
+inner join customer cust on cust.cust_seq = prj.prj_seq
+where
+prj.prj_nm like '%%'
+and cust.cust_seq=2
+and prj.prj_st_dt between '20000101' and '99991231')
+where rn between 1 and 5;
 
 
 

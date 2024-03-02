@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import com.ojt.bean.MemberBean;
 
 @Controller
-public class LoginController {
+public class LoginController{
 	
 	@Resource(name = "loginMemberBean")
 	MemberBean loginMemberBean;
@@ -18,13 +18,17 @@ public class LoginController {
 	@PostMapping("/Login")
 	public String login(@ModelAttribute("loginMemberBean") MemberBean loginMemberBean) {
 		this.loginMemberBean.setLoginState(true);
+		System.out.println(this.loginMemberBean.isLoginState());
 		return "redirect:/Main";
 		
 	}
 	
 	@GetMapping("Logout")
 	public String logout() {
-		loginMemberBean = new MemberBean();
+		loginMemberBean.setLoginState(false);
+		System.out.println(loginMemberBean.isLoginState());
 		return "redirect:/";
 	}
+	
+	
 }

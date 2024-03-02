@@ -1,5 +1,7 @@
 package com.ojt.config;
 
+import javax.annotation.Resource;
+
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
@@ -10,10 +12,14 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistration;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewResolverRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import com.ojt.bean.MemberBean;
+import com.ojt.interceptor.AcceptLoginInterceptor;
 import com.ojt.mapper.ProjectMapper;
 
 @Configuration
@@ -34,6 +40,9 @@ public class ServletAppContext implements WebMvcConfigurer{
 	@Value("${db.password}")
 	String password;
 	
+	@Resource(name = "loginMemberBean")
+	MemberBean loginMemberBean;
+	
 	@Override
 	public void configureViewResolvers(ViewResolverRegistry registry) {
 		WebMvcConfigurer.super.configureViewResolvers(registry);
@@ -46,6 +55,18 @@ public class ServletAppContext implements WebMvcConfigurer{
 		registry.addResourceHandler("/**").addResourceLocations("/resources");
 	}
 	
+	
+	
+	@Override
+	public void addInterceptors(InterceptorRegistry registry) {
+		WebMvcConfigurer.super.addInterceptors(registry);
+		
+		AcceptLoginInterceptor acceptLoginInterceptor = new AcceptLoginInterceptor(loginMemberBean);
+		InterceptorRegistration reg1 = registry.addInterceptor(acceptLoginInterceptor);
+		reg1.addPathPatterns("/**");
+		reg1.excludePathPatterns("/", "/Login", "/Accept/NotAccept");
+	}
+
 	@Bean
 	public BasicDataSource dataSource() {
 		BasicDataSource source = new BasicDataSource();

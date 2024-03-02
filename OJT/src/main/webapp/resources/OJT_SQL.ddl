@@ -10,8 +10,8 @@
 -- predefined type, no DDL - XMLTYPE
 
 CREATE TABLE code_detail (
-    mst_cd    VARCHAR2(10) NOT NULL,
-    dtl_cd    VARCHAR2(10) NOT NULL,
+    mst_cd    VARCHAR2(4) NOT NULL,
+    dtl_cd    VARCHAR2(2) NOT NULL,
     dtl_cd_nm VARCHAR2(40) NOT NULL
 );
 
@@ -19,7 +19,7 @@ ALTER TABLE code_detail ADD CONSTRAINT code_detail_pk PRIMARY KEY ( mst_cd,
                                                                     dtl_cd );
 
 CREATE TABLE code_master (
-    mst_cd    VARCHAR2(10) NOT NULL,
+    mst_cd    VARCHAR2(4) NOT NULL,
     mst_cd_nm VARCHAR2(40) NOT NULL
 );
 
@@ -39,22 +39,22 @@ CREATE TABLE member_info (
     mem_tel              VARCHAR2(15),
     mem_phone            VARCHAR2(15) NOT NULL,
     mem_email            VARCHAR2(40),
-    dp_cd                VARCHAR2(10),
-    ra_cd                VARCHAR2(10) NOT NULL,
+    dp_cd                VARCHAR2(2),
+    ra_cd                VARCHAR2(2) NOT NULL,
     mem_addr             VARCHAR2(100) NOT NULL,
-    mem_id               VARCHAR2(20) NOT NULL unique,
-    mem_pw               VARCHAR2(40) NOT NULL,
-    mem_pic              VARCHAR2(70) NOT NULL,
-    st_cd                VARCHAR2(10) NOT NULL,
-    mem_hire_date        DATE NOT NULL,
-    mem_resignation_date DATE
+    mem_id               VARCHAR2(45) NOT NULL unique,
+    mem_pw               VARCHAR2(32) NOT NULL,
+    mem_pic              VARCHAR2(70),
+    st_cd                VARCHAR2(2) NOT NULL,
+    mem_hire_date        VARCHAR2(12) NOT NULL,
+    mem_resignation_date VARCHAR2(12)
 );
 
 ALTER TABLE member_info ADD CONSTRAINT member_info_pk PRIMARY KEY ( mem_seq );
 
 CREATE TABLE member_sk (
     mem_seq NUMBER(10) NOT NULL,
-    sk_cd   VARCHAR2(10) NOT NULL
+    sk_cd   VARCHAR2(2) NOT NULL
 );
 
 ALTER TABLE member_sk ADD CONSTRAINT member_sk_pk PRIMARY KEY ( mem_seq,
@@ -63,9 +63,9 @@ ALTER TABLE member_sk ADD CONSTRAINT member_sk_pk PRIMARY KEY ( mem_seq,
 CREATE TABLE project_member_table (
     prj_seq NUMBER(10) NOT NULL,
     mem_seq NUMBER(10) NOT NULL,
-    st_dt   DATE NOT NULL,
-    ed_dt   DATE NOT NULL,
-    ro_cd varchar(10)
+    st_dt   VARCHAR2(12) NOT NULL,
+    ed_dt   VARCHAR2(12) NOT NULL,
+    ro_cd varchar(2)
 );
 
 ALTER TABLE project_member_table ADD CONSTRAINT project_member_table_pk PRIMARY KEY ( prj_seq,
@@ -73,7 +73,7 @@ ALTER TABLE project_member_table ADD CONSTRAINT project_member_table_pk PRIMARY 
 
 CREATE TABLE project_sk (
     prj_seq NUMBER(10) NOT NULL,
-    sk_cd   VARCHAR2(10) NOT NULL
+    sk_cd   VARCHAR2(2) NOT NULL
 );
 
 ALTER TABLE project_sk ADD CONSTRAINT project_sk_pk PRIMARY KEY ( prj_seq,
@@ -83,10 +83,10 @@ CREATE TABLE project_info (
     prj_seq   NUMBER(10) NOT NULL,
     prj_nm    VARCHAR2(60) NOT NULL,
     cust_seq  NUMBER(10) NOT NULL,
-    prj_st_dt DATE NOT NULL,
-    prj_ed_dt DATE NOT NULL,
+    prj_st_dt VARCHAR2(12) NOT NULL,
+    prj_ed_dt VARCHAR2(12) NOT NULL,
     prj_dtl   VARCHAR2(1500),
-    ed_cd     VARCHAR2(10) NOT NULL
+    ed_cd     VARCHAR2(2) NOT NULL
 );
 
 ALTER TABLE project_info ADD CONSTRAINT prokect_info_pk PRIMARY KEY ( prj_seq );
@@ -99,7 +99,7 @@ CREATE SEQUENCE MEMBER_SEQUENCE START WITH 1 INCREMENT BY 1 MINVALUE 1;
 CREATE SEQUENCE PROJECT_SEQUENCE START WITH 1 INCREMENT BY 1 MINVALUE 1;
 CREATE SEQUENCE CUSTOMER_SEQUENCE START WITH 1 INCREMENT BY 1 MINVALUE 1;
 
-create trigger deleted_project
+create OR replace trigger deleted_project
 after delete on project_info
 FOR EACH ROW
 begin

@@ -45,6 +45,7 @@ insert into code_detail values('PS01','1','진행 예정');
 insert into code_detail values('PS01','2','진행 중');
 insert into code_detail values('PS01','3','유지보수');
 insert into code_detail values('PS01','4','완료');
+insert into code_detail values('PS01','5','중단');
 
 ------- 역할
 insert into code_detail values('RO01','1','PM');

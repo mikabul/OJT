@@ -12,16 +12,15 @@ import com.ojt.bean.ProjectMemberBean;
 public interface ProjectMapper {
 
 	// 프로젝트 리스트
-	// 프로젝트 명, 고객사, 날짜(시작일 또는 종료일), 첫(두) 번째날짜(혹은 둘다), 시작 끝 인덱스를 매개변수로 사용
 	@Select("select * from ( "
-			+ "select prj_seq, prj_nm, cust_nm, "
-			+ "to_char(prj_st_dt,'yyyy.mm.dd') as prj_st_dt, to_char(prj_ed_dt, 'yyyy.mm.dd') as prj_ed_dt, "
-			+ "row_number() over (order by prj_seq desc) as rn "
-			+ "from project_info "
-			+ "left join customer cust on cust.cust_seq = project_info.cust_seq "
-			+ "where prj_nm like #{prj_nm} and cust_nm like #{cust_nm} "
-			+ "and ${prj_dt_type} between to_date(#{firstDate}) and to_date(#{secondDate})) "
-			+ "where rn between #{startIndex} and #{endIndex}")
+			+ "select prj.prj_seq, prj.prj_nm, cust.cust_nm, prj.prj_st_dt, prj.prj_ed_dt, "
+			+ "dtl_cd_nm, row_number() over(order by prj.prj_seq) as rn\r\n"
+			+ "from project_info prj "
+			+ "left join code_detail cd on cd.mst_cd = 'PS01' and cd.dtl_cd = prj.ed_cd "
+			+ "inner join customer cust on cust.cust_seq = prj.prj_seq "
+			+ "where "
+			+ "prj.prj_nm like #{prj_nm} ${} ) "
+			+ "where rn between 1 and 5")
 	public ArrayList<ProjectBean> getProjectInfoList(@Param("prj_nm") String prj_nm, @Param("cust_nm") String cust_nm,
 													@Param("prj_dt_type") String prj_dt_type, @Param("firstDate") String firstDate,
 													@Param("secondDate") String secondDate, @Param("startIndex") int startIndex, @Param("endIndex") int endIndex);
@@ -51,7 +50,7 @@ public interface ProjectMapper {
 	public int getMaxSearchCount(String prj_nm, String cust_nm, String prj_dt_type, String firstDate, String secondDate);
 	
 	// 프로젝트에 참여한 인원 검색 리스트
-	@Select("select *from "
+	@Select("select * from "
 			+ "(select mi.mem_seq, mi.mem_nm, to_char(mi.mem_hire_date, 'yyyy.mm.dd') as mem_hire_date, "
 			+ "pmt.st_dt, pmt.ed_dt, row_number() over (order by mi.mem_seq) as rn, "
 			+ "dept.dtl_cd_nm as prj_dept, position.dtl_cd_nm as prj_position, role.dtl_cd_nm as prj_role "
@@ -61,12 +60,12 @@ public interface ProjectMapper {
 			+ "left join code_detail position on position.mst_cd = 'RA01' and position.dtl_cd = mi.ra_cd "
 			+ "left join code_detail role on role.mst_cd = 'RO01' and role.dtl_cd = pmt.ro_cd "
 			+ "where mi.mem_seq = pmt.mem_seq and mi.mem_nm || mi.mem_seq like #{searchWord} "
-			+ "and role.dtl_cd_nm like #{dtl_cd_nm} "
+			+ "and role.dtl_cd_nm like #{prj_role} "
 			+ "and pmt.${dateType} between to_date(#{firstDate}) and to_date(#{secondDate})) "
 			+ "where rn between #{index} and #{endIndex}")
 	public ArrayList<ProjectMemberBean> getProjectMember(@Param("prj_seq") int prj_seq,
 														@Param("searchWord") String searchWord,
-														@Param("dtl_cd_nm") String dtl_cd_nm,
+														@Param("prj_role") String prj_role,
 														@Param("firstDate") String firstDate,
 														@Param("secondDate") String secondDate,
 														@Param("dateType") String dateType,
@@ -78,4 +77,24 @@ public interface ProjectMapper {
 			+ "inner join member_sk ms on ms.mem_seq = #{mem_seq} "
 			+ "where cd.mst_cd = 'SK01' and cd.dtl_cd = ms.sk_cd")
 	public ArrayList<String> getProjectMemberSKList(int mem_seq);
+	
+	// 프로젝트에 참여한 인원 검색 최대 갯수
+		@Select("select count(*) from "
+				+ "(select mi.mem_seq, mi.mem_nm, to_char(mi.mem_hire_date, 'yyyy.mm.dd') as mem_hire_date, "
+				+ "pmt.st_dt, pmt.ed_dt, row_number() over (order by mi.mem_seq) as rn, "
+				+ "dept.dtl_cd_nm as prj_dept, position.dtl_cd_nm as prj_position, role.dtl_cd_nm as prj_role "
+				+ "from member_info mi "
+				+ "left join project_member_table pmt on pmt.prj_seq = #{prj_seq} "
+				+ "left join code_detail dept on dept.mst_cd = 'DP01' and dept.dtl_cd = mi.dp_cd "
+				+ "left join code_detail position on position.mst_cd = 'RA01' and position.dtl_cd = mi.ra_cd "
+				+ "left join code_detail role on role.mst_cd = 'RO01' and role.dtl_cd = pmt.ro_cd "
+				+ "where mi.mem_seq = pmt.mem_seq and mi.mem_nm || mi.mem_seq like #{searchWord} "
+				+ "and role.dtl_cd_nm like #{prj_role} "
+				+ "and pmt.${dateType} between to_date(#{firstDate}) and to_date(#{secondDate})) ")
+		public int getProjectMemberMaxCount(@Param("prj_seq") int prj_seq,
+															@Param("searchWord") String searchWord,
+															@Param("prj_role") String prj_role,
+															@Param("firstDate") String firstDate,
+															@Param("secondDate") String secondDate,
+															@Param("dateType") String dateType);
 }
