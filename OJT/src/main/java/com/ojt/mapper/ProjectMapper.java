@@ -14,16 +14,17 @@ public interface ProjectMapper {
 	// 프로젝트 리스트
 	@Select("select * from ( "
 			+ "select prj.prj_seq, prj.prj_nm, cust.cust_nm, prj.prj_st_dt, prj.prj_ed_dt, "
-			+ "dtl_cd_nm, row_number() over(order by prj.prj_seq) as rn\r\n"
+			+ "dtl_cd_nm, row_number() over(order by prj.prj_seq) as rn "
 			+ "from project_info prj "
 			+ "left join code_detail cd on cd.mst_cd = 'PS01' and cd.dtl_cd = prj.ed_cd "
 			+ "inner join customer cust on cust.cust_seq = prj.prj_seq "
 			+ "where "
-			+ "prj.prj_nm like #{prj_nm} ${} ) "
-			+ "where rn between 1 and 5")
-	public ArrayList<ProjectBean> getProjectInfoList(@Param("prj_nm") String prj_nm, @Param("cust_nm") String cust_nm,
-													@Param("prj_dt_type") String prj_dt_type, @Param("firstDate") String firstDate,
-													@Param("secondDate") String secondDate, @Param("startIndex") int startIndex, @Param("endIndex") int endIndex);
+			+ "prj.prj_nm like #{prj_nm} ${optionalQuery} ) "
+			+ "where rn between #{startIndex} and #{endIndex}")
+	public ArrayList<ProjectBean> getProjectInfoList(@Param("prj_nm") String prj_nm, 
+													@Param("optionalQuery") String optionalQuery,
+													@Param("startIndex") int startIndex,
+													@Param("endIndex") int endIndex);
 	
 	// 프로젝트 별 필요기술 리스트
 	@Select("select dtl_cd_nm from code_detail, "
@@ -39,15 +40,14 @@ public interface ProjectMapper {
 	// 프로젝트 검색 시 최개 갯수
 	// 페이징 처리를 위해 검색시 최대 갯수를 조회
 	@Select("select count(*) from ( "
-			+ "select prj_seq, prj_nm, cust_nm, "
-			+ "to_char(prj_st_dt,'yyyy.mm.dd') as prj_st_dt, to_char(prj_ed_dt, 'yyyy.mm.dd') as prj_ed_dt, "
-			+ "row_number() over (order by prj_seq desc) as rn "
-			+ "from project_info "
-			+ "left join customer cust on cust.cust_seq = project_info.cust_seq "
-			+ "where prj_nm like #{arg0} and cust_nm like #{arg1} "
-			+ "and ${arg2} between to_date(#{arg3}) and to_date(#{arg4}))")
-	
-	public int getMaxSearchCount(String prj_nm, String cust_nm, String prj_dt_type, String firstDate, String secondDate);
+			+ "select prj.prj_seq, prj.prj_nm, cust.cust_nm, prj.prj_st_dt, prj.prj_ed_dt, "
+			+ "dtl_cd_nm, row_number() over(order by prj.prj_seq) as rn "
+			+ "from project_info prj "
+			+ "left join code_detail cd on cd.mst_cd = 'PS01' and cd.dtl_cd = prj.ed_cd "
+			+ "inner join customer cust on cust.cust_seq = prj.prj_seq "
+			+ "where "
+			+ "prj.prj_nm like #{prj_nm} ${optionalQuery} ) ")
+	public int getMaxSearchCount(@Param("prj_nm") String prj_nm, @Param("optionalQuery") String optionalQuery);
 	
 	// 프로젝트에 참여한 인원 검색 리스트
 	@Select("select * from "

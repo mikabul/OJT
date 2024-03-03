@@ -66,14 +66,11 @@ public class ProjectRestController {
 		
 		// requestBody 분리
 		String prj_nm = (String)requestBody.get("prj_nm");
-		int cust_seq = (int)requestBody.get("cust_seq");
+		int cust_seq = (Integer)requestBody.get("cust_seq") == null ? 0 : (int)requestBody.get("cust_seq");
 		String dateType = (String)requestBody.get("dateType");
 		String firstDate = (String)requestBody.get("firstDate");
 		String secondDate = (String)requestBody.get("secondDate");
 		int index = (int)requestBody.get("index");
-		
-		firstDate = firstDate.isEmpty() ? "2000-01-01" : firstDate;
-		secondDate = secondDate.isEmpty() ? "9999-12-31" : secondDate;
 		
 		// json 준비
 		ObjectMapper mapper = new ObjectMapper();

@@ -16,60 +16,44 @@ public class ProjectService {
 	@Autowired
 	private ProjectDao projectDao;
 
+	// 프로젝트 검색
 	public ArrayList<ProjectBean> getProjectInfoList(String prj_nm, int cust_seq, String prj_dt_type, String firstDate, String secondDate, int startIndex, int endIndex){
 		// 검색을 위한 전처리
 		prj_nm = "%" + prj_nm + "%";
 		
-		String optionalQuery = "";
+		String optionalQuery = getOptionalQuery(cust_seq, prj_dt_type, firstDate, secondDate);
 		
-		if(cust_seq != 0) {
-			optionalQuery += " and cust.cust_seq=2 ";
-		}
+		System.out.println("optionalQuery: " + optionalQuery);
 		
-		if(!prj_dt_type.isEmpty() && (!firstDate.isEmpty() || !secondDate.isEmpty())) {
-
-			if(prj_dt_type.equals("prj_st_dt")) {
-				optionalQuery += " and prj.prj_st_dt ";
-			} else if (prj_dt_type.equals("prj_ed_dt")) {
-				optionalQuery += " and prj.prj_ed_dt ";
-			}
-			
-			if(!firstDate.isEmpty() && !secondDate.isEmpty()) {
-				
-				optionalQuery += " between " + firstDate + " and " + secondDate + " ";
-				
-			} else if(!firstDate.isEmpty()) {
-				optionalQuery += " > " + firstDate + " ";
-			} else if(!secondDate.isEmpty()) {
-				optionalQuery += " < " + secondDate + " ";
-			}
-		}
-		
-		ArrayList<ProjectBean> projectList = projectDao.getProjectInfoList(prj_nm, optionalQuery);
+		ArrayList<ProjectBean> projectList = projectDao.getProjectInfoList(prj_nm, optionalQuery, startIndex, endIndex);
 		
 		// 가져온 프로젝트리스트의 각 번호를 이용하여 필요기술 목록 가져오기
-		for (int i = 0; i < projectList.size(); i++) {
-			int prj_seq = projectList.get(i).getPrj_seq();
-			projectList.get(i).setPrj_sk_list(projectDao.getProjectSKList(prj_seq));
+		if(projectList != null) {
+			for (int i = 0; i < projectList.size(); i++) {
+				int prj_seq = projectList.get(i).getPrj_seq();
+				projectList.get(i).setPrj_sk_list(projectDao.getProjectSKList(prj_seq));
+			}
 		}
 		
 		return projectList;
 	}
-	
+	// 프로젝트 필요 기술 리스트
 	public ArrayList<String> getProjectSKList(int prj_seq){
 		return projectDao.getProjectSKList(prj_seq);
 	}
-	
+	// 고객사 리스트
 	public ArrayList<CustomerBean> getCustomerList(String cust_nm){
 		return projectDao.getCustomerList(cust_nm);
 	}
-	
-	public int getMaxSearchCount(String prj_nm, String cust_nm, String prj_dt_type, String firstDate, String secondDate) {
+	// 검색결과 최대 갯수
+	public int getMaxSearchCount(String prj_nm, int cust_seq, String prj_dt_type, String firstDate, String secondDate) {
 		
 		prj_nm = "%" + prj_nm + "%";
-		cust_nm = "%" + cust_nm + "%";
 		
-		return projectDao.getMaxSearchCount(prj_nm, cust_nm, prj_dt_type, firstDate, secondDate);
+		String optionalQuery = getOptionalQuery(cust_seq, prj_dt_type, firstDate, secondDate);
+		
+		return projectDao.getMaxSearchCount(prj_nm, optionalQuery);
+		
 	}
 	
 	public ArrayList<ProjectMemberBean> getProjectMember(int prj_seq, String searchWord, String prj_role, String firstDate, String secondDate, String dateType, int index, int endIndex){
@@ -90,5 +74,36 @@ public class ProjectService {
 		prj_role = "%" + prj_role + "%";
 		
 		return projectDao.getProjectMemberMaxCount(prj_seq, searchWord, prj_role, firstDate, secondDate, dateType);
+	}
+	
+	// ========== 옵션 쿼리 ============
+	private String getOptionalQuery(int cust_seq, String dateType, String firstDate, String secondDate) {
+		
+		String optionalQuery = "";
+		
+		if(cust_seq != 0) {
+			optionalQuery += " and cust.cust_seq=" + cust_seq + " ";
+		}
+		
+		if(!dateType.isEmpty() && (!firstDate.isEmpty() || !secondDate.isEmpty())) {
+
+			if(dateType.equals("prj_st_dt")) {
+				optionalQuery += " and prj.prj_st_dt ";
+			} else if (dateType.equals("prj_ed_dt")) {
+				optionalQuery += " and prj.prj_ed_dt ";
+			}
+			
+			if(!firstDate.isEmpty() && !secondDate.isEmpty()) {
+				
+				optionalQuery += " between " + firstDate + " and " + secondDate + " ";
+				
+			} else if(!firstDate.isEmpty()) {
+				optionalQuery += " > " + firstDate + " ";
+			} else if(!secondDate.isEmpty()) {
+				optionalQuery += " < " + secondDate + " ";
+			}
+		}
+		
+		return optionalQuery;
 	}
 }
