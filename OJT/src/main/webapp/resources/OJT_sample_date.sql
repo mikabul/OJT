@@ -1,12 +1,12 @@
 
 ------ 사원 샘플 데이터
-insert into member_info values(member_sequence.nextval, '홍길동', '891030-1234567', '02-123-1234', '010-1293-1211', 'hong12@member.com', '', '1', '서울시 금청구 가산로 122', 'hong12', '12345', 'testpic1.jpg', '1', '2010.03.01', '');
-insert into member_info values(member_sequence.nextval, '아자아자', '900712-2133333', '', '010-9383-1231', 'ajaja31@naver.com', '2', '4', '서울시 금천구 가산로 123', 'ajaja31', 'aja!123', 'testpic2.jpg', '1', '2013.10.12', '');
-insert into member_info values(member_sequence.nextval, '고래', '901024-1317821', '', '010-2901-1022', 'goreee89@gmail.com', '3', '7', '서울시 금천구 가산로 124', 'goreee', 'go123^^', 'testpic3.jpg', '3', '2013.11.26', '2018.09.30');
-insert into member_info values(member_sequence.nextval, '토끼', '890101-2444131', '02-879-1234', '010-8797-6793', 'rabbit78@daum.com', '1', '4', '서울시 금천구 가산로 125', 'rabbit78', 'mak28889!@', 'testpic4.jpg', '1', '2017.03.07', '');
-insert into member_info values(member_sequence.nextval, '호랑이', '981213-1902123', '02-144-1859', '010-8478-1895', 'ti1213@naver.com', '4', '5', '서울시 금천구 가산로 126', 'ti1213', 'akak928!88', 'testpic5.jpg', '1', '2018.10.20', '');
-insert into member_info values(member_sequence.nextval, '감자', '950730-2491901', '', '010-6593-1829', 'gamja78@naver.com', '1', '8', '서울시 금천구 가산로 127', 'gamja78', 'gam9099', 'testpic6.jpg', '1', '2019.04.10', '');
-insert into member_info values(member_sequence.nextval, '굿모닝', '000506-3020131', '02-478-1234', '010-3928-1923', 'www123www@gmail.com', '2', '8', '서울시 금천구 가산로 128', 'www123www', 'abc123^^', 'testpic7.jpg', '1', '2020.12.11', '');
+insert into member_info values(member_sequence.nextval, '홍길동', '891030-1234567', '02-123-1234', '010-1293-1211', 'hong12@member.com', '', '1', '12345', '서울시 금청구 가산로 122', '', '', 'hong12', '12345', 'testpic1.jpg', '1', '2010-03-01', '');
+insert into member_info values(member_sequence.nextval, '아자아자', '900712-2133333', '', '010-9383-1231', 'ajaja31@naver.com', '2', '4', '12345', '서울시 금천구 가산로 123', '', '', 'ajaja31', 'aja!123', 'testpic2.jpg', '1', '2013-10-12', '');
+insert into member_info values(member_sequence.nextval, '고래', '901024-1317821', '', '010-2901-1022', 'goreee89@gmail.com', '3', '7', '12345', '서울시 금천구 가산로 124', '', '', 'goreee', 'go123^^', 'testpic3.jpg', '3', '2013-11-26', '2018-09-30');
+insert into member_info values(member_sequence.nextval, '토끼', '890101-2444131', '02-879-1234', '010-8797-6793', 'rabbit78@daum.com', '1', '4', '12345', '서울시 금천구 가산로 125', '', '', 'rabbit78', 'mak28889!@', 'testpic4.jpg', '1', '2017-03-07', '');
+insert into member_info values(member_sequence.nextval, '호랑이', '981213-1902123', '02-144-1859', '010-8478-1895', 'ti1213@naver.com', '4', '5', '12345', '서울시 금천구 가산로 126', '', '', 'ti1213', 'akak928!88', 'testpic5.jpg', '1', '2018-10-20', '');
+insert into member_info values(member_sequence.nextval, '감자', '950730-2491901', '', '010-6593-1829', 'gamja78@naver.com', '1', '8', '12345', '서울시 금천구 가산로 127', '', '', 'gamja78', 'gam9099', 'testpic6.jpg', '1', '2019-04-10', '');
+insert into member_info values(member_sequence.nextval, '굿모닝', '000506-3020131', '02-478-1234', '010-3928-1923', 'www123www@gmail.com', '2', '8', '12345', '서울시 금천구 가산로 128', '', '', 'www123www', 'abc123^^', 'testpic7.jpg', '1', '2020-12-11', '');
 
 select * from member_info;
 
@@ -25,8 +25,6 @@ insert into customer values( CUSTOMER_SEQUENCE.nextval, '농협');
 insert into customer values( CUSTOMER_SEQUENCE.nextval, '삼성 전자');
 insert into customer values( CUSTOMER_SEQUENCE.nextval, 'SK매직');
 insert into customer values( CUSTOMER_SEQUENCE.nextval, '아모레퍼시픽');
-
-insert into customer values( CUSTOMER_SEQUENCE.nextval, '-테스트데이터''"');
 
 select * from customer;
 

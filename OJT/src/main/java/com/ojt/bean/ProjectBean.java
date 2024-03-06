@@ -12,9 +12,9 @@ public class ProjectBean {
 	private String prj_dtl;
 	private String ed_cd;
 	
-	private String cust_nm;
-	private ArrayList<String> prj_sk_list;
-	private String dtl_cd_nm;
+	private String cust_nm; //고객사 이름
+	private ArrayList<String> prj_sk_list; // 필요기술 리스트
+	private String dtl_cd_nm; // 프로젝트 상태
 	
 	public int getPrj_seq() {
 		return prj_seq;

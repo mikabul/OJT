@@ -63,8 +63,10 @@ public class ServletAppContext implements WebMvcConfigurer{
 		
 		AcceptLoginInterceptor acceptLoginInterceptor = new AcceptLoginInterceptor(loginMemberBean);
 		InterceptorRegistration reg1 = registry.addInterceptor(acceptLoginInterceptor);
+		// 모든 경로
 		reg1.addPathPatterns("/**");
-		reg1.excludePathPatterns("/", "/Login", "/Accept/NotAccept");
+		// 루트, 로그인, 로그아웃, 잘못된 접근, css 경로 제외
+		reg1.excludePathPatterns("/", "/Login", "/Logout", "/Accept/NotAccept", "/resources/style/**");
 	}
 
 	@Bean

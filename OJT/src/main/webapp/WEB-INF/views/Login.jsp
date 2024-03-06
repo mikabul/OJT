@@ -7,64 +7,88 @@
 <head>
 <meta charset="UTF-8">
 <title>INNOBL 관리 시스템</title>
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<link rel="stylesheet" href="${root}resources/style/Main.css" />
 <style>
-table {
-	margin: 0 auto;
-	margin-top: 300px;
-	border: 1px solid gray;
+.top-nav {
+	width: 100%;
+	height: 60px;
+	top: 0%;
+	background-color: black;
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: center;
+	position: fixed;
+	left: 0%;
+	z-index: 5;
+}
+
+.top-logo {
+	color: lightcyan;
+    font-size: 20px;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.container {
+	width: 100%;
+	height: 700px;
+	display: flex;
+	justify-content:center;
+	align-items: center;
+}
+
+.login-wrap {
+	border: 1px solid #F1F3F4;
+	border-radius: 1em;
+	width: 455px;
+	height: 255px;
+	display: grid;
+	align-content: center;
+}
+
+.loginBtn {
+	margin-top: 10px;
+	width: 400px;
+	height: 36px;
+}
+
+.input-box {
+	width: 400px;
+	height: 25px;
+	margin: 5px 0;
+}
+
+.input-box:focus {
+	outline-color: #01DF74;
 }
 </style>
 </head>
-<body>
-	<!-- 상단 메뉴 -->
-	<nav class="navbar bg-body-tertiary">
-		<div class="container-fluid justify-content-center">
-			<div class="navbar-brand">INNOBL 관리 시스템</div>
+<body style="margin-top: 60px;">
+	<!-- 상단 바 -->
+	<nav class="top-nav">
+		<div class="w-100 text-center">
+			<a class="top-logo" href="${root}Main">INNOBL 관리 시스템</a>
 		</div>
 	</nav>
 	<!-- 로그인 -->
-	<form:form action="${root}Login" modelAttribute="memberBean"
-		method="POST">
-		<table>
-			<colgroup>
-				<col style="width: 100px" />
-				<col style="width: 300px" />
-			</colgroup>
-			<thead>
-				<tr>
-					<td colspan="2">
-						<p class="navbar-brand text-center">관리 시스템 로그인</p>
-					</td>
-				</tr>
-			</thead>
-			<tbody>
-				<tr>
-					<td scope="col">
-						<form:label path="mem_id" class="col-form-label">아이디</form:label>
-					</td>
-					<td scope="col">
-						<form:input type="text" path="mem_id" class="form-control" />
-						<form:errors path="mem_id"></form:errors>
-					</td>
-				</tr>
-				<tr>
-					<td scope="col">
-						<form:label path="mem_pw" class="col-form-label">비밀번호</form:label>
-					</td>
-					<td scope="col">
-						<form:input type="password" path="mem_pw" class="form-control" />
-						<form:errors path="mem_pw"></form:errors>
-					</td>
-				</tr>
-				<tr>
-					<td colspan="2" class="text-center">
-						<form:button type="submit"> submit </form:button>
-					</td>
-				</tr>
-			</tbody>
-		</table>
+	<form:form action="${root}Login" modelAttribute="memberBean" method="POST">
+		<div class="container">
+			<div class="login-wrap">
+				<div class="w-100 text-center">
+					<div>
+						<form:input path="mem_id" class="input-box" placeholder="아이디" />
+					</div>
+					<div>
+						<form:password path="mem_pw" class="input-box" placeholder="비밀번호" />
+					</div>
+				</div>
+				<div class="w-100 text-center">
+					<form:button type="submit" class="loginBtn" style="">로그인</form:button>
+				</div>
+			</div>
+		</div>
 	</form:form>
-	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
 </body>
 </html>

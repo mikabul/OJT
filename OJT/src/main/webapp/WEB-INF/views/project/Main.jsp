@@ -7,232 +7,232 @@
 <head>
 <meta charset="UTF-8">
 <title>INNOBL - 프로젝트</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<!-- select2 -->
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<!-- 외부 css -->
 <link rel="stylesheet" href="${root}resources/style/Main.css" />
+<style>
+th {
+	height: 46px;
+}
+
+select {
+	height: 25px;
+}
+
+.ellipsis {
+	max-width: 300px;
+}
+
+#searchTable td {
+	padding: 0 5px;
+}
+</style>
 </head>
 <c:import url="/WEB-INF/views/include/TopMenu.jsp"></c:import>
 <body style="margin: 70px 20px;">
 	<div style="margin: 0 10%;">
-		<div class="between" style="margin-top: 100px;">
-			<div style="width: 5%;">프로젝트</div>
-			<div style="width: 90%;"><hr /></div>
-		</div>
-		
+		<div id="testBtn"></div>
 		<!-- ===== 검색 ===== -->
-		<div>
-			<form onsubmit="onkeyupEvent(); return false;">
-				<table class="table-center" style="margin-top: 30px;">
-					<colgroup>
-						<col style="width: 200px"/>
-						<col style="width: 200px"/>
-						<col style="width: 100px"/>
-					</colgroup>
+		<div style="margin-top: 100px;">
+			<form onsubmit="onSubmit(); return false;" id="searchForm">
+				<table class="table-center form-table">
+					<thead>
+						<tr>
+							<td style="width: 50px;"><span style="color: red">*</span> 필수</td>
+							<td style="width: 50px;" />
+							<td style="width: 100px;" />
+							<td style="width: 100px;" />
+							<td style="width: 100px;" />
+							<td style="width: 100px;" />
+							<td style="width: 100px;" />
+							<td style="width: 100px;" />
+						</tr>
+					</thead>
 					<tbody>
+						<!-- 프로젝트, 고객사 -->
 						<tr>
-							<td>
-								<label>프로젝트 명</label>
-								<input class="w-100" type="search" id="prj_nm" />
-								
-							</td>
-							<td>
-								<label>고객사</label>
-								<input class="w-100" type="text" list="list" id="cust_nm" name="cust_nm"/>
-								<datalist id="list"></datalist>
-							</td>
-							<td></td>
-						</tr>
-						<tr>
-							<td><p id="prj_nm_error" class="errorMsg"></p></td>
-							<td><p id="cust_nm_error" class="errorMsg"></p></td>
-						</tr>
-						<tr>
+							<td colspan="2">프로젝트 명<span style="color: red">*</span></td>
 							<td colspan="2">
-								<div class="between" style="margin-top: 30px;">
-									<div style="width: 25%;">기간 검색</div>
-									<div style="width: 70%;"><hr /></div>
-								</div>
+								<input type="search" name="prj_nm" id="prj_nm" class="w-100 h-20" style="box-sizing: content-box;"/>
 							</td>
-							<td></td>
-						</tr>
-						<tr>
+							<td colspan="2" class="text-center">고객사</td>
 							<td colspan="2">
-								<div class="between">
-									<select name="dateType" id="dateType" class="w-20">
-									<option value="prj_st_dt">시작일</option>
+								<select name="cust_seq" id="cust_seq" class="w-60 h-20" style="box-sizing: content-box;">
+									<option value="0" id="cusr_seq_default">전체</option>
+									<option value="1">현대 자동차</option>
+									<option value="2">농협</option>
+									<option value="3">삼성 전자</option>
+									<option value="4">SK매직</option>
+									<option value="5">아모레퍼시픽</option>
+								</select>
+							</td>
+						</tr>
+						<!-- 위아래 공백 -->
+						<tr>
+							<td colspan="8" style="height: 20px;"></td>
+						</tr>
+						<!-- 기간 -->
+						<tr>
+							
+							<td colspan="2">
+								<select name="dateType" id="dateType">
+									<option value="prj_st_dt" id="dateType_default">시작일</option>
 									<option value="prj_ed_dt">종료일</option>
-									</select>
-									<input class="w-30" type="date" name="firstDate" id="firstDate" min="2000-01-01" max="9999-12-31"/>
-									<span> ~ </span>
-									<input class="w-30" type="date" name="secondDate" id="secondDate" min="2000-01-01" max="9999-12-31"/>
-								</div>
+								</select>
+							</td>
+							<td colspan="3" class="">
+								<input type="date" name="firstDate" id="firstDate" class="w-40 h-20"/>
+								<span>~</span>
+								<input type="date" name="secondDate" id="secondDate" class="w-40 h-20"/>
+							</td>
+							
+						</tr>
+						
+						<!-- 공백 -->
+						<tr>
+							<td colspan="8" style="height: 8px"></td>
+						</tr>
+						
+						<tr>
+							<td colspan="2">상태</td>
+							<td>
+								<input type="checkbox" name="st_cd" id="st_cd_1" class="stCheckbox" value="1"/>
+								<label for="st_cd_1">진행 예정</label>
 							</td>
 							<td>
-								<button type="button" class="btn-sm" onclick="textOnclick()">조회</button>
+								<input type="checkbox" name="st_cd" id="st_cd_2" class="stCheckbox" value="2"/>
+								<label for="st_cd_2">진행 중</label>
+							</td>
+							<td>
+								<input type="checkbox" name="st_cd" id="st_cd_3" class="stCheckbox" value="3"/>
+								<label for="st_cd_3">완료</label>
+							</td>
+							<td>
+								<input type="checkbox" name="st_cd" id="st_cd_4" class="stCheckbox" value="4"/>
+								<label for="st_cd_4">유지보수</label>
+							</td>
+							<td>
+								<input type="checkbox" name="st_cd" id="st_cd_5" class="stCheckbox" value="5"/>
+								<label for="st_cd_5">중단</label>
+							</td>
+						</tr>
+						
+						<tr>
+							<td colspan="8" style="height: 20px;"></td>
+						</tr>
+						<!-- button -->
+						<tr>
+							<td colspan="8" class="text-center">
+								<button type="submit" class="btn btn-green w-10">조회</button>
+								<button type="reset" class="btn w-10">초기화</button>
 							</td>
 						</tr>
 					</tbody>
 				</table>
 			</form>
 		</div>
-		<!-- 등록 버튼 -->
+		<!-- 검색 갯수와 등록 버튼 -->
 		<div class="text-right" style="margin-top: 30px;">
-			<button class="btn btn-green" onclick="location.href='${root}project/projectRegi'">등록</button>
+			<select name="view" id="view" oninput>
+				<option value="1">10개</option>
+				<option value="2" selected>20개</option>
+				<option value="3">30개</option>
+				<option value="4">40개</option>
+				<option value="5">50개</option>
+			</select>
+			<button class="btn btn-green btn-w-90" onclick="location.href='#'">등록</button>
 		</div>
 		
 		<!-- ===== 검색 결과 ====== -->
 		<div>
-			<table class="table-center w-100" style="border: 1px solid black;">
+			<table class="table-center w-100" id="searchTable">
 				<colgroup>
-					<!--  -->
-					<col style="width: 5%"/>
+					<!-- checkbox  -->
+					<col style="width: 50px;"/>
 					<!-- 프로젝트 번호 -->
-					<col style="width: 10%;">
+					<col style="width: 50px;">
 					<!-- 프로젝트 명 -->
-					<col style="width: 20%;">
+					<col style="width: 300px;">
 					<!-- 고객사 -->
-					<col style="width: 20%;">
+					<col style="width: 300px;">
 					<!-- 시작일 -->
-					<col style="width: 10%;">
+					<col style="width: 150px;">
 					<!-- 종료일 -->
-					<col style="width: 10%;">
+					<col style="width: 150px;">
 					<!-- 필요 기술 -->
-					<col style="width: 15%;">
+					<col style="width: 220px;">
 					<!-- 인원 관리 -->
-					<col style="width: 10%;">
+					<col style="width: 150px;">
 				</colgroup>
 				<thead id="projectListTableHead">
-					
+					<tr class="table-bg-0">
+						<th scope="col" class="text-center"><input type="checkbox" name="allCheckProject"/></th>
+						<th scope="col" class="text-center">번호</th>
+						<th scope="col" class="">프로젝트 명</th>
+						<th scope="col" class="">고객사</th>
+						<th scope="col" class="text-center">시작일</th>
+						<th scope="col" class="text-center">종료일</th>
+						<th scope="col" class="text-center">상태</th>
+						<th scope="col" class="text-center">인원 관리</th>
 				</thead>
 				<tbody id="projectListTable">
-					
+					<c:set var="i" value="0" />
+					<c:forEach var="item" items="${projectList}">
+						
+						<c:if test="${i % 2 == 0}">
+							<tr class="table-bg-1">
+						</c:if>
+						<c:if test="${i % 2 == 1}">
+							<tr class="table-bg-2">
+						</c:if>
+							<c:set var="i" value="${i+1}"/>
+							
+							<td class="text-center">
+								<input type="checkbox" name="checkProjectSeq" value="${item.prj_seq}"/>
+							</td>
+							<td class="text-center">${item.prj_seq }</td>
+							<td class="text-left ellipsis"><a href="#">${item.prj_nm}</a></td>
+							<td class="text-left ellipsis">${item.cust_nm }</td>
+							<td class="text-center">${item.prj_st_dt }</td>
+							<td class="text-center">${item.prj_ed_dt }</td>
+							<td class="text-center">${item.dtl_cd_nm }</td>
+							<td class="text-center">
+								<button type="button" class="btn projectMemberBtn">인원관리</button>
+							</td>
+						</tr>
+					</c:forEach>
 				</tbody>
 			</table>
 			
 			<!-- 페이지 버튼과 삭제 버튼 -->
-			<div>
-				<table class="w-100">
-					<tr>
-						<td class="col-3"></td>
-						<td class="text-center col-3" id="pageBtn">
-							
-						</td>
-						<td class="text-right col-3" style="width: 33%;">
-							<button class="btn btn-red">삭제</button>
-						</td>
-					</tr>
-				</table>	
+			<div class="w-100 justify-content-center">
+					<div class="w-20"></div>
+					<div class="w-60 text-center">
+						<span class="w-20">
+							<button class="btn">이전</button>
+						</span>
+						<span id="pageBtns" class="w-60">
+							<c:forEach var="item" items="${pageBtns}">
+								<button type="button" class="btn" class="pageBtn" index="${(item - 1) * view + 1 }">${item }</button>
+							</c:forEach>
+						</span>
+						<span class="w-20">
+							<button class="btn">다음</button>
+						</span>
+					</div>
+					<div class="w-20 text-right">
+						<button class="btn btn-w-90 btn-green">상태 수정</button>
+						<button class="btn btn-w-90 btn-red">삭제</button>
+					</div>
 			</div>
 		</div>
 	</div>
 </body>
 <script>
 
-	// 검색을 위한 변수
-	let prj_nm;
-	let cust_nm;
-	let dateType;
-	let firstDate;
-	let secondDate;
-	let index;
-	let view;
 	
-	// 테이블 헤드
-	const projectListTableHtml = '<tr>'
-							+	'<td scope="col" class="text-center"><input type="checkbox" onclick=""/></td>'
-							+	'<td scope="col" class="text-center">프로젝트 번호</td>'
-							+	'<td scope="col" class="text-center">프로젝트 명</td>'
-							+	'<td scope="col" class="text-center">고객사</td>'
-							+	'<td scope="col" class="text-center">시작일</td>'
-							+	'<td scope="col" class="text-center">종료일</td>'
-							+	'<td scope="col" class="text-center">상태</td>'
-							+	'<td scope="col" class="text-center">인원 관리</td></tr>';
-	
-	// 첫번째 검색
-	$(document).ready(function(){
-		projectSearchParam();
-		projectSearchFetch();
-	})
-	
-	// 프로젝트 검색 값 저장
-	function projectSearchParam(){
-		prj_nm = $('#prj_nm').val();
-		cust_nm = $('#cust_nm').val();
-		dateType = $('#dateType').val();
-		firstDate = $('#firstDate').val();
-		secondDate = $('#secondDate').val();
-		view = $('#view').val();
-		index = 1;
-	}
-	
-	// fetch
-	function projectSearchFetch(){
-		
-		fetch('${root}projectFetch/searchProject',{
-			method: 'POST',
-			headers: {
-				'Content-Type' : 'application/json' // 데이터를 json으로 전송
-			},
-			body: JSON.stringify({ // 데이터를 json화
-				prj_nm : prj_nm,
-				cust_nm : cust_nm,
-				dateType : dateType,
-				firstDate : firstDate,
-				secondDate : secondDate,
-				index : index
-			})
-		}).then(response => {
-			if(response.ok){
-				return response.json();
-			} else {
-				throw new Error('응답 문제');
-			}
-		}).then(json => {
-			
-			let projectList = json.projectList;
-			let pageBtns = json.pageBtns;
-			let page = json.page;
-			
-			drawProjectTable(projectList);
-			
-		}).catch(error => {
-			console.log('fetch 에러');
-			console.log(error)
-		});
-		
-	}
-	
-	// 테이블 작성
-	function drawProjectTable(projectList){
-		
-		// 테이블 변수
-		let projectTableHeadHtml = '';
-		let projectTableListHtml = '';
-		
-		// 검색결과가 없을 시
-		if(projectList.length == 0){
-			
-			$('#projectListTableHead').html('<tr><td colspan="8" class="text-center">조회 결과가 없습니다.</td></tr>');
-			$('#projectListTable').html('');
-			return;
-		}
-		
-		// 테이블 바디 작성
-		for(let i = 0; i < projectList.length; i++){
-			projectTableListHtml += '<tr>'
-							+	'<td class="text-center"><input type="checkbox" name="deleteProjectSeq[]" value="' + projectList[i].prj_seq + '" /></td>'
-							+	'<td class="text-center">' + projectList[i].prj_seq + '</td>'
-							+	'<td class="text-left"><a href="#">' + projectList[i].prj_nm + '</a></td>'
-							+	'<td class="text-left">' + projectList[i].cust_nm + '</td>'
-							+	'<td class="text-center">' + projectList[i].prj_st_dt + '</td>'
-							+	'<td class="text=center">' + projectList[i].prj_ed_dt + '</td>'
-							+	/* 작성필요 */'<td class="text-center">진행 중</td>'
-							+	'<td class="text-center"><button class="btn" onclick="location.href=\'#\'">인원관리</button>'
-							+	'</tr>';
-		}
-		
-		// 테이블 출력
-		$('#projectListTableHead').html(projectListTableHtml);
-		$('#projectListTable').html(projectTableListHtml);
-		
-	}
 </script>
 </html>

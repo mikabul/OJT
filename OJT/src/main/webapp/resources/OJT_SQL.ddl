@@ -41,10 +41,13 @@ CREATE TABLE member_info (
     mem_email            VARCHAR2(40),
     dp_cd                VARCHAR2(2),
     ra_cd                VARCHAR2(2) NOT NULL,
+    mem_zonecode         VARCHAR2(5) NOT NULL,
     mem_addr             VARCHAR2(100) NOT NULL,
-    mem_id               VARCHAR2(45) NOT NULL unique,
-    mem_pw               VARCHAR2(32) NOT NULL,
-    mem_pic              VARCHAR2(70),
+    mem_detailaddress    VARCHAR2(50),
+    mem_extraaddress     VARCHAR2(30),
+    mem_id               VARCHAR2(20) NOT NULL unique,
+    mem_pw               VARCHAR2(40) NOT NULL,
+    mem_pic              VARCHAR2(70) NOT NULL,
     st_cd                VARCHAR2(2) NOT NULL,
     mem_hire_date        VARCHAR2(12) NOT NULL,
     mem_resignation_date VARCHAR2(12)
@@ -64,7 +67,7 @@ CREATE TABLE project_member_table (
     prj_seq NUMBER(10) NOT NULL,
     mem_seq NUMBER(10) NOT NULL,
     st_dt   VARCHAR2(12) NOT NULL,
-    ed_dt   VARCHAR2(12) NOT NULL,
+    ed_dt   VARCHAR2(12) NULL,
     ro_cd varchar(2)
 );
 
@@ -86,7 +89,7 @@ CREATE TABLE project_info (
     prj_st_dt VARCHAR2(12) NOT NULL,
     prj_ed_dt VARCHAR2(12) NOT NULL,
     prj_dtl   VARCHAR2(1500),
-    ed_cd     VARCHAR2(2) NOT NULL
+    ps_cd     VARCHAR2(2) NOT NULL
 );
 
 ALTER TABLE project_info ADD CONSTRAINT prokect_info_pk PRIMARY KEY ( prj_seq );
@@ -99,7 +102,7 @@ CREATE SEQUENCE MEMBER_SEQUENCE START WITH 1 INCREMENT BY 1 MINVALUE 1;
 CREATE SEQUENCE PROJECT_SEQUENCE START WITH 1 INCREMENT BY 1 MINVALUE 1;
 CREATE SEQUENCE CUSTOMER_SEQUENCE START WITH 1 INCREMENT BY 1 MINVALUE 1;
 
-create OR replace trigger deleted_project
+create trigger deleted_project
 after delete on project_info
 FOR EACH ROW
 begin

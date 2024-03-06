@@ -23,7 +23,7 @@ public class LoginController{
 		
 	}
 	
-	@GetMapping("Logout")
+	@GetMapping("/Logout")
 	public String logout() {
 		loginMemberBean.setLoginState(false);
 		System.out.println(loginMemberBean.isLoginState());
