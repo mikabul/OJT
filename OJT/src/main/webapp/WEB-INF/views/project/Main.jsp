@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <c:set var="root" value="${pageContext.request.contextPath}/" />
 <!DOCTYPE html>
 <html>
@@ -37,7 +38,7 @@ select {
 		<div id="testBtn"></div>
 		<!-- ===== 검색 ===== -->
 		<div style="margin-top: 100px;">
-			<form onsubmit="onSubmit(); return false;" id="searchForm">
+			<form:form action="#" method="GET" ModelAttribute="projectSearchBean">
 				<table class="table-center form-table">
 					<thead>
 						<tr>
@@ -56,7 +57,7 @@ select {
 						<tr>
 							<td colspan="2">프로젝트 명<span style="color: red">*</span></td>
 							<td colspan="2">
-								<input type="search" name="prj_nm" id="prj_nm" class="w-100 h-20" style="box-sizing: content-box;"/>
+								<form:input type="search" path="prj_nm" class="w-100 h-20" style="box-sizing: content-box;"/>
 							</td>
 							<td colspan="2" class="text-center">고객사</td>
 							<td colspan="2">
@@ -132,7 +133,7 @@ select {
 						</tr>
 					</tbody>
 				</table>
-			</form>
+			</form:form>
 		</div>
 		<!-- 검색 갯수와 등록 버튼 -->
 		<div class="text-right" style="margin-top: 30px;">

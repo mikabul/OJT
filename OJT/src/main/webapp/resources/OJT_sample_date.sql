@@ -88,14 +88,14 @@ insert into project_sk values(5, '10');
 select * from project_sk;
 
 ------ 프로젝트 - 멤버 샘플 데이터
-insert into project_member_table values(1, 1, '2023-11-07', '2024-06-27', 1);
-insert into project_member_table values(1, 2, '2023-11-07', '2024-06-27', 2);
-insert into project_member_table values(2, 4, '2023-12-29', '2024-03-02', 3);
-insert into project_member_table values(2, 7, '2023-12-29', '2024-03-02', 4);
-insert into project_member_table values(3, 3, '2024-01-11', '2024-04-27', 1);
-insert into project_member_table values(3, 5, '2024-01-11', '2024-04-27', 2);
-insert into project_member_table values(4, 6, '2024-02-25', '2024-05-25', 3);
-insert into project_member_table values(5, 7, '2024-03-01', '2024-06-01', 4);
+insert into project_member_table values(1, 1, '2023-11-07', '2024-06-27', 2);
+insert into project_member_table values(1, 2, '2023-11-07', '2024-06-27', 3);
+insert into project_member_table values(2, 4, '2023-12-29', '2024-03-02', 4);
+insert into project_member_table values(2, 7, '2023-12-29', '2024-03-02', 5);
+insert into project_member_table values(3, 3, '2024-01-11', '2024-04-27', 2);
+insert into project_member_table values(3, 5, '2024-01-11', '2024-04-27', 3);
+insert into project_member_table values(4, 6, '2024-02-25', '2024-05-25', 4);
+insert into project_member_table values(5, 7, '2024-03-01', '2024-06-01', 5);
 
 select * from project_member_table;
 

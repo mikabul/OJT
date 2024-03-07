@@ -24,6 +24,10 @@ public class MemberBean {
 	private String mem_hire_date;
 	private String mem_resignation_date;
 	
+	private String dept; // 부서
+	private String position; // 직급
+	private String[] sk_nm; // 보유 기술 목록
+	
 	private boolean loginState;
 	
 }

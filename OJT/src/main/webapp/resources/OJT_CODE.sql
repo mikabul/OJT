@@ -48,10 +48,11 @@ insert into code_detail values('PS01','4','완료');
 insert into code_detail values('PS01','5','중단');
 
 ------- 역할
-insert into code_detail values('RO01','1','PM');
-insert into code_detail values('RO01','2','PL');
-insert into code_detail values('RO01','3','PE');
-insert into code_detail values('RO01','4','QA');
+insert into code_detail values('RO01','1','없음');
+insert into code_detail values('RO01','2','PM');
+insert into code_detail values('RO01','3','PL');
+insert into code_detail values('RO01','4','PE');
+insert into code_detail values('RO01','5','QA');
 
 select * from code_detail;
 
