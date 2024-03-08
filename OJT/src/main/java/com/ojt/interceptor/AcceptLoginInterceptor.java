@@ -19,15 +19,17 @@ public class AcceptLoginInterceptor implements HandlerInterceptor{
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
 		
-		if(loginMemberBean.isLoginState() == false) {
-			
-			String contextPath = request.getContextPath();
-			response.sendRedirect(contextPath + "/Accept/NotAccept");
-			
-			return false;
-		} else {
-			return true;
-		}
+		return true;
+		
+//		if(loginMemberBean.isLoginState() == false) {
+//			
+//			String contextPath = request.getContextPath();
+//			response.sendRedirect(contextPath + "/Accept/NotAccept");
+//			
+//			return false;
+//		} else {
+//			return true;
+//		}
 		
 	}
 	

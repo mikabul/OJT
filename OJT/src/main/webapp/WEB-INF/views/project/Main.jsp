@@ -30,6 +30,17 @@ select {
 #searchTable td {
 	padding: 0 5px;
 }
+.disable {
+	background-color: black;
+	border: none;
+	color: white;
+}
+
+.disable:hover{
+	background-color: black;
+	border: black;
+	color: white;
+}
 </style>
 </head>
 <c:import url="/WEB-INF/views/include/TopMenu.jsp"></c:import>
@@ -38,10 +49,10 @@ select {
 		<div id="testBtn"></div>
 		<!-- ===== 검색 ===== -->
 		<div style="margin-top: 100px;">
-			<form:form action="#" method="GET" ModelAttribute="projectSearchBean">
+			<form:form action="${root}project/searchProject" method="POST" modelAttribute="projectSearchBean" id="form">
 				<table class="table-center form-table">
 					<thead>
-						<tr>
+						<tr style="margin">
 							<td style="width: 50px;"><span style="color: red">*</span> 필수</td>
 							<td style="width: 50px;" />
 							<td style="width: 100px;" />
@@ -57,18 +68,18 @@ select {
 						<tr>
 							<td colspan="2">프로젝트 명<span style="color: red">*</span></td>
 							<td colspan="2">
-								<form:input type="search" path="prj_nm" class="w-100 h-20" style="box-sizing: content-box;"/>
+								<form:input type="search" path="prj_nm"  class="w-100 h-20" style="box-sizing: content-box;"/>
 							</td>
 							<td colspan="2" class="text-center">고객사</td>
 							<td colspan="2">
-								<select name="cust_seq" id="cust_seq" class="w-60 h-20" style="box-sizing: content-box;">
-									<option value="0" id="cusr_seq_default">전체</option>
-									<option value="1">현대 자동차</option>
-									<option value="2">농협</option>
-									<option value="3">삼성 전자</option>
-									<option value="4">SK매직</option>
-									<option value="5">아모레퍼시픽</option>
-								</select>
+								<form:select path="cust_seq" class="w-60 h-20" style="box-sizing: content-box;">
+									<form:option value="0">전체</form:option>
+									<form:option value="1">현대 자동차</form:option>
+									<form:option value="2">농협</form:option>
+									<form:option value="3">삼성 전자</form:option>
+									<form:option value="4">SK매직</form:option>
+									<form:option value="5">아모레퍼시픽</form:option>
+								</form:select>
 							</td>
 						</tr>
 						<!-- 위아래 공백 -->
@@ -79,15 +90,15 @@ select {
 						<tr>
 							
 							<td colspan="2">
-								<select name="dateType" id="dateType">
-									<option value="prj_st_dt" id="dateType_default">시작일</option>
-									<option value="prj_ed_dt">종료일</option>
-								</select>
+								<form:select path="dateType">
+									<form:option value="prj_st_dt">시작일</form:option>
+									<form:option value="prj_ed_dt">종료일</form:option>
+								</form:select>
 							</td>
 							<td colspan="3" class="">
-								<input type="date" name="firstDate" id="firstDate" class="w-40 h-20"/>
+								<form:input type="date" path="firstDate" class="w-40 h-20"/>
 								<span>~</span>
-								<input type="date" name="secondDate" id="secondDate" class="w-40 h-20"/>
+								<form:input type="date" path="secondDate" class="w-40 h-20"/>
 							</td>
 							
 						</tr>
@@ -100,24 +111,24 @@ select {
 						<tr>
 							<td colspan="2">상태</td>
 							<td>
-								<input type="checkbox" name="st_cd" id="st_cd_1" class="stCheckbox" value="1"/>
-								<label for="st_cd_1">진행 예정</label>
+								<form:checkbox path="ps_cd" class="stCheckbox" value="1"/>
+								<label>진행 예정</label>
 							</td>
 							<td>
-								<input type="checkbox" name="st_cd" id="st_cd_2" class="stCheckbox" value="2"/>
-								<label for="st_cd_2">진행 중</label>
+								<form:checkbox path="ps_cd" class="stCheckbox" value="2"/>
+								<label>진행 중</label>
 							</td>
 							<td>
-								<input type="checkbox" name="st_cd" id="st_cd_3" class="stCheckbox" value="3"/>
-								<label for="st_cd_3">완료</label>
+								<form:checkbox path="ps_cd" class="stCheckbox" value="3"/>
+								<label>완료</label>
 							</td>
 							<td>
-								<input type="checkbox" name="st_cd" id="st_cd_4" class="stCheckbox" value="4"/>
-								<label for="st_cd_4">유지보수</label>
+								<form:checkbox path="ps_cd" class="stCheckbox" value="4"/>
+								<label>유지보수</label>
 							</td>
 							<td>
-								<input type="checkbox" name="st_cd" id="st_cd_5" class="stCheckbox" value="5"/>
-								<label for="st_cd_5">중단</label>
+								<form:checkbox path="ps_cd" class="stCheckbox" value="5"/>
+								<label>중단</label>
 							</td>
 						</tr>
 						
@@ -127,24 +138,24 @@ select {
 						<!-- button -->
 						<tr>
 							<td colspan="8" class="text-center">
-								<button type="submit" class="btn btn-green w-10">조회</button>
-								<button type="reset" class="btn w-10">초기화</button>
+								<form:button type="submit" class="btn btn-green w-10">조회</form:button>
+								<form:button type="button" class="btn w-10" onclick="resetBtn()">초기화</form:button>
 							</td>
 						</tr>
 					</tbody>
 				</table>
+				<!-- 검색 갯수와 등록 버튼 -->
+				<div class="text-right" style="margin-top: 30px;">
+					<form:select path="view" onchange="changeView()">
+						<form:option value="1">10개</form:option>
+						<form:option value="20">20개</form:option>
+						<form:option value="3">30개</form:option>
+						<form:option value="4">40개</form:option>
+						<form:option value="5">50개</form:option>
+					</form:select>
+					<button class="btn btn-green btn-w-90" onclick="location.href='#'">등록</button>
+				</div>
 			</form:form>
-		</div>
-		<!-- 검색 갯수와 등록 버튼 -->
-		<div class="text-right" style="margin-top: 30px;">
-			<select name="view" id="view" oninput>
-				<option value="1">10개</option>
-				<option value="2" selected>20개</option>
-				<option value="3">30개</option>
-				<option value="4">40개</option>
-				<option value="5">50개</option>
-			</select>
-			<button class="btn btn-green btn-w-90" onclick="location.href='#'">등록</button>
 		</div>
 		
 		<!-- ===== 검색 결과 ====== -->
@@ -199,7 +210,7 @@ select {
 							<td class="text-left ellipsis">${item.cust_nm }</td>
 							<td class="text-center">${item.prj_st_dt }</td>
 							<td class="text-center">${item.prj_ed_dt }</td>
-							<td class="text-center">${item.dtl_cd_nm }</td>
+							<td class="text-center">${item.ps_nm }</td>
 							<td class="text-center">
 								<button type="button" class="btn projectMemberBtn">인원관리</button>
 							</td>
@@ -212,17 +223,48 @@ select {
 			<div class="w-100 justify-content-center">
 					<div class="w-20"></div>
 					<div class="w-60 text-center">
-						<span class="w-20">
-							<button class="btn">이전</button>
-						</span>
-						<span id="pageBtns" class="w-60">
-							<c:forEach var="item" items="${pageBtns}">
-								<button type="button" class="btn" class="pageBtn" index="${(item - 1) * view + 1 }">${item }</button>
-							</c:forEach>
-						</span>
-						<span class="w-20">
-							<button class="btn">다음</button>
-						</span>
+						<form:form method="POST" modelAttribute="projectSearchBean" id="formData">
+							<form:hidden path="prj_nm"/>
+							<form:hidden path="cust_seq"/>
+							<form:hidden path="dateType"/>
+							<form:hidden path="firstDate"/>
+							<form:hidden path="secondDate"/>
+							<form:hidden path="ps_cd"/>
+							<form:hidden path="view" />
+							<input type="hidden" name="index" id="index" value=""/>
+							<span class="w-20">
+								<c:choose>
+									<c:when test="${page >= 11 }">
+										<button type="button" class="btn" id="preBtn" btnIndex="${preBtn}" onclick="preBtn()">이전</button>
+									</c:when>
+									<c:otherwise>
+										<button type="button" class="btn disable">이전</button>
+									</c:otherwise>
+								</c:choose>
+							</span>
+							<span id="pageBtns" class="w-60">
+								<c:forEach var="item" items="${pageBtns}">
+									<c:choose>
+										<c:when test="${item == page }">
+											<button type="button" class="btn disable">${item }</button>
+										</c:when>
+										<c:otherwise>
+											<button type="button" class="btn pageBtn" btnIndex="${(item - 1) * projectSearchBean.view + 1 }">${item }</button>
+										</c:otherwise>
+									</c:choose>
+								</c:forEach>
+							</span>
+							<span class="w-20">
+								<c:choose>
+									<c:when test="${maxCount > nextBtn }">
+										<button type="button" class="btn" id="nextBtn" btnIndex="${nextBtn}" onclick="preBtn()">다음</button>
+									</c:when>
+									<c:otherwise>
+										<button type="button" class="btn disable">다음</button>
+									</c:otherwise>
+								</c:choose>
+							</span>
+						</form:form>
 					</div>
 					<div class="w-20 text-right">
 						<button class="btn btn-w-90 btn-green">상태 수정</button>
@@ -234,6 +276,73 @@ select {
 </body>
 <script>
 
+	$(document).ready(function() {
+	    addEventPageBtn();
+	    
+	    const preBtn = document.querySelector("#preBtn");
+	    const nextBtn = document.querySelector("#nextBtn");
+	    
+	    preBtn.addEventListener('click', pre_nextBtnEvent);
+	    nextBtn.addEventListener('click', pre_nextBtnEvent);
+	})
+	
+	// 페이지 버튼 클릭 이벤트 주입
+	function addEventPageBtn() {
+	    const pageBtns = document.querySelectorAll(".pageBtn");
+	
+	    pageBtns.forEach(btn => {
+	        btn.addEventListener('click', pageBtnEvent);
+	    })
+	}
+	
+	// 페이지 버튼 클릭 이벤트
+	function pageBtnEvent() {
+	    const btnIndex = this.getAttribute("btnIndex");
+	    let index = document.getElementById("index");
+	
+	    index.value = btnIndex;
+	    
+	    const form = document.getElementById("formData");
+	    form.action = '${root }project/pagingProject';
+	    form.submit();
+	}
+	
+	// 보여지는 개수 변경시
+	function changeView(){
+		const form = document.getElementById("form");
+		form.submit();
+	}
+	
+	// input 값 초기화
+	function resetBtn(){
+		$("#prj_nm").val("");
+		$("#firstDate").val("");
+		$("#secondDate").val("");
+
+		let ps_cd = document.querySelectorAll(".stCheckbox");
+		
+		ps_cd.forEach(check => {
+		    check.checked = false;
+		})
+		
+		let cust_seq = document.querySelector("#cust_seq");
+		cust_seq.selectedIndex = 0;
+		
+		let dateType = document.querySelector("#dateType");
+		dateType.selectedIndex = 0;
+	}
+	
+	// 이전 다음 버튼
+	function pre_nextBtnEvent(){
+		 const btnIndex = this.getAttribute("btnIndex");
+		    let index = document.getElementById("index");
+		
+		    index.value = btnIndex;
+		    
+		    const form = document.getElementById("formData");
+		    form.action = '${root }project/nextPage';
+		    form.submit();
+	}
 	
 </script>
 </html>

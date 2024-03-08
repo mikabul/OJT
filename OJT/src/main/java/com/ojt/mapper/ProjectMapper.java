@@ -40,7 +40,7 @@ public interface ProjectMapper {
 			+ "left join code_detail cd on cd.mst_cd = 'PS01' and prj.ps_cd = cd.dtl_cd "
 			+ "left join customer cust on cust.cust_seq = prj.cust_seq "
 			+ "where prj.prj_nm like #{prj_nm} ${optionalQuery}")
-	public ArrayList<ProjectBean> searchProjectListMaxCount(@Param("prj_nm") String prj_nm,
+	public int searchProjectListMaxCount(@Param("prj_nm") String prj_nm,
 															@Param("optionalQuery") String optionalQuery);
 	
 	// select2의 데이터 리스트

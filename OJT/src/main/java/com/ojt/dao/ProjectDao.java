@@ -25,7 +25,7 @@ public class ProjectDao {
 	
 	// 프로젝트 검색 - 페이징 처리
 	// 같은 조건으로 검색시의 최대 개수
-	public ArrayList<ProjectBean> searchProjectListMaxCount(String prj_nm, String optionalQuery){
+	public int searchProjectListMaxCount(String prj_nm, String optionalQuery){
 		return projectMapper.searchProjectListMaxCount(prj_nm, optionalQuery);
 	}
 	
