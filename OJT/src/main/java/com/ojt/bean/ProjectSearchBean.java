@@ -14,4 +14,14 @@ public class ProjectSearchBean {
 	private String secondDate;			// 두번째 날짜
 	private int[] ps_cd;				// 프로젝트 상태
 	
+	private int view;				// 한페이지에 표시할 개수
+	
+	public ProjectSearchBean() {
+		prj_nm = "";
+		cust_seq = 0;
+		dateType = "";
+		firstDate = "";
+		secondDate = "";
+		view = 20;
+	}	
 }

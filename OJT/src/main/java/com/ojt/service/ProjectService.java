@@ -9,8 +9,7 @@ import org.springframework.stereotype.Service;
 import com.ojt.bean.ProjectBean;
 import com.ojt.bean.ProjectSearchBean;
 import com.ojt.dao.ProjectDao;
-
-import util.Pagination;
+import com.ojt.util.Pagination;
 
 @Service
 public class ProjectService {
@@ -41,7 +40,7 @@ public class ProjectService {
 		
 		// 프로젝트 검색 결과와 최대 검색 결과 개수
 		ArrayList<ProjectBean> projectList = projectDao.searchProjectList(prj_nm, optionalQuery, index, endIndex);
-		int maxCount = projectDao.searchProjectListMaxCount(prj_nm, secondDate);
+		int maxCount = projectDao.searchProjectListMaxCount(prj_nm, optionalQuery);
 		
 		// 페이지 버튼과 최대 페이지를 받아옴
 		Map<String, Object> map = pagination.getPageBtns(page, maxCount, view);
@@ -62,11 +61,12 @@ public class ProjectService {
 			optionalQuery += " and prj.cust_seq = " + cust_seq + " ";
 		}
 		
-		if(!firstDate.isEmpty() && !secondDate.isEmpty()) { // 두개 모두 비어있지 않다면
+		if(firstDate != null && secondDate != null && // 두개 모두 null이 아니라면
+			!firstDate.isEmpty()&& !secondDate.isEmpty()) { // 두개 모두 비어있지 않다면
 			optionalQuery += " and to_date(prj." + dateType + ") between to_date('" + firstDate + "') and to_date('" + secondDate + "') ";
-		} else if(!firstDate.isEmpty()) { // 첫번째 날짜가 비어있지 않다면
+		} else if(firstDate != null && !firstDate.isEmpty()) { // 첫번째 날짜가 null이 아니고 비어있지 않다면
 			optionalQuery += " and to_date(prj." + dateType + ") > to_date('" + firstDate + "') ";
-		} else if(!secondDate.isEmpty()) { // 두번째 날짜가 비어있지 않다면
+		} else if(secondDate != null && !secondDate.isEmpty()) { // 두번째 날짜가 null이 아니고 비어있지 않다면
 			optionalQuery += " and to_date(prj." + dateType + ") < to_date('" + secondDate + "') ";
 		}
 		

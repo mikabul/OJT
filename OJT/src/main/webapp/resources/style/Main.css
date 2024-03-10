@@ -195,6 +195,14 @@ a {
 	height: 30px;
 }
 
+.h-40 {
+	height: 40px;
+}
+
+.h-50 {
+	height: 50px;
+}
+
 .margin-0 {
 	margin: 0 0;
 	padding: 0 0;
@@ -216,4 +224,57 @@ a {
 	border: 1px solid black;
 	border-radius: 1em;
 	padding: 10px;
+}
+
+.pop-background {
+	position: fixed;
+	top: 0px;
+	left: 0px;
+	width:100%;
+	height: 100%;
+	background-color: rgba(0,0,0,0.7);
+	z-index: 6;
+}
+
+.pop {
+	background-color: rgba(255,255,255,1);
+	width: 700px;
+	height: 600px;
+	overflow-y: scroll;
+	border-radius: 1em;
+	padding: 10px 10px;
+}
+
+.pop::-webkit-scrollbar {
+    width: 0;
+}
+
+.closeBtn {
+	background: none;
+	border: none;
+}
+
+.closeBtn:hover {
+	background: none;
+	border: none;
+}
+
+.flex {
+	margin-top: 20px;
+	display: flex;
+	align-items: center;
+}
+
+.text-line {
+	flex-grow: 1;
+	margin-left: 10px;
+}
+
+.read-input {
+	outline: none;
+	border: none;
+}
+
+.scroll {
+	overflow-y: scroll;
 }

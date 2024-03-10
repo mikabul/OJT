@@ -1,5 +1,7 @@
 package com.ojt.bean;
 
+import java.util.ArrayList;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -18,5 +20,7 @@ public class ProjectBean {
 	private String cust_nm; //고객사 이름
 	private String[] prj_sk_list; // 필요기술 리스트
 	private String ps_nm; // 프로젝트 상태
+	
+	private ArrayList<ProjectMemberBean> projectMemberList;
 	
 }
