@@ -8,9 +8,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.ojt.bean.MemberBean;
 import com.ojt.bean.ProjectBean;
 import com.ojt.bean.ProjectMemberBean;
 import com.ojt.bean.ProjectSearchBean;
@@ -34,19 +36,29 @@ public class ProjectController {
 		
 		Map<String, Object> map = projectService.searchProjectList(projectSearchBean, page, view);
 		
-		//테스트 데이터
-		ArrayList<ProjectMemberBean> projectMemberList = new ArrayList<ProjectMemberBean>();
-		ProjectMemberBean projectMember = new ProjectMemberBean();
-		projectMember.setMem_seq(0);
-		projectMember.setMem_nm("홍길동");
-		projectMember.setDept("test");
-		projectMember.setPosition("test");
-		projectMember.setSt_dt("2023-01-01");
-		projectMember.setEd_dt("2024-01-01");
-		projectMember.setRole("무언가");
-		projectMemberList.add(projectMember);
-		addProjectBean.setProjectMemberList(projectMemberList);
-				
+		// 테스트 데이터
+		ArrayList<ProjectMemberBean> addPMList = new ArrayList<ProjectMemberBean>();
+		ProjectMemberBean projectMemberBean = new ProjectMemberBean();
+		projectMemberBean.setMem_seq(0);
+		projectMemberBean.setMem_nm("홍길동");
+		projectMemberBean.setDept("부서");
+		projectMemberBean.setPosition("직급");
+		projectMemberBean.setRole("");
+		
+		addPMList.add(projectMemberBean);
+		addPMList.add(projectMemberBean);
+		addPMList.add(projectMemberBean);
+		addPMList.add(projectMemberBean);
+		addPMList.add(projectMemberBean);
+		addPMList.add(projectMemberBean);
+		addPMList.add(projectMemberBean);
+		addPMList.add(projectMemberBean);
+		addPMList.add(projectMemberBean);
+		addPMList.add(projectMemberBean);
+		addPMList.add(projectMemberBean);
+		addPMList.add(projectMemberBean);
+		addProjectBean.setProjectMemberList(addPMList);
+		
 		model.addAttribute("projectList", map.get("projectList"));
 		model.addAttribute("maxPage", map.get("maxPage"));
 		model.addAttribute("pageBtns", map.get("pageBtns"));
@@ -55,8 +67,23 @@ public class ProjectController {
 		model.addAttribute("buttonCount",map.get("buttonCount"));
 		model.addAttribute("page", page);
 		model.addAttribute("showAddProjectPop", false);
+		model.addAttribute("showAddPMPop", false);
 		
 		return "/project/Main";
+	}
+	
+	@PostMapping("/test")
+	public String test_(@ModelAttribute("addProjectBean") ProjectBean addProjectBean) {
+		for(ProjectMemberBean member : addProjectBean.getProjectMemberList()) {
+			System.out.println("mem_seq : " + member.getMem_seq());
+			System.out.println("mem_nm : " + member.getMem_nm());
+			System.out.println("dept : " + member.getDept());
+			System.out.println("position : " + member.getPosition());
+			System.out.println("st_dt : " + member.getSt_dt());
+			System.out.println("ed_dt : " + member.getEd_dt());
+			System.out.println("\n=======================\n");
+		}
+		return "test";
 	}
 	
 }

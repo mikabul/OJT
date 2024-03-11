@@ -6,6 +6,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.ojt.bean.CodeBean;
 import com.ojt.bean.ProjectBean;
 import com.ojt.bean.ProjectSearchBean;
 import com.ojt.dao.ProjectDao;
@@ -49,6 +50,11 @@ public class ProjectService {
 		map.put("projectList", projectList);
 		
 		return map;
+	}
+	
+	// 프로젝트 역할 리스트
+	public ArrayList<CodeBean> getRole(){
+		return projectDao.getRole();
 	}
 	
 	// optionalQuery

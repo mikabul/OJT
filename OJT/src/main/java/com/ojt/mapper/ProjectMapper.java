@@ -4,11 +4,11 @@ import java.util.ArrayList;
 
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
+import com.ojt.bean.CodeBean;
 import com.ojt.bean.CustomerBean;
 import com.ojt.bean.MemberBean;
 import com.ojt.bean.ProjectBean;
@@ -117,4 +117,8 @@ public interface ProjectMapper {
 	// 프로젝트 멤버 삭제
 	@Delete("delete project_member_table where prj_seq = #{prj_seq} and mem_seq = #{mem_seq}")
 	public void deleteProjectMember(ProjectMemberBean deleteProjectMemberBean);
+	
+	// 프로젝트 역할 리스트
+	@Select("select * from code_detail where mst_cd = 'RO01'")
+	public ArrayList<CodeBean> getRole();
 }

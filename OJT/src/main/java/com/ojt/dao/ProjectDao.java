@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.ojt.bean.CodeBean;
 import com.ojt.bean.CustomerBean;
 import com.ojt.bean.MemberBean;
 import com.ojt.bean.ProjectBean;
@@ -94,5 +95,10 @@ public class ProjectDao {
 	// 프로젝트 멤버 삭제
 	public void deleteProjectMember(ProjectMemberBean deleteProjectMemberBean) {
 		projectMapper.deleteProjectMember(deleteProjectMemberBean);
+	}
+	
+	// 프로젝트 역할 리스트
+	public ArrayList<CodeBean> getRole(){
+		return projectMapper.getRole();
 	}
 }

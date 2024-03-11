@@ -254,6 +254,11 @@ a {
 	border: none;
 }
 
+.closeImg {
+	width: 18px;
+	height: 18px;
+}
+
 .closeBtn:hover {
 	background: none;
 	border: none;

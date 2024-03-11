@@ -328,7 +328,7 @@ select {
 					</div>
 				</div>
 				<!-- form -->
-				<form:form modelAttribute="addProjectBean" action="#" method="POST">
+				<form:form modelAttribute="addProjectBean" action="${root}project/test" method="POST">
 					<table id="addPMTable" class="table-center w-90" style="maring-top: 13px;">
 						<tr>
 							<td class="w-20">프로젝트 명</td>
@@ -351,11 +351,11 @@ select {
 						<tr>
 							<td class="w-20">진행 기간</td>
 							<td class="w-30">
-								<form:input type="date" path="prj_st_dt" class="w-100"/>
+								<form:input type="date" path="prj_st_dt" class="w-100" onchange="prjStartDateChange()"/>
 							</td>
 							<td class="w-20 text-center">~</td>
 							<td class="w-30">
-								<form:input type="date" path="prj_ed_dt" class="w-100"/>
+								<form:input type="date" path="prj_ed_dt" class="w-100" onchange="prjEndDateChange()"/>
 							</td>
 						</tr>
 						<tr>
@@ -375,42 +375,42 @@ select {
 						</tr>
 					</table>
 					<div class="flex">
-						<p>인원 등록</p>
+						<p>인원 추가</p>
 						<hr class="text-line"/>
 					</div>
 					<div class="text-right">
-						<button class="btn btn-sm" onclick="">등록</button>
+						<button type="button" class="btn btn-sm" onclick="clickAddPM()">추가</button>
 					</div>
 					<div class="scroll" style="height: 190px;">
 						<table class="table-center w-90" id="addPM_table">
 							<colgroup>
-								<col style="width: 50px"/>
-								<col style="width: 70px"/>
-								<col style="width: 50px"/>
-								<col style="width: 50px"/>
-								<col style="width: 50px"/>
-								<col style="width: 50px"/>
-								<col style="width: 50px"/>
-								<col style="width: 50px"/>
+								<col style="width: 55px"/>
+								<col style="width: 77px"/>
+								<col style="width: 55px"/>
+								<col style="width: 55px"/>
+								<col style="width: 55px"/>
+								<col style="width: 123px"/>
+								<col style="width: 123px"/>
+								<col style="width: 55px"/>
 							</colgroup>
 							<thead>
 								<tr>
 									<!-- 모두 선택 -->
 									<td scope="col" class="text-center"><input type="checkbox" onclick=""/></td>
 									<!-- 사원번호 -->
-									<td scope="col">사원번호</td>
+									<td scope="col" class="text-center">사원번호</td>
 									<!-- 이름 -->
-									<td scope="col">이름</td>
+									<td scope="col" class="text-center">이름</td>
 									<!-- 부서 -->
-									<td scope="col">부서</td>
+									<td scope="col" class="text-center">부서</td>
 									<!-- 직급 -->
-									<td scope="col">직급</td>
+									<td scope="col" class="text-center">직급</td>
 									<!-- 투입일 -->
-									<td scope="col">투입일</td>
+									<td scope="col" class="text-center">투입일</td>
 									<!-- 철수일 -->
-									<td scope="col">철수일</td>
+									<td scope="col" class="text-center">철수일</td>
 									<!-- 역할 -->
-									<td scope="col">역할</td>
+									<td scope="col" class="text-center">역할</td>
 								</tr>
 							</thead>
 							<tbody id="addPM_td">
@@ -422,32 +422,34 @@ select {
 													<input class="" type="checkbox" value="${item.mem_seq}"/>
 												</td>
 												<td>
-													<form:input class="w-100 read-input" path="projectMemberList[${status.index}].mem_seq" readonly="true"/>
+													<form:input class="w-100 read-input text-center" path="projectMemberList[${status.index}].mem_seq" readonly="true"/>
 												</td>
 												<td>
-													<form:input class="w-100 read-input" path="projectMemberList[${status.index}].mem_nm" readonly="true"/>
+													<form:input class="w-100 read-input text-center" path="projectMemberList[${status.index}].mem_nm" readonly="true"/>
 												</td>
 												<td>
-													<form:input class="w-100 read-input" path="projectMemberList[${status.index}].dept" readonly="true"/>
+													<form:input class="w-100 read-input text-center" path="projectMemberList[${status.index}].dept" readonly="true"/>
 												</td>
 												<td>
-													<form:input class="w-100 read-input" path="projectMemberList[${status.index}].position" readonly="true"/>
+													<form:input class="w-100 read-input text-center" path="projectMemberList[${status.index}].position" readonly="true"/>
 												</td>
 												<td>
-													<form:input type="date" class="w-100" path="projectMemberList[${status.index}].st_dt"/>
+													<form:input type="date" class="w-100 st_dt" path="projectMemberList[${status.index}].st_dt" index="${status.index}" required="required"/>
 												</td>
 												<td>
-													<form:input type="date" class="w-100" path="projectMemberList[${status.index}].ed_dt"/>
+													<form:input  type="date" class="w-100 ed_dt" path="projectMemberList[${status.index}].ed_dt" index="${status.index}" required="required"/>
 												</td>
 												<td>
-													<form:input class="w-100" path="projectMemberList[${status.index}].role"/>
+													<form:select  class="w-100 role_select" path="projectMemberList[${status.index}].role" >
+														
+													</form:select>
 												</td>
 											</tr>
 										</c:forEach>
 									</c:when>
 									<c:otherwise>
 										<tr>
-											<td colspan="8">등록 인원이 없습니다.</td>
+											<td colspan="8" class="text-center">등록 인원이 없습니다.</td>
 										</tr>
 									</c:otherwise>
 								</c:choose>
@@ -464,11 +466,78 @@ select {
 			</div>
 		</div>
 	</div>
+	<c:choose>
+		<c:when test="${showAddProjectPop == true}">
+			<div id="addPMPop" class="">
+		</c:when>
+		<c:otherwise>
+			<div id="addPMPop" class="none">
+		</c:otherwise>
+	</c:choose>
+	
+		<div class="pop-background justify-content-center">
+			<div class="pop">
+			
+				<!-- 상단 부분 -->
+				<div class="justify-content-center">
+					<div class="col-3">
+						<span style="color: red">*</span>
+						<span>필수입력</span>
+					</div>
+					<div class="col-3 text-center">
+						<h3>프로젝트 등록</h3>
+					</div>
+					<div class="col-3 text-right">
+						<button type="button" class="closeBtn" onclick="closeAddPMPop()">
+							<img src="${root}resources/images/x.png" alt="" class="closeImg"/>
+						</button>
+					</div>
+				</div>
+				
+				<div class="text-center" style="margin-top: 20px;">
+					<label for="searchMem_nm">이름</label>
+					<input type="text" id="searchMem_nm"/>
+					<button type="button">조회</button>
+				</div>
+				
+				<div class="scroll" style="height: 300px; margin-top: 40px;">
+					<table class="table-center">
+						<colgroup>
+							<col style="width: 55px"/>
+							<col style="width: 77px"/>
+							<col style="width: 55px"/>
+							<col style="width: 55px"/>
+							<col style="width: 55px"/>
+							<col style="width: 123px"/>
+							<col style="width: 123px"/>
+							<col style="width: 55px"/>
+						</colgroup>
+						<thead>
+							<tr>
+								<td scope="col" class="text-center"><input type="checkbox" onclick=""/></td>
+								<td scope="col" class="text-center">사원 번호</td>
+								<td scope="col" class="text-center">이름</td>
+								<td scope="col" class="text-center">부서</td>
+								<td scope="col" class="text-center">직급</td>
+								<td scope="col" class="text-center">투입일</td>
+								<td scope="col" class="text-center">철수일</td>
+								<td scope="col" class="text-center">역할</td>
+							</tr>
+						</thead>
+						<tbody id="addPMListBody">
+							
+						</tbody>
+					</table>
+				</div>
+				
+			</div>
+		</div>
+	
+	</div>
 </body>
 <script>
 	
 	let allCheck = false;
-	let addPM_td = 
 
 	$(document).ready(function() {
 		
@@ -478,11 +547,30 @@ select {
 			btn.addEventListener('click', paginationButtonEvent);
 		})
 		
+		roleOptions();
+		
+		// 멤버 투입일 이벤트 주입
+		let st_dt = document.querySelectorAll(".st_dt");
+		st_dt.forEach(date => {
+			date.addEventListener('change', startDateChangeEvent);
+		})
+		
+		// 멤버 철수일 이벤트 주입
+		let ed_dt = document.querySelectorAll(".ed_dt");
+		ed_dt.forEach(date => {
+			date.addEventListener('change', endDateChangeEvent);
+		})
+		console.log('이벤트 설정 끝');
 	});
 
 	// 화면에 표시할 개수를 담는 view가 변경 될 경우 작동하는 함수
+	// 검색 직후의 form을 이용하기 위해 #paginaionFormData를 이용
 	function changeView(){
-		const form = document.getElementById("formData");
+		let form = document.getElementById("paginationFormData");
+		let selectedView = $("#view").val();
+		let view = document.querySelector("#paginationFormData input#view");
+		view.value = selectedView;
+		
 		form.submit();
 	}
 	
@@ -495,9 +583,7 @@ select {
 		$("#secondDate").val("");
 		
 		let st_cd = document.querySelectorAll(".psCheckbox");
-		st_cd.forEach(check => {
-			check.checked = false;
-		})
+		st_cd.forEach(check => { check.checked = false; })
 	}
 	
 	// 페이징 버튼 이벤트
@@ -534,7 +620,7 @@ select {
 		let checkProject = document.querySelectorAll(".checkProject");
 		let allCheckbox = document.getElementById("allCheckbox");
 		
-		if(isChecked(checkProject)){
+		if( isChecked(checkProject) ){
 			allCheck = true;
 			allCheckbox.checked = true;
 		} else {
@@ -558,6 +644,149 @@ select {
 	function closeAddProjetcPop(){
 		let addProjectPop = document.getElementById("addProjectPop");
 		addProjectPop.classList.add("none");
+	}
+	
+	// 역할 선택 옵션들
+	function roleOptions(){
+		const role_select = document.querySelectorAll(".role_select");
+		
+		fetch("${root}projectFetch/getRole")
+		.then(response => {
+			if(!response.ok){
+				throw new Error("통신 에러");
+			}
+			return response.json();
+		})
+		.then(json => {
+			
+			role_select.forEach(role => {
+				let role_selectHtml = '';
+				
+				json.forEach(role_list => {
+					role_selectHtml += '<option value="' + role_list.dtl_cd + '">'
+									+	role_list.dtl_cd_nm + '</option>';
+				})
+				$(role).html(role_selectHtml);
+			})
+			
+		})
+		.catch(error => {
+			console.error("패치 에러", error);
+		})
+	}
+	
+	// 프로젝트 시작일 변경 이벤트
+	function prjStartDateChange(){
+		const prj_st_dt = document.getElementById("prj_st_dt");
+		const value = prj_st_dt.value;
+		
+		const st_dt = document.querySelectorAll(".st_dt");
+		const ed_dt = document.querySelectorAll(".ed_dt");
+		
+		st_dt.forEach(date => {
+			date.min = value;
+		})
+		
+		ed_dt.forEach(date => {
+			date.min = value;
+		})
+	}
+	
+	// 프로젝트 종료일 변경 이벤트
+	function prjEndDateChange(){
+		const prj_ed_dt = document.getElementById("prj_ed_dt");
+		const value = prj_ed_dt.value;
+		
+		const st_dt = document.querySelectorAll(".st_dt");
+		const ed_dt = document.querySelectorAll(".ed_dt");
+		
+		st_dt.forEach(date => {
+			date.max = value;
+		})
+		
+		ed_dt.forEach(date => {
+			date.max = value;
+		})
+	}
+	
+	// 멤버 투입일 변경 이벤트
+	function startDateChangeEvent(){
+		let index = this.getAttribute("index");
+		let date = this.value;
+		let ed_dt = document.getElementById("projectMemberList" + index + '.ed_dt');
+		ed_dt.min = date;
+	}
+	
+	// 멤버 철수일 변경 이벤트
+	function endDateChangeEvent(){
+		let index = this.getAttribute("index");
+		let date = this.value;
+		let st_dt = document.getElementById("projectMemberList" + index + '.st_dt');
+		st_dt.max = date;
+	}
+	
+	// 프로젝트 인원 등록 버튼
+	function clickAddPM(){
+		let str = '';
+		
+		let addPMPop = document.getElementById('addPMPop');
+		addPMPop.classList.remove('none');
+		
+		getPMList(str);
+	}
+	
+	// 프로젝트 인원 등록 닫기 버튼
+	function closeAddPMPop(){
+		let addPMPop = document.getElementById('addPMPop');
+		addPMPop.classList.add('none');
+	}
+	
+	// 프로젝트 인원 조회 버튼
+	function clickSearchPM(){
+		
+	}
+	
+	// 인원 검색(fetch)
+	function getPMList(str){
+		fetch('${root}projectFetch/getPMList?mem_nm=' + str)
+		.then(response => {
+			if(response.ok){
+				return response.json();
+			}
+			throw new Error("통신 에러");
+		})
+		.then(memberList => {
+			
+			let addPMListBodyHtml = '';
+			
+			if(memberList != null){
+				
+				const prj_st_dt = document.getElementById("prj_st_dt");
+				const st_value = prj_st_dt.value;
+				const prj_ed_dt = document.getElementById("prj_ed_dt");
+				const ed_value = prj_ed_dt.value;
+				
+				memberList.forEach(member => {
+					addPMListBodyHtml += '<tr>'
+									+	'<td class="text-center">'
+									+	'<input type="checkbox" value="' + member.mem_seq + '"/>'
+									+	'</td>'
+									+	'<td class="text-center">' + member.mem_seq + '</td>'
+									+	'<td class="text-center">' + member.mem_nm + '</td>'
+									+	'<td class="text-center">' + member.dept + '</td>'
+									+	'<td class="text-center">' + member.position + '</td>'
+									+	'<td><input type="date" min="' + st_value + '" max="' + ed_value + '" /></td>'
+									+	'<td><input type="date" min="' + st_value + '" max="' + ed_value + '" /></td>'
+									+	'<td class="text-center"><select class="role_select"></select></td>'
+									+	'</tr>';
+				})
+			} else {
+				addPMListBodyHtml += '<tr><td colspan="8" class="text-center">조회 결과가 없습니다.</td></tr>';
+			}
+			
+			$("#addPMListBody").html(addPMListBodyHtml);
+			
+		})
 	}
 </script>
 </html>
