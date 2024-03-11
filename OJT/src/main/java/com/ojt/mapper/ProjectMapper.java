@@ -105,6 +105,17 @@ public interface ProjectMapper {
 			+ "and mem.mem_nm like #{mem_nm}")
 	public ArrayList<MemberBean> searchNotProjectMember(@Param("prj_seq") int prj_seq, @Param("mem_nm") String mem_nm);
 	
+	// 신규 프로젝트 멤버 인원 등록 조회
+	@Select("select mem.mem_seq, mem.mem_nm, dept.dtl_cd_nm as dept, "
+			+ "pos.dtl_cd_nm as position "
+			+ "from member_info mem "
+			+ "left join code_detail dept on dept.mst_cd = 'DP01' and dept.dtl_cd = mem.dp_cd "
+			+ "left join code_detail pos on pos.mst_cd = 'RA01' and pos.dtl_cd = mem.ra_cd "
+			+ "where mem.mem_nm like #{str} ${optionalQuery} "
+			+ "order by mem.mem_seq")
+	public ArrayList<MemberBean> getNotAddProjectMember(@Param("str") String str, 
+														@Param("optionalQuery") String optionalQuery);
+	
 	// 프로젝트 멤버 등록
 	@Insert("insert into project_member_table values(#{prj_seq}, #{mem_seq}, #{st_dt}, #{ed_dt}, #{ro_cd})")
 	public void insertProjectMember(ProjectMemberBean insertProjectMemberBean);

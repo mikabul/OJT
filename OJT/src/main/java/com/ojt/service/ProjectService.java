@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.ojt.bean.CodeBean;
+import com.ojt.bean.MemberBean;
 import com.ojt.bean.ProjectBean;
 import com.ojt.bean.ProjectSearchBean;
 import com.ojt.dao.ProjectDao;
@@ -57,7 +58,17 @@ public class ProjectService {
 		return projectDao.getRole();
 	}
 	
-	// optionalQuery
+	// 신규 프로젝트 인원 등록 조회
+	public ArrayList<MemberBean> getNotAddProjectMember(String str, int[] mem_seqList){
+		
+		str = "%" + str + "%";
+		String optinalQuery = getOptionalQuery(mem_seqList);
+		
+		return projectDao.getNotAddProjectMember(str, optinalQuery);
+		
+	}
+	
+	// optionalQuery(프로젝트 검색)
 	private String getOptionalQuery(int cust_seq, String dateType, String firstDate, String secondDate,
 									int[] ps_cd) {
 		
@@ -86,6 +97,20 @@ public class ProjectService {
 			optionalQuery += ") ";
 		}
 		
+		return optionalQuery;
+	}
+	
+	// optionalQuery(신규 프로젝트 인원 검색)
+	private String getOptionalQuery(int[] mem_seqList) {
+		String optionalQuery = " ";
+		
+		if(mem_seqList != null && mem_seqList.length > 0) {
+			optionalQuery += "and mem.mem_seq not in (" + mem_seqList[0];
+			for(int i = 1; i < mem_seqList.length; i++) {
+				optionalQuery += "," + mem_seqList[i];
+			}
+			optionalQuery += ") ";
+		}
 		return optionalQuery;
 	}
 

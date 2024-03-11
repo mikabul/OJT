@@ -38,25 +38,18 @@ public class ProjectController {
 		
 		// 테스트 데이터
 		ArrayList<ProjectMemberBean> addPMList = new ArrayList<ProjectMemberBean>();
-		ProjectMemberBean projectMemberBean = new ProjectMemberBean();
-		projectMemberBean.setMem_seq(0);
-		projectMemberBean.setMem_nm("홍길동");
-		projectMemberBean.setDept("부서");
-		projectMemberBean.setPosition("직급");
-		projectMemberBean.setRole("");
+		ProjectMemberBean projectMemberBean;
 		
-		addPMList.add(projectMemberBean);
-		addPMList.add(projectMemberBean);
-		addPMList.add(projectMemberBean);
-		addPMList.add(projectMemberBean);
-		addPMList.add(projectMemberBean);
-		addPMList.add(projectMemberBean);
-		addPMList.add(projectMemberBean);
-		addPMList.add(projectMemberBean);
-		addPMList.add(projectMemberBean);
-		addPMList.add(projectMemberBean);
-		addPMList.add(projectMemberBean);
-		addPMList.add(projectMemberBean);
+		for(int i = 1; i <= 5; i++) {
+			projectMemberBean = new ProjectMemberBean();
+			projectMemberBean.setMem_seq(i);
+			projectMemberBean.setMem_nm("홍길동");
+			projectMemberBean.setDept("부서");
+			projectMemberBean.setPosition("직급");
+			projectMemberBean.setRole("");
+			addPMList.add(projectMemberBean);
+		}
+		
 		addProjectBean.setProjectMemberList(addPMList);
 		
 		model.addAttribute("projectList", map.get("projectList"));

@@ -2,6 +2,7 @@ package com.ojt.dao;
 
 import java.util.ArrayList;
 
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -80,6 +81,11 @@ public class ProjectDao {
 	// 프로젝트 멤버 인원 등록 조회
 	public ArrayList<MemberBean> searchNotProjectMember(int prj_seq, String mem_nm){
 		return projectMapper.searchNotProjectMember(prj_seq, mem_nm);
+	}
+	
+	// 신규 프로젝트 멤버 인원 등록 조회
+	public ArrayList<MemberBean> getNotAddProjectMember(String str, String optionalQuery){
+		return projectMapper.getNotAddProjectMember(str, optionalQuery);
 	}
 	
 	// 프로젝트 멤버 등록

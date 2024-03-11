@@ -422,7 +422,7 @@ select {
 													<input class="" type="checkbox" value="${item.mem_seq}"/>
 												</td>
 												<td>
-													<form:input class="w-100 read-input text-center" path="projectMemberList[${status.index}].mem_seq" readonly="true"/>
+													<form:input class="w-100 read-input text-center mem_seq" path="projectMemberList[${status.index}].mem_seq" readonly="true"/>
 												</td>
 												<td>
 													<form:input class="w-100 read-input text-center" path="projectMemberList[${status.index}].mem_nm" readonly="true"/>
@@ -505,7 +505,7 @@ select {
 						<colgroup>
 							<col style="width: 55px"/>
 							<col style="width: 77px"/>
-							<col style="width: 55px"/>
+							<col style="width: 70px"/>
 							<col style="width: 55px"/>
 							<col style="width: 55px"/>
 							<col style="width: 123px"/>
@@ -748,7 +748,24 @@ select {
 	
 	// 인원 검색(fetch)
 	function getPMList(str){
-		fetch('${root}projectFetch/getPMList?mem_nm=' + str)
+		
+		let mem_seq = document.querySelectorAll(".mem_seq");
+		let mem_seqList = [];
+		
+		mem_seq.forEach(seq => {
+			mem_seqList.push(seq.value);
+		})
+		
+		fetch('${root}projectFetch/getNotAddProjectMember',{
+			method : 'POST',
+			headers : {
+				'Content-Type' : 'application/json'
+			},
+			body: JSON.stringify({
+				str : str,
+				mem_seqList : mem_seqList
+			})
+		})
 		.then(response => {
 			if(response.ok){
 				return response.json();

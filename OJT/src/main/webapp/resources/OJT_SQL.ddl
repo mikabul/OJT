@@ -102,14 +102,11 @@ CREATE SEQUENCE MEMBER_SEQUENCE START WITH 1 INCREMENT BY 1 MINVALUE 1;
 CREATE SEQUENCE PROJECT_SEQUENCE START WITH 1 INCREMENT BY 1 MINVALUE 1;
 CREATE SEQUENCE CUSTOMER_SEQUENCE START WITH 1 INCREMENT BY 1 MINVALUE 1;
 
--- 프로젝트 삭제시 작동
--- 프로젝트 필요기술, 프로젝트-멤버 삭제
-create or replace trigger deleted_project
+create trigger deleted_project
 after delete on project_info
 FOR EACH ROW
 begin
 delete project_sk where project_sk.prj_seq=:old.prj_seq;
-delete project_member_table pm where pm.prj_seq = :old.prj_seq;
 end;
 /
 
