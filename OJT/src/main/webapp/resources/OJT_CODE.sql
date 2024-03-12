@@ -15,7 +15,6 @@ insert into code_detail values('DP01','3','테스터');
 insert into code_detail values('DP01','4','인사');
 
 ------- 직급
-insert into code_detail values('RA01','0','없음');
 insert into code_detail values('RA01','1','사장');
 insert into code_detail values('RA01','2','상무');
 insert into code_detail values('RA01','3','이사');
@@ -46,15 +45,15 @@ insert into code_detail values('SK01','10','C#');
 insert into code_detail values('PS01','1','진행 예정');
 insert into code_detail values('PS01','2','진행 중');
 insert into code_detail values('PS01','3','유지보수');
-insert into code_detail values('PS01','4','종료');
+insert into code_detail values('PS01','4','완료');
 insert into code_detail values('PS01','5','중단');
 
 ------- 역할
-insert into code_detail values('RO01','0','없음');
-insert into code_detail values('RO01','1','PM');
-insert into code_detail values('RO01','2','PL');
-insert into code_detail values('RO01','3','PE');
-insert into code_detail values('RO01','4','QA');
+insert into code_detail values('RO01','1','없음');
+insert into code_detail values('RO01','2','PM');
+insert into code_detail values('RO01','3','PL');
+insert into code_detail values('RO01','4','PE');
+insert into code_detail values('RO01','5','QA');
 
 select * from code_detail;
 

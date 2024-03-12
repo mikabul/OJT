@@ -1,7 +1,6 @@
 package com.ojt.controller;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +41,7 @@ public class ProjectRestController {
 	}
 	
 	@PostMapping(value = "/getNotAddProjectMember", produces = "application/json")
-	public ResponseEntity<String> getNotAddProjectMember(@RequestBody Map<String, String> map){
+	public ResponseEntity<String> getNotAddProjectMember(@RequestBody Map<String, Object> map){
 		
 		// 사전 준비
 		ObjectMapper mapper = new ObjectMapper();
@@ -50,9 +49,18 @@ public class ProjectRestController {
 		
 		// Json분리
 		String str = (String)map.get("str");
-		ArrayList<Integer> mem_seqList = mapper.readValue(map.get("mem_seqList"), ArrayList.class);
+		int[] mem_seqList;
 		
-		
+		try {
+			ArrayList<String> str_mem_seqList = (ArrayList<String>)map.get("mem_seqList");
+			mem_seqList = new int[str_mem_seqList.size()];
+			for(int i = 0; i < str_mem_seqList.size(); i++) {
+				mem_seqList[i] = Integer.parseInt(str_mem_seqList.get(i));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			mem_seqList = new int[0];
+		}
 		ArrayList<MemberBean> memberList = projectService.getNotAddProjectMember(str, mem_seqList);
 		
 		try {
