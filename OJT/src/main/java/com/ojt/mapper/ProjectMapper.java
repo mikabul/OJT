@@ -46,8 +46,8 @@ public interface ProjectMapper {
 	
 	// select2의 데이터 리스트
 	// 고객사 번호, 이름
-	@Select("select * from customer where cust_nm like #{cust_nm}")
-	public ArrayList<CustomerBean> getCustomerList(String cust_nm);
+	@Select("select * from customer where cust_nm like #{customer}")
+	public ArrayList<CustomerBean> getCustomerList(String customer);
 	
 	// 프로젝트 등록
 	@Insert("insert into project_info values(PROJECT_SEQUENCE.nextval, #{prj_nm}, "

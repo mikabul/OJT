@@ -163,8 +163,8 @@
 		closeAddPMPop();
 	}
 	
-	async function selectOption(role, row_length){
-		await roleOptions();
+	function selectOption(role, row_length){
+		roleOptions();
 		
 		//'projectMemberList' + (row_length + i) +'\.role'
 		for (let i = 0; i < role.length; i++) {

@@ -42,11 +42,9 @@ public class Pagination {
 		if(page >= buttonCount) preBtn = true;
 		if(maxPage - (page) > buttonCount) nextBtn = true;
 		
-		map.put("maxPage", maxPage);
 		map.put("pageBtns", pageBtns);
 		map.put("preBtn", preBtn);
 		map.put("nextBtn", nextBtn);
-		map.put("buttonCount", buttonCount);
 		
 		return map;
 		

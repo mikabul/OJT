@@ -7,11 +7,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.ojt.bean.CustomerBean;
 import com.ojt.bean.ProjectBean;
 import com.ojt.bean.ProjectMemberBean;
 import com.ojt.bean.ProjectSearchBean;
@@ -31,11 +31,10 @@ public class ProjectController {
 						BindingResult result,
 						Model model) {
 		
-		int view = projectSearchBean.getView();
+		Map<String, Object> map = projectService.searchProjectList(projectSearchBean, page);
+		ArrayList<CustomerBean> customerList = projectService.getCustomerList("");
 		
-		Map<String, Object> map = projectService.searchProjectList(projectSearchBean, page, view);
-		
-		// 테스트 데이터
+		// =============테스트 데이터============
 		ArrayList<ProjectMemberBean> addPMList = new ArrayList<ProjectMemberBean>();
 		ProjectMemberBean projectMemberBean;
 		
@@ -48,18 +47,15 @@ public class ProjectController {
 			projectMemberBean.setRole("");
 			addPMList.add(projectMemberBean);
 		}
-		
 		addProjectBean.setProjectMemberList(addPMList);
+		// =============테스트 데이터 끝==============
 		
 		model.addAttribute("projectList", map.get("projectList"));
-		model.addAttribute("maxPage", map.get("maxPage"));
 		model.addAttribute("pageBtns", map.get("pageBtns"));
-		model.addAttribute("preBtn",map.get("preBtn"));
-		model.addAttribute("nextBtn",map.get("nextBtn"));
-		model.addAttribute("buttonCount",map.get("buttonCount"));
+		model.addAttribute("preBtn", map.get("preBtn"));
+		model.addAttribute("nextBtn", map.get("nextBtn"));
+		model.addAttribute("customerList", customerList);
 		model.addAttribute("page", page);
-		model.addAttribute("showAddProjectPop", false);
-		model.addAttribute("showAddPMPop", false);
 		
 		return "/project/Main";
 	}

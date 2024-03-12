@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.ojt.bean.CodeBean;
+import com.ojt.bean.CustomerBean;
 import com.ojt.bean.MemberBean;
 import com.ojt.bean.ProjectBean;
 import com.ojt.bean.ProjectSearchBean;
@@ -23,26 +24,27 @@ public class ProjectService {
 	private Pagination pagination;
 	
 	// 프로젝트 검색
-	public Map<String, Object> searchProjectList(ProjectSearchBean projectSearchBean, int page, int view){
+	public Map<String, Object> searchProjectList(ProjectSearchBean projectSearchBean, int page){
 
 		// projectSearchBean 데이터 꺼냄
-		String prj_nm = "%" + projectSearchBean.getPrj_nm() + "%";
-		int cust_seq = projectSearchBean.getCust_seq();
-		String dateType = projectSearchBean.getDateType();
+		String name = "%" + projectSearchBean.getName() + "%";
+		int customer = projectSearchBean.getCustomer();
+		int dateType = projectSearchBean.getDateType();
 		String firstDate = projectSearchBean.getFirstDate();
 		String secondDate = projectSearchBean.getSecondDate();
-		int ps_cd[] = projectSearchBean.getPs_cd();
+		int state[] = projectSearchBean.getState();
+		int view = projectSearchBean.getView();
 		
 		// 페이징에 필요한 index 계산
 		int index = (page * view) + 1;
 		int endIndex = (index + view) - 1;
 		
 		// 필터링을 위한 퀴리 작성
-		String optionalQuery = getOptionalQuery(cust_seq, dateType, firstDate, secondDate, ps_cd);
+		String optionalQuery = getOptionalQuery(customer, dateType, firstDate, secondDate, state);
 		
 		// 프로젝트 검색 결과와 최대 검색 결과 개수
-		ArrayList<ProjectBean> projectList = projectDao.searchProjectList(prj_nm, optionalQuery, index, endIndex);
-		int maxCount = projectDao.searchProjectListMaxCount(prj_nm, optionalQuery);
+		ArrayList<ProjectBean> projectList = projectDao.searchProjectList(name, optionalQuery, index, endIndex);
+		int maxCount = projectDao.searchProjectListMaxCount(name, optionalQuery);
 		
 		// 페이지 버튼과 최대 페이지를 받아옴
 		Map<String, Object> map = pagination.getPageBtns(page, maxCount, view);
@@ -51,6 +53,12 @@ public class ProjectService {
 		map.put("projectList", projectList);
 		
 		return map;
+	}
+	
+	// 고객사 리스트 검색
+	public ArrayList<CustomerBean> getCustomerList(String customer){
+		customer = "%" + customer + "%";
+		return projectDao.getCustomerList(customer);
 	}
 	
 	// 프로젝트 역할 리스트
@@ -69,29 +77,44 @@ public class ProjectService {
 	}
 	
 	// optionalQuery(프로젝트 검색)
-	private String getOptionalQuery(int cust_seq, String dateType, String firstDate, String secondDate,
-									int[] ps_cd) {
+	private String getOptionalQuery(int cust_seq, int dateType, String firstDate, String secondDate,
+									int[] state) {
 		
 		String optionalQuery = "";
 		
+		// 고객사 검색 쿼리
 		if(cust_seq != 0) {
 			optionalQuery += " and prj.cust_seq = " + cust_seq + " ";
 		}
 		
-		if(firstDate != null && secondDate != null && // 두개 모두 null이 아니라면
-			!firstDate.isEmpty()&& !secondDate.isEmpty()) { // 두개 모두 비어있지 않다면
-			optionalQuery += " and to_date(prj." + dateType + ") between to_date('" + firstDate + "') and to_date('" + secondDate + "') ";
-		} else if(firstDate != null && !firstDate.isEmpty()) { // 첫번째 날짜가 null이 아니고 비어있지 않다면
-			optionalQuery += " and to_date(prj." + dateType + ") > to_date('" + firstDate + "') ";
-		} else if(secondDate != null && !secondDate.isEmpty()) { // 두번째 날짜가 null이 아니고 비어있지 않다면
-			optionalQuery += " and to_date(prj." + dateType + ") < to_date('" + secondDate + "') ";
+		// 기간 검색 쿼리
+		String dateString;
+		switch(dateType) {
+		case(1):
+			dateString = "prj_st_dt";
+			break;
+		case(2):
+			dateString = "prj_ed_dt";
+			break;
+		default:
+			dateString = "prj_st_dt";
 		}
 		
-		if(ps_cd != null && ps_cd.length >= 1) {
-			optionalQuery += " and (prj.ps_cd = " + ps_cd[0];
+		if(firstDate != null && secondDate != null && // 두개 모두 null이 아니라면
+			!firstDate.isEmpty()&& !secondDate.isEmpty()) { // 두개 모두 비어있지 않다면
+			optionalQuery += " and to_date(prj." + dateString + ") between to_date('" + firstDate + "') and to_date('" + secondDate + "') ";
+		} else if(firstDate != null && !firstDate.isEmpty()) { // 첫번째 날짜가 null이 아니고 비어있지 않다면
+			optionalQuery += " and to_date(prj." + dateString + ") > to_date('" + firstDate + "') ";
+		} else if(secondDate != null && !secondDate.isEmpty()) { // 두번째 날짜가 null이 아니고 비어있지 않다면
+			optionalQuery += " and to_date(prj." + dateString + ") < to_date('" + secondDate + "') ";
+		}
+		
+		// 프로젝트 상태 검색 쿼리
+		if(state != null && state.length >= 1) {
+			optionalQuery += " and (prj.ps_cd = " + state[0];
 			
-			for(int i = 1; i < ps_cd.length; i++) {
-				optionalQuery += " or prj.ps_cd = " + ps_cd[i];
+			for(int i = 1; i < state.length; i++) {
+				optionalQuery += " or prj.ps_cd = " + state[i];
 			}
 			
 			optionalQuery += ") ";

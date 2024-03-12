@@ -32,8 +32,8 @@ public class ProjectDao {
 	}
 	
 	// select2의 데이터 리스트
-	public ArrayList<CustomerBean> getCustomerList(String cust_nm){
-		return projectMapper.getCustomerList(cust_nm);
+	public ArrayList<CustomerBean> getCustomerList(String customer){
+		return projectMapper.getCustomerList(customer);
 	}
 	
 	// 프로젝트 등록
