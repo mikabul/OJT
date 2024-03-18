@@ -15,6 +15,6 @@ public class ProjectMemberBean {
 	
 	private String dept; 		// 부서
 	private String position; 	// 직급
-	private String role; 		// 역할
+	private String role;		// 역할
 	
 }

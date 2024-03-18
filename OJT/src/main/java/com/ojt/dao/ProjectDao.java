@@ -62,6 +62,11 @@ public class ProjectDao {
 		return projectMapper.getProjectSKList(sk_cd);
 	}
 	
+	// 기술 전체 리스트
+	public ArrayList<CodeBean> getSKList(){
+		return projectMapper.getSKList();
+	}
+	
 	// 프로젝트 필요기술 등록
 	public void insertProjectSK(int prj_seq, String sk_cd) {
 		projectMapper.insertProjectSK(prj_seq, sk_cd);

@@ -237,8 +237,9 @@ a {
 	color: black;
 }
 
-.table-center {
-	margin: 0 auto;
+.container-center {
+	margin-left: auto;
+	margin-right: auto;
 }
 
 .table-bg-0 {
@@ -253,7 +254,7 @@ a {
 	background-color: #CCFFCC;
 }
 
-.pop-background {
+.modal-background {
 	position: fixed;
 	top: 0px;
 	left: 0px;
@@ -261,12 +262,16 @@ a {
 	height: 100%;
 	background-color: rgba(0,0,0,0.7);
 	z-index: 6;
+	display: flex;
+	align-items: center;
+	justify-content: space-around;
 }
 
-.pop {
+.modal {
 	background-color: rgba(255,255,255,1);
 	width: 700px;
-	height: 600px;
+	height: auto;
+	min-height: 620px;
 	border-radius: 1em;
 	padding: 10px 10px;
 }
@@ -276,7 +281,7 @@ a {
 	border: none;
 }
 
-.closeImg {
+.closeBtn img {
 	width: 18px;
 	height: 18px;
 }

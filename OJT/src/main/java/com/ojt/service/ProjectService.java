@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.ojt.bean.CodeBean;
 import com.ojt.bean.CustomerBean;
@@ -70,10 +71,30 @@ public class ProjectService {
 	public ArrayList<MemberBean> getNotAddProjectMember(String str, int[] mem_seqList){
 		
 		str = "%" + str + "%";
-		String optinalQuery = getOptionalQuery(mem_seqList);
+		String optionalQuery = getOptionalQuery(mem_seqList);
 		
-		return projectDao.getNotAddProjectMember(str, optinalQuery);
+		return projectDao.getNotAddProjectMember(str, optionalQuery);
 		
+	}
+	
+	// 프로젝트 삭제(여러개)
+	@Transactional
+	public Boolean deleteProjects(Integer[] projectSeqList) {
+		try {
+			for(Integer seq : projectSeqList) {
+				if(seq != null) {
+					projectDao.deleteProject(seq);
+				}
+			}
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
+	}
+	
+	// 전체 기술 리스트
+	public ArrayList<CodeBean> getSKList(){
+		return projectDao.getSKList();
 	}
 	
 	// optionalQuery(프로젝트 검색)
@@ -125,7 +146,7 @@ public class ProjectService {
 	
 	// optionalQuery(신규 프로젝트 인원 검색)
 	private String getOptionalQuery(int[] mem_seqList) {
-		String optionalQuery = " ";
+		String optionalQuery = "";
 		
 		if(mem_seqList != null && mem_seqList.length > 0) {
 			optionalQuery += "and mem.mem_seq not in (" + mem_seqList[0];

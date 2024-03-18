@@ -1,24 +1,66 @@
-
 ------ 사원 샘플 데이터
-insert into member_info values(member_sequence.nextval, '홍길동', '891030-1234567', '02-123-1234', '010-1293-1211', 'hong12@member.com', '0', '1', '12345', '서울시 금청구 가산로 122', '', '', 'hong12', '12345', 'testpic1.jpg', '1', '2010-03-01', '');
-insert into member_info values(member_sequence.nextval, '아자아자', '900712-2133333', '', '010-9383-1231', 'ajaja31@naver.com', '2', '4', '12345', '서울시 금천구 가산로 123', '', '', 'ajaja31', 'aja!123', 'testpic2.jpg', '1', '2013-10-12', '');
-insert into member_info values(member_sequence.nextval, '고래', '901024-1317821', '', '010-2901-1022', 'goreee89@gmail.com', '3', '7', '12345', '서울시 금천구 가산로 124', '', '', 'goreee', 'go123^^', 'testpic3.jpg', '3', '2013-11-26', '2018-09-30');
-insert into member_info values(member_sequence.nextval, '토끼', '890101-2444131', '02-879-1234', '010-8797-6793', 'rabbit78@daum.com', '1', '4', '12345', '서울시 금천구 가산로 125', '', '', 'rabbit78', 'mak28889!@', 'testpic4.jpg', '1', '2017-03-07', '');
-insert into member_info values(member_sequence.nextval, '호랑이', '981213-1902123', '02-144-1859', '010-8478-1895', 'ti1213@naver.com', '4', '5', '12345', '서울시 금천구 가산로 126', '', '', 'ti1213', 'akak928!88', 'testpic5.jpg', '1', '2018-10-20', '');
-insert into member_info values(member_sequence.nextval, '감자', '950730-2491901', '', '010-6593-1829', 'gamja78@naver.com', '1', '8', '12345', '서울시 금천구 가산로 127', '', '', 'gamja78', 'gam9099', 'testpic6.jpg', '1', '2019-04-10', '');
-insert into member_info values(member_sequence.nextval, '굿모닝', '000506-3020131', '02-478-1234', '010-3928-1923', 'www123www@gmail.com', '2', '8', '12345', '서울시 금천구 가산로 128', '', '', 'www123www', 'abc123^^', 'testpic7.jpg', '1', '2020-12-11', '');
+insert into member_info values(member_sequence.nextval, '홍길동', 'hong12', '12345', '891030', '1234567', '02-123-1234', '010-1293-1211', 'hong12@member.com', '1');
+insert into member_address values(member_sequence.currval, '12345', '서울시 금천구 가산로 122', '', '');
+insert into member_company values(member_sequence.currval, '0', '1', 'testpic1.jpg', '1', '2010-03-01', '');
+
+insert into member_info values(member_sequence.nextval, '아자아자', 'ajaja31', 'aja!123', '900712', '2133333', '', '010-9383-1231', 'ajaja31@naver.com', '2');
+insert into member_address values(member_sequence.currval, '12345', '서울시 금천구 가산로 123', '', '');
+insert into member_company values(member_sequence.currval, '2', '4', 'testpic2.jpg', '1', '2013-10-12', '');
+
+insert into member_info values(member_sequence.nextval, '고래', 'goreee', 'go123^^', '901024', '1317821', '', '010-2901-1022', 'goreee89@gmail.com', '1');
+insert into member_address values(member_sequence.currval, '12345', '서울시 금천구 가산호 124', '', '');
+insert into member_company values(member_sequence.currval, '3', '7', 'testpic3.jpg', '3', '2013-11-26', '2018-09-03');
+
+INSERT INTO member_info VALUES(member_sequence.nextval, '토끼', 'rabbit78', 'mak28889!@', '890101', '2444131', '02-879-1234', '010-8797-6793', 'rabbit78@daum.com', '2');
+INSERT INTO member_address VALUES(member_sequence.currval, '12345', '서울시 금천구 가산로 125', '', '');
+INSERT INTO member_company VALUES(member_sequence.currval, '1', '4', 'testpic4.jpg', '1', '2017-03-07', '');
+
+INSERT INTO member_info VALUES(member_sequence.nextval, '호랑이', 'ti1213', 'akak928!88', '981213', '1902123', '02-144-1859', '010-8478-1895', 'ti1213@naver.com', '1');
+INSERT INTO member_address VALUES(member_sequence.currval, '12345', '서울시 금천구 가산로 126', '', '');
+INSERT INTO member_company VALUES(member_sequence.currval, '4', '5', 'testpic5.jpg', '1', '2018-10-20', '');
+
+INSERT INTO member_info VALUES(member_sequence.nextval, '감자', 'gamja78', 'gam9099', '950730', '2491901', NULL, '010-6593-1829', 'gamja78@naver.com', '2');
+INSERT INTO member_address VALUES(member_sequence.currval, '12345', '서울시 금천구 가산로 127', '', '');
+INSERT INTO member_company VALUES(member_sequence.currval, '1', '8', 'testpic6.jpg', '1', '2019-04-10', '');
+
+INSERT INTO member_info VALUES(member_sequence.nextval, '굿모닝', 'www123www', 'abc123^^', '000506', '3020131', '02-478-1234', '010-3928-1923', 'www123www@gmail.com', '1');
+INSERT INTO member_address VALUES(member_sequence.currval, '12345', '서울시 금천구 가산로 128', '', '');
+INSERT INTO member_company VALUES(member_sequence.currval, '2', '8', 'testpic7.jpg', '1', '2020-12-11', '');
+
+insert into member_info values(member_sequence.nextval, 'test1', 'hong12', '12345', '891030', '1234567', '02-123-1234', '010-1293-1211', 'hong12@member.com', '1');
+insert into member_address values(member_sequence.currval, '12345', '서울시 금천구 가산로 122', '', '');
+insert into member_company values(member_sequence.currval, '0', '1', 'testpic1.jpg', '1', '2010-03-01', '');
+
+insert into member_info values(member_sequence.nextval, 'test2', 'ajaja31', 'aja!123', '900712', '2133333', '', '010-9383-1231', 'ajaja31@naver.com', '2');
+insert into member_address values(member_sequence.currval, '12345', '서울시 금천구 가산로 123', '', '');
+insert into member_company values(member_sequence.currval, '2', '4', 'testpic2.jpg', '1', '2013-10-12', '');
+
+insert into member_info values(member_sequence.nextval, 'test3', 'goreee', 'go123^^', '901024', '1317821', '', '010-2901-1022', 'goreee89@gmail.com', '1');
+insert into member_address values(member_sequence.currval, '12345', '서울시 금천구 가산호 124', '', '');
+insert into member_company values(member_sequence.currval, '3', '7', 'testpic3.jpg', '3', '2013-11-26', '2018-09-03');
+
+INSERT INTO member_info VALUES(member_sequence.nextval, 'test4', 'rabbit78', 'mak28889!@', '890101', '2444131', '02-879-1234', '010-8797-6793', 'rabbit78@daum.com', '2');
+INSERT INTO member_address VALUES(member_sequence.currval, '12345', '서울시 금천구 가산로 125', '', '');
+INSERT INTO member_company VALUES(member_sequence.currval, '1', '4', 'testpic4.jpg', '1', '2017-03-07', '');
+
+INSERT INTO member_info VALUES(member_sequence.nextval, 'test5', 'ti1213', 'akak928!88', '981213', '1902123', '02-144-1859', '010-8478-1895', 'ti1213@naver.com', '1');
+INSERT INTO member_address VALUES(member_sequence.currval, '12345', '서울시 금천구 가산로 126', '', '');
+INSERT INTO member_company VALUES(member_sequence.currval, '4', '5', 'testpic5.jpg', '1', '2018-10-20', '');
+
+INSERT INTO member_info VALUES(member_sequence.nextval, 'test6', 'gamja78', 'gam9099', '950730', '2491901', NULL, '010-6593-1829', 'gamja78@naver.com', '2');
+INSERT INTO member_address VALUES(member_sequence.currval, '12345', '서울시 금천구 가산로 127', '', '');
+INSERT INTO member_company VALUES(member_sequence.currval, '1', '8', 'testpic6.jpg', '1', '2019-04-10', '');
+
+INSERT INTO member_info VALUES(member_sequence.nextval, 'test7', 'www123www', 'abc123^^', '000506', '3020131', '02-478-1234', '010-3928-1923', 'www123www@gmail.com', '1');
+INSERT INTO member_address VALUES(member_sequence.currval, '12345', '서울시 금천구 가산로 128', '', '');
+INSERT INTO member_company VALUES(member_sequence.currval, '2', '8', 'testpic7.jpg', '1', '2020-12-11', '');
 
 select * from member_info;
+select * from member_address;
+select * from member_company;
 
------- 프로젝트 샘플 데이터
-insert into project_info values(PROJECT_SEQUENCE.nextval, 'POS 개발', 5, '2023-11-07', '2024-06-27', '', '2');
-insert into project_info values(PROJECT_SEQUENCE.nextval, 'SK 매직 DB 업그레이드 개발', 4, '2023-12-29', '2024-03-02', '', '2');
-insert into project_info values(PROJECT_SEQUENCE.nextval, '삼성전자 S/W 설계 및 개발', 3, '2024-01-11', '2024-04-27', 'TEST', '2');
-insert into project_info values(PROJECT_SEQUENCE.nextval, '현대 자동차 데이터베이스 이관', 1, '2024-02-25', '2024-05-25', '', '1');
-insert into project_info values(PROJECT_SEQUENCE.nextval, '농협은행 S/W 개발', 2, '2024-03-01', '2024-06-01', '', '1');
-
-select * from project_info;
-
+delete member_info where mem_nm = 'test7';
+commit;
 ------ 고객사
 insert into customer values( CUSTOMER_SEQUENCE.nextval, '현대자동차');
 insert into customer values( CUSTOMER_SEQUENCE.nextval, '농협');
@@ -26,6 +68,26 @@ insert into customer values( CUSTOMER_SEQUENCE.nextval, '삼성 전자');
 insert into customer values( CUSTOMER_SEQUENCE.nextval, 'SK매직');
 insert into customer values( CUSTOMER_SEQUENCE.nextval, '아모레퍼시픽');
 
+------ 프로젝트 샘플 데이터
+insert into project_info values(PROJECT_SEQUENCE.nextval, 'POS 개발', 5, '2023-11-07', '2024-06-27', '', '2', '', '');
+insert into project_info values(PROJECT_SEQUENCE.nextval, 'SK 매직 DB 업그레이드 개발', 4, '2023-12-29', '2024-03-02', '', '2', '', '');
+insert into project_info values(PROJECT_SEQUENCE.nextval, '삼성전자 S/W 설계 및 개발', 3, '2024-01-11', '2024-04-27', 'TEST', '2', '', '');
+insert into project_info values(PROJECT_SEQUENCE.nextval, '현대 자동차 데이터베이스 이관', 1, '2024-02-25', '2024-05-25', '', '1', '', '');
+insert into project_info values(PROJECT_SEQUENCE.nextval, '농협은행 S/W 개발', 2, '2024-03-01', '2024-06-01', '', '1', '', '');
+
+insert into project_info values(PROJECT_SEQUENCE.nextval, 'test1', 1, '2024-03-01', '2024-06-01', '', '1', '', '');
+insert into project_info values(PROJECT_SEQUENCE.nextval, 'test2', 2, '2024-04-02', '2024-07-02', '', '1', '', '');
+insert into project_info values(PROJECT_SEQUENCE.nextval, 'test3', 3, '2024-05-03', '2024-08-03', '', '1', '', '');
+insert into project_info values(PROJECT_SEQUENCE.nextval, 'test4', 4, '2024-06-04', '2024-09-04', '', '1', '', '');
+insert into project_info values(PROJECT_SEQUENCE.nextval, 'test5', 5, '2024-07-05', '2024-10-05', '', '1', '', '');
+insert into project_info values(PROJECT_SEQUENCE.nextval, 'test6', 1, '2024-08-06', '2024-11-06', '', '1', '', '');
+insert into project_info values(PROJECT_SEQUENCE.nextval, 'test7', 2, '2024-09-07', '2024-12-07', '', '1', '', '');
+insert into project_info values(PROJECT_SEQUENCE.nextval, 'test8', 3, '2024-10-08', '2024-01-08', '', '1', '', '');
+insert into project_info values(PROJECT_SEQUENCE.nextval, 'test9', 4, '2024-11-09', '2024-02-09', '', '1', '', '');
+insert into project_info values(PROJECT_SEQUENCE.nextval, 'test10', 5, '2024-12-10', '2024-03-10', '', '1', '', '');
+insert into project_info values(PROJECT_SEQUENCE.nextval, 'test11', 1, '2025-01-11', '2024-04-11', '', '1', '', '');
+commit;
+select * from project_info;
 select * from customer;
 
 ------ 사원 보유 기술 샘플 데이터

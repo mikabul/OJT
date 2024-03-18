@@ -1,180 +1,190 @@
-	let str = '';
+function loadAddProjectMember(){
+	// 닫기 버튼
+	document.getElementById('addProjectMemberClose').addEventListener('click', function(){
+		$('#modalAddProjectMember').html('');
+	})
+	
+	// 취소 버튼
+	document.getElementById('cancelAddPMBtn').addEventListener('click', function(){
+		$('#modalAddProjectMember').html('');
+	})
+	
+	// 처음 진입시 검색 실행
+	searchMember();
+	
+	// 모두 체크 이벤트
+	document.getElementById('allCheckAddPM').addEventListener('click', allCheckAddPMEvent);
+	
+	// 검색 버튼 이벤트
+	document.getElementById('searchBtn').addEventListener('click', searchMember);
+	
+	// 저장 버튼 이벤트
+	document.getElementById('addPMBtn').addEventListener('click', addPMBtnEvent);
+}
 
-	// 프로젝트 인원 등록 닫기 버튼
-	function closeAddPMPop(){
-		let addPMPop = document.getElementById('addPMPop');
-		addPMPop.classList.add('none');
-	}
+// 검색 조건을 가져와 getNotAddProjectMember 호출
+function searchMember(){
+	let search = document.getElementById('search').value;
+	let seqList = [];
 	
-	// 프로젝트 인원 조회 버튼
-	function clickSearchPM(){
-		let searchMem_nm = document.getElementById("searchMem_nm");
-		str = searchMem_nm.value;
-		
-		getPMList();
-	}
+	let rows = document.getElementById('pmListBody').rows;
+	Array.from(rows).forEach(row => {
+		if(row.cells.length > 1){
+			let cell = row.cells[1];
+			let seq = cell.querySelector('input').value;
+			seqList.push(seq);
+		}
+	});
 	
-	// 인원 검색(fetch)
-	function getPMList(){
-		
-		let mem_seq = document.querySelectorAll(".mem_seq");
-		let mem_seqList = [];
-		
-		mem_seq.forEach(seq => {
-			mem_seqList.push(seq.value);
-		})
-		
-		fetch('/OJT/projectFetch/getNotAddProjectMember',{
-			method : 'POST',
-			headers : {
-				'Content-Type' : 'application/json'
-			},
-			body: JSON.stringify({
-				str : str,
-				mem_seqList : mem_seqList
+	getNotAddProjectMember(search, seqList); //미참여 멤버 리스트
+	
+}
+
+// 검색 ajax
+function getNotAddProjectMember(search, seqList){
+	
+	let projectStartDate = document.getElementById('prj_st_dt').value;
+	let projectEndDate = document.getElementById('prj_ed_dt').value;
+	
+	$.ajax({
+		url: '/OJT/project/getNotAddProjectMember',
+		method: 'GET',
+		traditional: true,
+		data: {
+			'search': search,
+			'seqList': seqList,
+			'projectStartDate': projectStartDate,
+			'projectEndDate': projectEndDate
+		},
+		success: function(result){
+			$('#memberList').html(result);
+			// checkbox 클릭 이벤트
+			let checkPM = document.querySelectorAll('.checkPM');
+			checkPM.forEach(check => {
+				check.addEventListener('click', isAllCheckAddPM);
 			})
-		})
-		.then(response => {
-			if(response.ok){
-				return response.json();
-			}
-			throw new Error("통신 에러");
-		})
-		.then(memberList => {
-			
-			let addPMListBodyHtml = '';
-			
-			if(memberList != null){
-				
-				const prj_st_dt = document.getElementById("prj_st_dt");
-				const st_value = prj_st_dt.value;
-				const prj_ed_dt = document.getElementById("prj_ed_dt");
-				const ed_value = prj_ed_dt.value;
-				
-				let index = 0;
-				
-				memberList.forEach(member => {
-					addPMListBodyHtml += '<tr>'
-									+	'<td>'
-									+	'<input type="checkbox" class="addPMListIndex" value="' + index + '"/>'
-									+	'</td>'
-									+	'<td>' + member.mem_seq + '</td>'
-									+	'<td>' + member.mem_nm + '</td>'
-									+	'<td>' + member.dept + '</td>'
-									+	'<td>' + member.position + '</td>'
-									+	'<td><input type="date" min="' + st_value + '" max="' + ed_value + '" value="' + st_value + '"/></td>'
-									+	'<td><input type="date" min="' + st_value + '" max="' + ed_value + '" value="' + ed_value + '"/></td>'
-									+	'<td><select class="role_select"></select></td>'
-									+	'</tr>';
-					index = index + 1;
-				})
-			} else {
-				addPMListBodyHtml += '<tr><td colspan="8">조회 결과가 없습니다.</td></tr>';
-			}
-			
-			$("#addPMListBody").html(addPMListBodyHtml);
-			roleOptions();
-		})
+			isScroll();
+		},
+		error: function(error){
+			console.error(error);
+		}
+	})
+}
+
+// 모두 체크 이벤트
+function allCheckAddPMEvent(){
+	
+	let checkPM = document.querySelectorAll('.checkPM');
+	
+	checkPM.forEach(check => {
+		check.checked = this.checked;
+	})
+}
+
+// 체크 시 이벤트, 모두 체크되었 다면 '#allCheckAddPM'을 체크 아니라면 해제
+function isAllCheckAddPM(){
+	let allCheckAddPM = document.getElementById('allCheckAddPM');
+	let checkPM = document.querySelectorAll('.checkPM');
+	
+	if(Array.from(checkPM).every(check => check.checked)){ // 모두 체크 되어있다면
+		allCheckAddPM.checked = true;
+	} else {
+		allCheckAddPM.checked = false;
+	}
+}
+
+// 행이 9개 이상일 경우 스크롤 추가
+function isScroll(){
+	let resultAddPMTable = document.getElementById('resultAddPMTable');
+	let memberListRows = document.getElementById('memberList').rows;
+	
+	if(memberListRows.length >= 11){
+		resultAddPMTable.classList.add('scroll');
+	} else {
+		resultAddPMTable.classList.remove('scroll');
+	}
+}
+
+// 저장 버튼 이벤트
+function addPMBtnEvent(){
+	
+	let addPMList = getCheckedPMList();
+	
+	if(addPMList.length == 0){// 선택된 멤버가 있는지?
+		alert('선택된 멤버가 없습니다.');
+		return;
 	}
 	
-	// 추가 버튼
-	function addPM(){
-		let table = document.getElementById("addPMListBody");
-		let rows = table.rows;
-		let indexList = document.querySelectorAll(".addPMListIndex");
-		let index = [];
-		
-		let mem_seq = [];
-		let mem_nm = [];
-		let dept = [];
-		let position = [];
-		let st_dt = [];
-		let ed_dt = [];
-		let role = [];
-		
-		indexList.forEach(i => {
-			if(i.checked == true){
-				index.push(i.value);
-			}
-		})
-		
-		if(index.length == 0){
-			alert('추가할 인원을 선택해주세요.');
-			return false;
+	wirteAddProjectMember(addPMList);
+}
+
+// 체크된 멤버의 리스트를 얻어옴
+function getCheckedPMList(){
+	let addPMList = []; // 추가할 맴버의 정보를 담는 변수
+	const addPMRows = document.getElementById('memberList').rows; // 테이블의 row들을 저장
+	
+	Array.from(addPMRows).forEach(row => {
+		let cell = row.cells;
+		if(cell.length == 1){
+			alert('선택된 멤버가 없습니다.');
+			return;
 		}
-		
-		index.forEach(i => {
-			let row = rows[i];
-			mem_seq.push(row.cells[1].innerHTML);
-			mem_nm.push(row.cells[2].innerHTML);
-			dept.push(row.cells[3].innerHTML);
-			position.push(row.cells[4].innerHTML);
-			st_dt.push(row.cells[5].querySelector("input").value);
-			ed_dt.push(row.cells[6].querySelector("input").value);
-			role.push(row.cells[7].querySelector("select").value);
-		})
-		
-		let addPMBody = document.getElementById("addPMBody");
-		let row_length = addPMBody.rows.length;
-		
-		let addPMBodyHtml = $("#addPMBody").html();
-		
-		for(let i = 0; i < mem_seq.length; i++){
-			
-			addPMBodyHtml += '<tr>'
-							+	'<td class="text-center">'
-							+	'<input class type="checkbox" value="' + (row_length + i) + '">'
-							+	'</td>'
-							+	'<td>'
-							+	'<input id="projectMemberList' + (row_length + i) + '.mem_seq" name="projectMemberList[' + (row_length + i) + '.mem_seq" '
-							+	'class="w-100 read-input text-center mem_seq" readonly="readonly" type="text" value="' + mem_seq[i] + '">'
-							+	'</td>'
-							+	'</td>'
-							+	'<td>'
-							+	'<input id="projectMemberList' + (row_length + i) + '.mem_nm" name="projectMemberList[' + (row_length + i) + '.mem_nm" '
-							+	'class="w-100 read-input text-center" readonly="readonly" type="text" value="' + mem_nm[i] + '">'
-							+	'</td>'
-							+	'<td>'
-							+	'<input id="projectMemberList' + (row_length + i) + '.dept" name="projectMemberList[' + (row_length + i) + '.dept" '
-							+	'class="w-100 read-input text-center" readonly="readonly" type="text" value="' + dept[i] + '">'
-							+	'</td>'
-							+	'<td>'
-							+	'<input id="projectMemberList' + (row_length + i) + '.position" name="projectMemberList[' + (row_length + i) + '.position" '
-							+	'class="w-100 read-input text-center" readonly="readonly" type="text" value="' + position[i] + '">'
-							+	'</td>'
-							+	'<td>'
-							+	'<input id="projectMemberList' + (row_length + i) + '.st_dt" name="projectMemberList[' + (row_length + i) + '.st_dt" '
-							+	'type="date" class="w-100 st_dt" index="' + (row_length + i) + '" value="' + st_dt[i] + '">'
-							+	'</td>'
-							+	'<td>'
-							+	'<input id="projectMemberList' + (row_length + i) + '.ed_dt" name="projectMemberList[' + (row_length + i) + '.ed_dt" '
-							+	'type="date" class="w-100 ed_dt" index="' + (row_length + i) + '" value="' + ed_dt[i] + '">'
-							+	'</td>'
-							+	'<td>'
-							+	'<select id="projectMemberList' + (row_length + i) + '.role" name="projectMemberList[' + (row_length + i) + '.role" '
-							+	'class="w-100 role_select"></select>'
-							+	'</td>'
-							+	'</tr>';
-			
-		}//for_END
-		
-		$("#addPMBody").html(addPMBodyHtml);
-		roleOptions();
-		closeAddPMPop();
+		if(cell[0].querySelector('input').checked){
+			addPMList.push({
+				mem_seq: cell[1].innerHTML,
+				mem_nm: cell[2].innerHTML,
+				dept: cell[3].innerHTML,
+				position: cell[4].innerHTML,
+				st_dt: cell[5].querySelector('input').value,
+				ed_dt: cell[6].querySelector('input').value,
+				ro_cd: cell[7].querySelector('select').value
+			})
+		}
+	})
+	return addPMList;
+}
+
+// 체크된 멤버의 리스트를 이용하여 'addProject'에 추가
+function wirteAddProjectMember(addPMList){
+	const pmListBodyRows = document.getElementById('pmListBody').rows; //'#pmListBody'의 전체 행
+	const startDate = document.getElementById('prj_st_dt').value;
+	const projectEndDate = document.getElementById('prj_ed_dt').value;
+	const maintEndDate = document.getElementById('maint_st_dt').value;
+	let endDate;
+	
+	if(maintEndDate != ''){
+		endDate = maintEndDate;
+	} else {
+		endDate = projectEndDate;
 	}
 	
-	function selectOption(role, row_length){
-		roleOptions();
-		
-		//'projectMemberList' + (row_length + i) +'\.role'
-		for (let i = 0; i < role.length; i++) {
-			let selectElement = document.getElementById('projectMemberList' + (row_length + i) + '.role');
-			let optionToSelect = selectElement.querySelector('option[value="3"]');
-			if (optionToSelect) {
-				console.log(optionToSelect);
-				optionToSelect.selected = true;
-			} else {
-				console.error('Value가 3인 <option>을 찾을 수 없습니다.');
-			}
-		}
+	let rowsLength; // pmListBodyRows의 크기를 담을 변수
+	let pmListBodyHtml; //'#pmListBody'의 html을 담을 변수
+	if(pmListBodyRows[0].cells.length == 1){// cell이 1개일 경우 (= '추가된 인원이 없습니다'출력)
+		rowsLength = 0;
+		pmListBodyHtml = '';
+	} else {
+		rowsLength = pmListBodyRows.length;
+		pmListBodyHtml = $('#pmListBody').html();
 	}
+	
+	$.ajax({
+		url: '/OJT/project/addProjectTable',
+		method: 'POST',
+		traditional: true,
+		data: {
+			'addPMList': addPMList,
+			'rowsLength': rowsLength,
+			'startDate': startDate,
+			'endDate': endDate
+		},
+		success: function(result){
+			pmListBodyHtml += result;
+			$('#pmListBody').html(pmListBodyHtml);
+		},
+		error: function(error){
+			console.error(error);
+		}
+	})
+	
+}

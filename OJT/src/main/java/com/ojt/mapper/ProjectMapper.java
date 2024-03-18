@@ -51,7 +51,7 @@ public interface ProjectMapper {
 	
 	// 프로젝트 등록
 	@Insert("insert into project_info values(PROJECT_SEQUENCE.nextval, #{prj_nm}, "
-			+ "#{cust_seq}, #{prj_st_dt}, #{prj_ed_dt}, #{prj_dtl}, #{ps_cd})")
+			+ "#{cust_seq}, #{prj_st_dt}, #{prj_ed_dt}, #{prj_dtl}, #{ps_cd}, #{maint_st_dt}, #{maint_ed_dt})")
 	public void insertProject(ProjectBean insertProjectBean);
 	
 	// 프로젝트 상태 수정
@@ -70,9 +70,14 @@ public interface ProjectMapper {
 	
 	//========== 프로젝트 필요 기술 ===========
 	// 프로젝트 필요기술 조회
-	@Select("select dtl_cd_nm from code_detail "
-			+ "where mst_cd = 'SK01' and dtl_cd = #{sk_cd}")
+	@Select("select dtl_cd, dtl_cd_nm from code_detail cd "
+			+ "left join project_sk ps on ps.sk_cd = cd.dtl_cd "
+			+ "where cd.mst_cd='SK01' and ps.prj_seq = #{sk_cd}")
 	public String[] getProjectSKList(String sk_cd);
+	
+	// 전체 기술 리스트
+	@Select("select * from code_detail where mst_cd = 'SK01'")
+	public ArrayList<CodeBean> getSKList();
 	
 	// 프로젝트 필요기술 등록
 	@Insert("insert into project_sk values(#{prj_seq}, #{sk_cd})")
@@ -84,13 +89,13 @@ public interface ProjectMapper {
 	
 	//============== 프로젝트 멤버 ====================
 	// 프로젝트 멤버 조회
-	@Select("select pm.mem_seq, mem.mem_nm, pm.st_dt, pm.ed_dt, "
-			+ "dept.dtl_cd_nm as dept, pos.dtl_cd_nm as position, ro.dtl_cd_nm as role "
+	@Select("select mem.mem_seq, mem.mem_nm, dept.dtl_cd_nm as dept, "
+			+ "pos.dtl_cd_nm as position, pm.st_dt, pm.ed_dt "
 			+ "from project_member_table pm "
 			+ "inner join member_info mem on mem.mem_seq = pm.mem_seq "
-			+ "inner join code_detail pos on pos.dtl_cd = mem.ra_cd and pos.mst_cd = 'RA01' "
-			+ "inner join code_detail ro on ro.dtl_cd = pm.ro_cd and ro.mst_cd = 'RO01' "
-			+ "left join code_detail dept on dept.dtl_cd = mem.dp_cd and dept.mst_cd = 'DP01' "
+			+ "inner join member_company mc on mc.mem_seq = mem.mem_seq "
+			+ "left join code_detail dept on dept.mst_cd = 'DP01' and dept.dtl_cd = mc.dp_cd "
+			+ "left join code_detail pos on pos.mst_cd = 'RA01' and pos.dtl_cd = mc.ra_cd "
 			+ "where pm.prj_seq = #{prj_seq}")
 	public ArrayList<ProjectMemberBean> getProjectMemberList(int prj_seq);
 	
@@ -98,9 +103,10 @@ public interface ProjectMapper {
 	@Select("select mem.mem_seq, mem.mem_nm, dept.dtl_cd_nm as dept, "
 			+ "pos.dtl_cd_nm as position "
 			+ "from member_info mem "
-			+ "left join code_detail dept on dept.mst_cd = 'DP01' and dept.dtl_cd = mem.dp_cd "
-			+ "left join code_detail pos on pos.mst_cd = 'RA01' and pos.dtl_cd = mem.ra_cd "
-			+ "where mem.mem_seq not in (select pm.mem_seq from project_member_table pm  "
+			+ "inner join member_company mc on mc.mem_seq = mem.mem_seq "
+			+ "left join code_detail dept on dept.mst_cd = 'DP01' and dept.dtl_cd = mc.dp_cd "
+			+ "left join code_detail pos on pos.mst_cd = 'RA01' and pos.dtl_cd = mc.ra_cd "
+			+ "where mem.mem_seq not in (select pm.mem_seq from project_member_table pm "
 			+ "where pm.prj_seq = #{prj_seq}) "
 			+ "and mem.mem_nm like #{mem_nm}")
 	public ArrayList<MemberBean> searchNotProjectMember(@Param("prj_seq") int prj_seq, @Param("mem_nm") String mem_nm);
@@ -109,10 +115,10 @@ public interface ProjectMapper {
 	@Select("select mem.mem_seq, mem.mem_nm, dept.dtl_cd_nm as dept, "
 			+ "pos.dtl_cd_nm as position "
 			+ "from member_info mem "
-			+ "left join code_detail dept on dept.mst_cd = 'DP01' and dept.dtl_cd = mem.dp_cd "
-			+ "left join code_detail pos on pos.mst_cd = 'RA01' and pos.dtl_cd = mem.ra_cd "
-			+ "where mem.mem_nm like #{str} ${optionalQuery} "
-			+ "order by mem.mem_seq")
+			+ "inner join member_company mc on mc.mem_seq = mem.mem_seq "
+			+ "left join code_detail dept on dept.mst_cd = 'DP01' and dept.dtl_cd = mc.dp_cd "
+			+ "left join code_detail pos on pos.mst_cd = 'RA01' and pos.dtl_cd = mc.ra_cd "
+			+ "where mem.mem_nm like #{str} ${optionalQuery} ")
 	public ArrayList<MemberBean> getNotAddProjectMember(@Param("str") String str, 
 														@Param("optionalQuery") String optionalQuery);
 	

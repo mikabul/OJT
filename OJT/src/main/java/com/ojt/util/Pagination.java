@@ -20,9 +20,9 @@ public class Pagination {
 		int maxPage = maxCount % view == 0 ? maxCount / view : maxCount / view + 1;
 		int pageBtns[];
 		
-		// 이전(다음)페이지 버튼 boolean
-		boolean preBtn = false;
-		boolean nextBtn = false;
+		// 이전(다음)페이지 버튼 integer
+		Integer preBtn = null;
+		Integer nextBtn = null;
 		
 		page = (page / buttonCount) * buttonCount;
 		if(maxPage - (page) > buttonCount) { // 페이지 버튼이 'buttonCount'개초과로 생성되는지
@@ -39,8 +39,8 @@ public class Pagination {
 			}
 		}
 		
-		if(page >= buttonCount) preBtn = true;
-		if(maxPage - (page) > buttonCount) nextBtn = true;
+		if(page >= buttonCount) preBtn = page - buttonCount;
+		if(maxPage - (page) > buttonCount) nextBtn = page + buttonCount;
 		
 		map.put("pageBtns", pageBtns);
 		map.put("preBtn", preBtn);

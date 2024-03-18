@@ -37,8 +37,13 @@ where prj_seq = 1;
 delete project_info where prj_seq = 1;
 
 -- 프로젝트 필요기술 조회
-select dtl_cd_nm from code_detail
-where mst_cd = 'SK01' and dtl_cd = '1';
+select dtl_cd, dtl_cd_nm from code_detail cd
+left join project_sk ps on ps.sk_cd = cd.dtl_cd
+where cd.mst_cd='SK01' and ps.prj_seq = 1;
+
+-- 기술 조회
+select * from code_detail
+where mst_cd = 'SK01';
 
 -- 프로젝트 필요기술 등록
 insert into project_sk values(1, '01');
@@ -47,24 +52,36 @@ insert into project_sk values(1, '01');
 delete project_sk where prj_seq = 1;
 
 -- 프로젝트 멤버 조회
-select pm.mem_seq, mem.mem_nm, pm.st_dt, pm.ed_dt,
-dept.dtl_cd_nm as dept, pos.dtl_cd_nm as position, ro.dtl_cd_nm as role
+select mem.mem_seq, mem.mem_nm, dept.dtl_cd_nm as dept,
+pos.dtl_cd_nm as position, pm.st_dt, pm.ed_dt
 from project_member_table pm
 inner join member_info mem on mem.mem_seq = pm.mem_seq
-inner join code_detail pos on pos.dtl_cd = mem.ra_cd and pos.mst_cd = 'RA01'
-inner join code_detail ro on ro.dtl_cd = pm.ro_cd and ro.mst_cd = 'RO01'
-left join code_detail dept on dept.dtl_cd = mem.dp_cd and dept.mst_cd = 'DP01'
-where pm.prj_seq = 1;
+inner join member_company mc on mc.mem_seq = mem.mem_seq
+left join code_detail dept on dept.mst_cd = 'DP01' and dept.dtl_cd = mc.dp_cd
+left join code_detail pos on pos.mst_cd = 'RA01' and pos.dtl_cd = mc.ra_cd
+where pm.prj_seq = 1
+;
 
 -- 프로젝트 멤버 인원 등록 조회
 select mem.mem_seq, mem.mem_nm, dept.dtl_cd_nm as dept,
 pos.dtl_cd_nm as position
 from member_info mem
-left join code_detail dept on dept.mst_cd = 'DP01' and dept.dtl_cd = mem.dp_cd
-left join code_detail pos on pos.mst_cd = 'RA01' and pos.dtl_cd = mem.ra_cd
+inner join member_company mc on mc.mem_seq = mem.mem_seq
+left join code_detail dept on dept.mst_cd = 'DP01' and dept.dtl_cd = mc.dp_cd
+left join code_detail pos on pos.mst_cd = 'RA01' and pos.dtl_cd = mc.ra_cd
 where mem.mem_seq not in (select pm.mem_seq from project_member_table pm 
 where pm.prj_seq = 1)
-and mem.mem_nm like '%호%';
+and mem.mem_nm like '%감%';
+
+-- 신규 프로젝트 멤버 등록 조회
+select mem.mem_seq, mem.mem_nm, dept.dtl_cd_nm as dept,
+pos.dtl_cd_nm as position
+from member_info mem
+inner join member_company mc on mc.mem_seq = mem.mem_seq
+left join code_detail dept on dept.mst_cd = 'DP01' and dept.dtl_cd = mc.dp_cd
+left join code_detail pos on pos.mst_cd = 'RA01' and pos.dtl_cd = mc.ra_cd
+where mem.mem_seq not in (1,2,3,4)
+and mem.mem_nm like '%%';
 
 -- 프로젝트 멤버 등록
 insert into project_member_table values(1, 1, '', '', '');

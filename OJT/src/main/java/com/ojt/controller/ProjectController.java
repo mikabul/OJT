@@ -7,11 +7,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.ojt.bean.CodeBean;
 import com.ojt.bean.CustomerBean;
+import com.ojt.bean.MemberBean;
 import com.ojt.bean.ProjectBean;
 import com.ojt.bean.ProjectMemberBean;
 import com.ojt.bean.ProjectSearchBean;
@@ -26,29 +30,12 @@ public class ProjectController {
 	
 	@RequestMapping("/Main")
 	public String main(@ModelAttribute("projectSearchBean") ProjectSearchBean projectSearchBean,
-						@ModelAttribute("addProjectBean") ProjectBean addProjectBean,
 						@RequestParam(name="page", defaultValue = "0", required=false) int page,
 						BindingResult result,
 						Model model) {
 		
 		Map<String, Object> map = projectService.searchProjectList(projectSearchBean, page);
 		ArrayList<CustomerBean> customerList = projectService.getCustomerList("");
-		
-		// =============테스트 데이터============
-		ArrayList<ProjectMemberBean> addPMList = new ArrayList<ProjectMemberBean>();
-		ProjectMemberBean projectMemberBean;
-		
-		for(int i = 1; i <= 5; i++) {
-			projectMemberBean = new ProjectMemberBean();
-			projectMemberBean.setMem_seq(i);
-			projectMemberBean.setMem_nm("홍길동");
-			projectMemberBean.setDept("부서");
-			projectMemberBean.setPosition("직급");
-			projectMemberBean.setRole("");
-			addPMList.add(projectMemberBean);
-		}
-		addProjectBean.setProjectMemberList(addPMList);
-		// =============테스트 데이터 끝==============
 		
 		model.addAttribute("projectList", map.get("projectList"));
 		model.addAttribute("pageBtns", map.get("pageBtns"));
@@ -58,6 +45,79 @@ public class ProjectController {
 		model.addAttribute("page", page);
 		
 		return "/project/Main";
+	}
+	
+	@GetMapping("/addProjectModal")
+	public String addProjectModal(@ModelAttribute("addProjectBean") ProjectBean addProjectbean,
+								Model model) {
+		
+		ArrayList<CustomerBean> customerList = projectService.getCustomerList("");
+		ArrayList<CodeBean> roleList = projectService.getRole();
+		ArrayList<CodeBean> skList = projectService.getSKList();
+				
+		model.addAttribute("customerList", customerList);
+		model.addAttribute("roleList", roleList);
+		model.addAttribute("skList", skList);
+		
+		//====== test data =====
+		ArrayList<ProjectMemberBean> pmList = new ArrayList<ProjectMemberBean>();
+		ProjectMemberBean pmBean;
+		for(int i = 0; i < 5; i++) {
+			pmBean = new ProjectMemberBean();
+			pmBean.setMem_seq(i);
+			pmBean.setMem_nm("홍길동");
+			pmBean.setDept("개발");
+			pmBean.setPosition("사원");
+			pmBean.setRo_cd("1");
+			pmBean.setSt_dt("2024-01-01");
+			pmBean.setEd_dt("2024-12-31");
+			pmList.add(pmBean);
+		}
+		addProjectbean.setPmList(pmList);
+		//========= test data ========
+		
+		return "/project/AddProject";
+	}
+	
+	@GetMapping("showAddPMModal")
+	public String showAddPMModal() {
+		return "/project/AddProjectMember";
+	}
+	
+	@GetMapping("/getNotAddProjectMember")
+	public String getNotAddProjectMember(@RequestParam("search") String search,
+										@RequestParam(name = "seqList", required = false) int[] seqList,
+										@RequestParam("projectStartDate") String projectStartDate,
+										@RequestParam("projectEndDate") String projectEndDate,
+										Model model) {
+		
+		ArrayList<MemberBean> memberList = projectService.getNotAddProjectMember(search, seqList);
+		ArrayList<CodeBean> roleList = projectService.getRole();
+		
+		model.addAttribute("memberList", memberList);
+		model.addAttribute("projectStartDate", projectStartDate);
+		model.addAttribute("projectEndDate", projectEndDate);
+		model.addAttribute("roleList", roleList);
+		
+		return "/project/AddProjectMemberTable";
+	}
+	
+	@PostMapping("/addProjectTable")
+	public String AddProjectTable(@RequestParam("addPMList") ArrayList<ProjectMemberBean> addPMList,
+									@RequestParam("rowsLength") int rowsLength,
+									@RequestParam("startDate") String startDate,
+									@RequestParam("endDate") String endDate,
+									Model model) {
+		
+		ArrayList<CodeBean> roleList = projectService.getRole();
+		
+		model.addAttribute("addPMList", addPMList);
+		model.addAttribute("rowsLength", rowsLength);
+		model.addAttribute("startDate", startDate);
+		model.addAttribute("endDate", endDate);
+		model.addAttribute("roleList", roleList);
+		
+		return "/project/AddProjectTable";
 	}
 	
 }

@@ -4,6 +4,7 @@ insert into code_master values('ST01','재직 상태 코드');
 insert into code_master values('SK01','기술 코드');
 insert into code_master values('PS01','프로젝트 상태 코드');
 insert into code_master values('RO01','역할 코드');
+insert into code_master values('GD01','성별 코드');
 
 select * from code_master;
 
@@ -45,7 +46,7 @@ insert into code_detail values('SK01','10','C#');
 insert into code_detail values('PS01','1','진행 예정');
 insert into code_detail values('PS01','2','진행 중');
 insert into code_detail values('PS01','3','유지보수');
-insert into code_detail values('PS01','4','완료');
+insert into code_detail values('PS01','4','종료');
 insert into code_detail values('PS01','5','중단');
 
 ------- 역할
@@ -54,6 +55,10 @@ insert into code_detail values('RO01','2','PM');
 insert into code_detail values('RO01','3','PL');
 insert into code_detail values('RO01','4','PE');
 insert into code_detail values('RO01','5','QA');
+
+------- 성별
+insert into code_detail values('GD01', '1', '남');
+insert into code_detail values('GD01', '2', '여');
 
 select * from code_detail;
 

@@ -18,7 +18,6 @@ public class LoginController{
 	@PostMapping("/Login")
 	public String login(@ModelAttribute("loginMemberBean") MemberBean loginMemberBean) {
 		this.loginMemberBean.setLoginState(true);
-		System.out.println(this.loginMemberBean.isLoginState());
 		return "redirect:/Main";
 		
 	}
@@ -26,7 +25,6 @@ public class LoginController{
 	@GetMapping("/Logout")
 	public String logout() {
 		loginMemberBean.setLoginState(false);
-		System.out.println(loginMemberBean.isLoginState());
 		return "redirect:/";
 	}
 	
