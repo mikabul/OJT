@@ -10,9 +10,13 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ojt.bean.CodeBean;
 import com.ojt.bean.CustomerBean;
 import com.ojt.bean.MemberBean;
@@ -103,11 +107,46 @@ public class ProjectController {
 	}
 	
 	@PostMapping("/addProjectTable")
-	public String AddProjectTable(@RequestParam("addPMList") ArrayList<ProjectMemberBean> addPMList,
-									@RequestParam("rowsLength") int rowsLength,
-									@RequestParam("startDate") String startDate,
-									@RequestParam("endDate") String endDate,
+	public String AddProjectTable(@RequestBody String jsonString,
 									Model model) {
+		
+		ObjectMapper mapper = new ObjectMapper();
+		
+		System.out.println("jsonString : " + jsonString);
+		
+		ArrayList<ProjectMemberBean> addPMList = new ArrayList<ProjectMemberBean>();
+		String startDate;
+		String endDate;
+		int rowsLength;
+		
+		try {
+			
+			JsonNode jsonNode = mapper.readTree(jsonString);
+			
+			startDate = jsonNode.get("startDate").asText();
+			endDate = jsonNode.get("endDate").asText();
+			rowsLength = jsonNode.get("rowsLength").asInt();
+			
+			//리스트 추출
+			JsonNode addPMListNode = jsonNode.get("addPMList");
+			if(addPMListNode != null && addPMListNode.isArray()) {
+				for(JsonNode node : addPMListNode) {
+					ProjectMemberBean pm = new ProjectMemberBean();
+					pm.setMem_seq(node.get("mem_seq").asInt());
+					pm.setMem_nm(node.get("mem_nm").asText());
+					pm.setDept(node.get("dept").asText());
+					pm.setPosition(node.get("position").asText());
+					pm.setSt_dt(node.get("st_dt").asText());
+					pm.setEd_dt(node.get("ed_dt").asText());
+					pm.setRo_cd(node.get("ro_cd").asText());
+					
+					addPMList.add(pm);
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "redirect:/";
+		}
 		
 		ArrayList<CodeBean> roleList = projectService.getRole();
 		

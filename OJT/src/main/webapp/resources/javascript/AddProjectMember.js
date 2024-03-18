@@ -171,13 +171,13 @@ function wirteAddProjectMember(addPMList){
 	$.ajax({
 		url: '/OJT/project/addProjectTable',
 		method: 'POST',
-		traditional: true,
-		data: {
+		contentType: 'application/json',
+		data: JSON.stringify({
 			'addPMList': addPMList,
 			'rowsLength': rowsLength,
 			'startDate': startDate,
 			'endDate': endDate
-		},
+		}),
 		success: function(result){
 			pmListBodyHtml += result;
 			$('#pmListBody').html(pmListBodyHtml);
