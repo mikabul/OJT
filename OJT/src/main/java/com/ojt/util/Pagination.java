@@ -3,18 +3,21 @@ package com.ojt.util;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
 @Component
+@PropertySource("/WEB-INF/properties/setting.properties")
 public class Pagination {
+	
+	@Value("${buttonCount}")
+	int buttonCount; //생성할 버튼의 개수
 
 	public Map<String, Object> getPageBtns(int page, int maxCount, int view){
 		
 		// 결과를 담을 맵 생성
 		Map<String, Object> map = new HashMap<String, Object>();
-		
-		// 생성할 버튼의 개수
-		int buttonCount = 5;
 		
 		// 최대 페이지 개수와 페이지버튼을 담을 변수 생성(초기화 X)
 		int maxPage = maxCount % view == 0 ? maxCount / view : maxCount / view + 1;

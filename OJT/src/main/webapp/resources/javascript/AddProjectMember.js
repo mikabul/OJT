@@ -1,27 +1,3 @@
-function loadAddProjectMember(){
-	// 닫기 버튼
-	document.getElementById('addProjectMemberClose').addEventListener('click', function(){
-		$('#modalAddProjectMember').html('');
-	})
-	
-	// 취소 버튼
-	document.getElementById('cancelAddPMBtn').addEventListener('click', function(){
-		$('#modalAddProjectMember').html('');
-	})
-	
-	// 처음 진입시 검색 실행
-	searchMember();
-	
-	// 모두 체크 이벤트
-	document.getElementById('allCheckAddPM').addEventListener('click', allCheckAddPMEvent);
-	
-	// 검색 버튼 이벤트
-	document.getElementById('searchBtn').addEventListener('click', searchMember);
-	
-	// 저장 버튼 이벤트
-	document.getElementById('addPMBtn').addEventListener('click', addPMBtnEvent);
-}
-
 // 검색 조건을 가져와 getNotAddProjectMember 호출
 function searchMember(){
 	let search = document.getElementById('search').value;
@@ -43,9 +19,18 @@ function searchMember(){
 // 검색 ajax
 function getNotAddProjectMember(search, seqList){
 	
-	let projectStartDate = document.getElementById('prj_st_dt').value;
+	let startDate = document.getElementById('prj_st_dt').value;
 	let projectEndDate = document.getElementById('prj_ed_dt').value;
+	let maintEndDate = document.getElementById('maint_ed_dt').value;
+	let endDate;
 	
+	if(maintEndDate != ''){
+		endDate = maintEndDate;
+	} else {
+		endDate = projectEndDate;
+	}
+	console.log(startDate);
+	console.log(endDate);
 	$.ajax({
 		url: '/OJT/project/getNotAddProjectMember',
 		method: 'GET',
@@ -53,8 +38,8 @@ function getNotAddProjectMember(search, seqList){
 		data: {
 			'search': search,
 			'seqList': seqList,
-			'projectStartDate': projectStartDate,
-			'projectEndDate': projectEndDate
+			'startDate': startDate,
+			'endDate': endDate
 		},
 		success: function(result){
 			$('#memberList').html(result);
@@ -62,8 +47,31 @@ function getNotAddProjectMember(search, seqList){
 			let checkPM = document.querySelectorAll('.checkPM');
 			checkPM.forEach(check => {
 				check.addEventListener('click', isAllCheckAddPM);
-			})
-			isScroll();
+			});
+			isScrollPM(); // 스크롤 추가
+			
+			const memberList = document.getElementById('memberList').rows;
+			for(let i = 0; i < memberList.length; i++){
+				const startDate = memberList[i].cells[5].querySelector('input');
+				const secondDate = memberList[i].cells[6].querySelector('input');
+				const role = memberList[i].cells[7].querySelector('select');
+				
+				// 변경시 체크박스에 체크
+				startDate.addEventListener('change', function(){
+					checkPM[i].checked = true;
+					isAllCheckAddPM();
+					secondDate.min = this.value;
+				})
+				secondDate.addEventListener('change', function(){
+					checkPM[i].checked = true;
+					isAllCheckAddPM();
+					startDate.max = this.value;
+				})
+				role.addEventListener('change', function(){
+					checkPM[i].checked = true;
+					isAllCheckAddPM();
+				})
+			}
 		},
 		error: function(error){
 			console.error(error);
@@ -94,7 +102,7 @@ function isAllCheckAddPM(){
 }
 
 // 행이 9개 이상일 경우 스크롤 추가
-function isScroll(){
+function isScrollPM(){
 	let resultAddPMTable = document.getElementById('resultAddPMTable');
 	let memberListRows = document.getElementById('memberList').rows;
 	
@@ -141,6 +149,7 @@ function getCheckedPMList(){
 			})
 		}
 	})
+	
 	return addPMList;
 }
 
@@ -160,7 +169,7 @@ function wirteAddProjectMember(addPMList){
 	
 	let rowsLength; // pmListBodyRows의 크기를 담을 변수
 	let pmListBodyHtml; //'#pmListBody'의 html을 담을 변수
-	if(pmListBodyRows[0].cells.length == 1){// cell이 1개일 경우 (= '추가된 인원이 없습니다'출력)
+	if(pmListBodyRows[0].cells.length == 1){// cell이 1개일 경우 (= '추가된 인원이 없습니다')
 		rowsLength = 0;
 		pmListBodyHtml = '';
 	} else {
@@ -179,8 +188,14 @@ function wirteAddProjectMember(addPMList){
 			'endDate': endDate
 		}),
 		success: function(result){
+			// 선택 멤버를 프로젝트에 추가
 			pmListBodyHtml += result;
 			$('#pmListBody').html(pmListBodyHtml);
+			$('#modalAddProjectMember').html(''); // 창 닫기
+			
+			//스코롤
+			isScrollAddProject();
+			changeProjectDateEvent();
 		},
 		error: function(error){
 			console.error(error);

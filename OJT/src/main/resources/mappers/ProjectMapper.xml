@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ojt.mapper.ProjectMapper">
+
+	<!-- ============== 프로젝트 ============== -->
+	<!-- 프로젝트 검색
+		 프로젝트 번호, 프로젝트 명, 고객사 이름, 시작일, 종료일, 프로젝트 상태 -->
+	<select id="searchProjectList" resultType="com.ojt.bean.ProjectBean">
+		SELECT * FROM (
+			SELECT 
+				prj.prj_seq,
+				prj.prj_nm,
+				cust.cust_nm,
+				prj.prj_st_dt,
+				prj.prj_ed_dt, 
+				prj.maint_st_dt,
+				prj.maint_ed_dt,
+				cd.dtl_cd_nm AS ps_nm,
+				cd.dtl_cd as ps_cd,
+				row_number() OVER (ORDER BY prj.prj_seq DESC) AS rn
+			FROM project_info prj 
+			LEFT JOIN code_detail cd ON cd.mst_cd = 'PS01' AND prj.ps_cd = cd.dtl_cd
+			LEFT JOIN customer cust ON cust.cust_seq = prj.cust_seq
+			WHERE prj.prj_nm LIKE #{prj_nm}
+			${optionalQuery}
+		)
+		WHERE rn BETWEEN #{index} AND #{endIndex}
+	</select>
+	
+	<!-- 검색시 나올수있는 최대 갯수 -->
+	<select id="searchProjectListMaxCount" resultType="int">
+		select count(prj.prj_seq)
+		from project_info prj
+		left join code_detail cd on cd.mst_cd = 'PS01' and prj.ps_cd = cd.dtl_cd
+		left join customer cust on cust.cust_seq = prj.cust_seq
+		where prj.prj_nm like #{prj_nm} ${optionalQuery}
+	</select>
+	
+	<!-- select2, 고객사의 번호와 이름을 반환 -->
+	<select id="getCustomerList" resultType="com.ojt.bean.CustomerBean">
+		select * from customer where cust_nm like #{customer}
+	</select>
+	
+	<!-- 프로젝트 등록 -->
+	<insert id="insertProject" parameterType="com.ojt.bean.ProjectBean">
+		insert into project_info values(
+			project_sequence.nextval,
+			#{prj_nm},
+			#{cust_seq}, 
+			#{prj_st_dt}, 
+			#{prj_ed_dt},
+			#{prj_dtl},
+			#{ps_cd},
+			#{maint_st_dt},
+			#{maint_ed_dt}
+		)
+	</insert>
+	
+	<!-- 프로젝트 등록 후 시퀀스 -->
+	<select id="getPrj_seq" resultType="int">
+		select project_sequence.currval from dual
+	</select>
+	
+	<!-- 프로젝트 상세 정보 -->
+	<select id="getProjectInfo" resultType="com.ojt.bean.ProjectBean">
+		select 
+    		prj.prj_seq,
+    		prj.prj_nm,
+    		prj.cust_seq,
+    		cust.cust_nm,
+    		prj.prj_st_dt,
+    		prj.prj_ed_dt,
+    		prj.maint_st_dt,
+    		prj.maint_ed_dt,
+    		prj.ps_cd,
+    		prj.prj_dtl,
+    		ps.dtl_cd_nm as ps_nm
+		from project_info prj
+		inner join code_detail ps on ps.mst_cd = 'PS01' and prj.ps_cd = ps.dtl_cd
+		inner join customer cust on cust.cust_seq = prj.cust_seq
+		where prj.prj_seq = #{prj_seq}
+	</select>
+	
+	<select id="getPsList" resultType="com.ojt.bean.CodeBean">
+		select
+			dtl_cd,
+			dtl_cd_nm
+		from code_detail
+		where mst_cd = 'PS01'
+	</select>
+	
+	<select id="getStringListProjectState" resultType="String">
+		select dtl_Cd from code_detail where mst_cd = 'PS01'
+	</select>
+	
+	<!-- 프로젝트 상태 수정 -->
+	<update id="updateProjectState" parameterType="com.ojt.bean.ProjectBean">
+		update project_info set
+		ps_cd = #{ps_cd}
+		where prj_seq = #{prj_seq}
+	</update>
+	
+	<!-- 프로젝트 수정 -->
+	<update id="updateProject" parameterType="com.ojt.bean.ProjectBean">
+		update project_info set 
+			prj_nm = #{prj_nm}, 
+			cust_seq = #{cust_seq}, 
+			prj_st_dt = #{prj_st_dt},
+			prj_ed_dt = #{prj_ed_dt}, 
+			prj_dtl = #{prj_dtl}, 
+			ps_cd = #{ps_cd} 
+		where prj_seq = #{prj_seq}
+	</update>
+	
+	<!-- 프로젝트 삭제 -->
+	<delete id="deleteProject">
+		delete project_info where prj_seq = #{prj_seq}
+	</delete>
+	
+	<!-- ============ 프로젝트 필요 기술 ============== -->
+	<!-- 프로젝트 필요기술 조회 -->
+	<select id="getProjectSKList" resultType="com.ojt.bean.CodeBean" parameterType="int">
+		select * from code_detail
+		where mst_cd='SK01' and
+		dtl_cd in (select sk_cd from project_sk where prj_seq = #{prj_seq})
+	</select>
+	
+	<!-- 전체 기술 리스트 -->
+	<select id="getSKList" resultType="com.ojt.bean.CodeBean">
+		select * from code_detail where mst_cd = 'SK01'
+	</select>
+	
+	<!-- 프로젝트 필요기술 등록 -->
+	<insert id="insertProjectSK">
+		insert into project_sk values(#{prj_seq}, #{sk_cd})
+	</insert>
+	
+	<!-- 프로젝트 팔요기술 삭제 -->
+	<delete id="deleteProjectSK" parameterType="int">
+		delete project_sk where prj_seq = #{prj_seq}
+	</delete>
+	
+	<!-- 프로젝트 역할 리스트 -->
+	<select id="getRole" resultType="com.ojt.bean.CodeBean">
+		select * from code_detail where mst_cd = 'RO01'
+	</select>
+	
+	<!-- ===== 밸리데이션 ===== -->
+	<!-- 고객사가 존재하는지 -->
+	<select id="hasCustomer" parameterType="int" resultType="Integer">
+		select cust_seq from customer where cust_seq = ${cust_seq}
+	</select>
+	
+	<!-- 기술이 모두 존재하는지 확인 -->
+	<select id="hasSkill" parameterType="String" resultType="Integer">
+		select 
+			count(dtl_cd) 
+		from code_detail
+		where mst_cd = 'SK01' and dtl_cd in (${query})
+	</select>
+	
+</mapper>

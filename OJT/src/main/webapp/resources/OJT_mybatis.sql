@@ -96,20 +96,54 @@ delete project_member_table where prj_seq = 1 and mem_seq = 1;
 
 select * from code_detail where mst_cd = 'RO01';
 
+select cust_seq from customer where cust_seq = 1;
+
+select count(dtl_cd) from code_detail
+where mst_cd = 'SK01' and dtl_cd in ('1', '3', '4', '5', '1');
+
+select count(mem_seq) from member_info where mem_seq in (1,2,3);
 
 
 
+select * from project_info;
+select * from project_member_table;
+select * from project_sk;
 
+select * from code_detail
+where mst_cd='SK01' and
+dtl_cd in (select sk_cd from project_sk where prj_seq = 1);
 
+select 
+    prj.prj_seq,
+    prj.prj_nm,
+    prj.cust_seq,
+    cust.cust_nm,
+    prj.prj_st_dt,
+    prj.prj_ed_dt,
+    prj.maint_st_dt,
+    prj.maint_ed_dt,
+    prj.ps_cd,
+    ps.dtl_cd_nm as ps_nm
+from project_info prj
+inner join code_detail ps on ps.mst_cd = 'PS01' and prj.ps_cd = ps.dtl_cd
+inner join customer cust on cust.cust_seq = prj.cust_seq
+where prj.prj_seq = 203;
 
-
-
-
-
-
-
-
-
-
-
-
+select 
+			mem.mem_seq, 
+			mem.mem_nm, 
+			dept.dtl_cd_nm as dept, 
+			pos.dtl_cd_nm as position, 
+			pm.st_dt, pm.ed_dt,
+            ro.dtl_cd as ro_cd,
+            ro.dtl_cd_nm as role
+		from project_member_table pm 
+		inner join member_info mem on mem.mem_seq = pm.mem_seq 
+		inner join member_company mc on mc.mem_seq = mem.mem_seq 
+		left join code_detail dept on dept.mst_cd = 'DP01' and dept.dtl_cd = mc.dp_cd 
+		left join code_detail pos on pos.mst_cd = 'RA01' and pos.dtl_cd = mc.ra_cd 
+        left join code_detail ro on ro.mst_cd = 'RO01' and ro.dtl_cd = pm.ro_cd
+		where pm.prj_seq = 1;
+        
+        
+select PRJ_DTL from project_info;

@@ -112,4 +112,31 @@ article div {
 		</div><!-- 모달 끝 -->
 	</div>
 </body>
+<script>
+modalStack.push('#modalAddProjectMember');
+
+// 닫기 버튼
+document.getElementById('addProjectMemberClose').addEventListener('click', function(){
+	$('#modalAddProjectMember').html('');
+	modalStack.pop();
+})
+
+// 취소 버튼
+document.getElementById('cancelAddPMBtn').addEventListener('click', function(){
+	$('#modalAddProjectMember').html('');
+	modalStack.pop();
+})
+
+// 처음 진입시 검색 실행
+searchMember();
+
+// 모두 체크 이벤트
+document.getElementById('allCheckAddPM').addEventListener('click', allCheckAddPMEvent);
+
+// 검색 버튼 이벤트
+document.getElementById('searchBtn').addEventListener('click', searchMember);
+
+// 저장 버튼 이벤트
+document.getElementById('addPMBtn').addEventListener('click', addPMBtnEvent);
+</script>
 </html>

@@ -19,23 +19,23 @@
 					class="read-input" readonly="readonly" type="text" value="${item.mem_nm }" />
 			</td>
 			<td>
-				<input id="pmList${rowsLength + status.index}.mem_dept" name="pmList[${rowsLength + status.index}].mem_dept" 
+				<input id="pmList${rowsLength + status.index}.dept" name="pmList[${rowsLength + status.index}].dept" 
 					class="read-input" readonly="readonly" type="text" value="${item.dept }" />
 			</td>
 			<td>
-				<input id="pmList${rowsLength + status.index}.mem_position" name="pmList[${rowsLength + status.index}].mem_position" 
+				<input id="pmList${rowsLength + status.index}.position" name="pmList[${rowsLength + status.index}].position" 
 					class="read-input" readonly="readonly" type="text" value="${item.position }" />
 			</td>
 			<td>
-				<input id="pmList${rowsLength + status.index}.st_dt" name="pmList[${rowsLength + status.index}].ed_dt"
-				type="date" class="st_dt" value="${item.st_dt}" min="${startDate}" max="${item.ed_dt }"/>
+				<input id="pmList${rowsLength + status.index}.st_dt" name="pmList[${rowsLength + status.index}].st_dt"
+				type="date" class="st_dt" value="${item.st_dt}" min="${startDate}" max="${item.ed_dt }" index="${status.index}" required/>
 			</td>
 			<td>
 				<input id="pmList${rowsLength + status.index}.ed_dt" name="pmList[${rowsLength + status.index}].ed_dt"
-				type="date" class="ed_dt" value="${item.ed_dt}" min="${item.st_dt}" max="${endDate}"/>
+				type="date" class="ed_dt" value="${item.ed_dt}" min="${item.st_dt}" max="${endDate}" index="${status.index}" required/>
 			</td>
 			<td>
-				<select id="pmList${rowsLength + status.index}.ro_cd" name="pmList[${rowsLength + status.index }].ro_cd">
+				<select id="pmList${rowsLength + status.index}.ro_cd" name="pmList[${rowsLength + status.index }].ro_cd" class="role text-left">
 					<c:forEach var="role" items="${roleList}">
 						<c:choose>
 							<c:when test="${role.dtl_cd == item.ro_cd}">

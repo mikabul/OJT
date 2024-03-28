@@ -76,4 +76,15 @@ public class ProjectRestController {
 	public ResponseEntity<String> searchMember(@RequestParam(name = "search") String search){
 		return ResponseEntity.ok("성공");
 	}
+	
+	@PostMapping("/updateProjectState")
+	public ResponseEntity<String> searchMember(@RequestParam(name = "projectNumber") int[] projectNumber,
+												@RequestParam(name = "projectState") String[] projectState){
+		Boolean result = projectService.updateProjectState(projectNumber, projectState);
+		if(result) {
+			return ResponseEntity.ok("");
+		} else {
+			return ResponseEntity.status(500).body("");
+		}
+	}
 }

@@ -22,6 +22,6 @@ public class ProjectSearchBean {
 		dateType = 0;
 		firstDate = "";
 		secondDate = "";
-		view = 20;
+		view = 3;
 	}	
 }

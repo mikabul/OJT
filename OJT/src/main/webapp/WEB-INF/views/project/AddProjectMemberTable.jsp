@@ -12,8 +12,8 @@
 		<td>${item.mem_nm }</td>
 		<td>${item.dept }</td>
 		<td>${item.position }</td>
-		<td><input type="date" min="${projectStartDate}" max="${projectEndDate}"/></td>
-		<td><input type="date" min="${projectStartDate}" max="${projectEndDate}"/></td>
+		<td><input type="date" min="${startDate}" max="${endDate}"/></td>
+		<td><input type="date" min="${startDate}" max="${endDate}"/></td>
 		<td>
 			<select name="role">
 				<c:forEach var="item" items="${roleList}">

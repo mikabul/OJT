@@ -5,12 +5,16 @@ import javax.annotation.Resource;
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
-import org.mybatis.spring.mapper.MapperFactoryBean;
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
+import org.springframework.context.support.ReloadableResourceBundleMessageSource;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -20,7 +24,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.ojt.bean.MemberBean;
 import com.ojt.interceptor.AcceptLoginInterceptor;
-import com.ojt.mapper.ProjectMapper;
 
 @Configuration
 @EnableWebMvc
@@ -28,6 +31,7 @@ import com.ojt.mapper.ProjectMapper;
 @ComponentScan("com.ojt.service")
 @ComponentScan("com.ojt.dao")
 @ComponentScan("com.ojt.util")
+@MapperScan("com.ojt.mapper")
 @PropertySource("/WEB-INF/properties/db.properties")
 public class ServletAppContext implements WebMvcConfigurer{
 
@@ -55,7 +59,17 @@ public class ServletAppContext implements WebMvcConfigurer{
 		registry.addResourceHandler("/**").addResourceLocations("/resources");
 	}
 	
+	@Bean
+	public ReloadableResourceBundleMessageSource messageSource() {
+		ReloadableResourceBundleMessageSource res = new ReloadableResourceBundleMessageSource();
+		res.setBasenames("/WEB-INF/properties/error_message");
+		return res;
+	}
 	
+	@Bean
+	public static PropertySourcesPlaceholderConfigurer PropertySourcesPlaceholderConfigurer() {
+		return new PropertySourcesPlaceholderConfigurer();
+	}
 	
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
@@ -81,20 +95,19 @@ public class ServletAppContext implements WebMvcConfigurer{
 	}
 	
 	@Bean
+	public DataSourceTransactionManager transactionManager(BasicDataSource source) {
+		return new DataSourceTransactionManager(source);
+	}
+	
+	@Bean
 	public SqlSessionFactory factory(BasicDataSource source) throws Exception {
 		
 		SqlSessionFactoryBean factoryBean = new SqlSessionFactoryBean();
 		factoryBean.setDataSource(source);
+		factoryBean.setConfigLocation(new PathMatchingResourcePatternResolver().getResource("classpath:mybatis-config.xml"));
 		SqlSessionFactory factory = factoryBean.getObject();
 		
 		return factory;
 		
-	}
-	
-	@Bean
-	public MapperFactoryBean<ProjectMapper> getProjectMappber(SqlSessionFactory factory) throws Exception{
-		MapperFactoryBean<ProjectMapper> mapperFactoryBean = new MapperFactoryBean<ProjectMapper>(ProjectMapper.class);
-		mapperFactoryBean.setSqlSessionFactory(factory);
-		return mapperFactoryBean;
 	}
 }

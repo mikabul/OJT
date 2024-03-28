@@ -6,10 +6,8 @@
 <head>
 <meta charset="UTF-8">
 <title>INNOBL - 메인</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-<style>
-
-</style>
+<script src="${root}resources/lib/javascript/jquery-3.7.1.min.js"></script>
+<link rel="stylesheet" href="${root}resources/style/Main.css" />
 </head>
 <body style="margin: 60px 0;">
 	<c:import url="/WEB-INF/views/include/TopMenu.jsp" />

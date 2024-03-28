@@ -1,58 +1,3 @@
-
-function loadAddProject(){
-	// 멤버 투입일 이벤트 추가
-	let st_dt = document.querySelectorAll(".st_dt");
-	st_dt.forEach(date => {
-		date.removeEventListener('change', startDateChangeEvent);
-		date.addEventListener('change', startDateChangeEvent);
-	})
-	
-	// 멤버 철수일 이벤트 추가
-	let ed_dt = document.querySelectorAll(".ed_dt");
-	ed_dt.forEach(date => {
-		date.removeEventListener('change', endDateChangeEvent);
-		date.addEventListener('change', endDateChangeEvent);
-	})
-	
-	// 프로젝트 시작일 종료일 이벤트 추가
-	document.getElementById('prj_st_dt').addEventListener('change', prjStartDateChange);
-	document.getElementById('prj_ed_dt').addEventListener('change', prjEndDateChange);
-	
-	// 유지보수 시작일 철수일 이벤트 추가
-	document.getElementById('maint_st_dt').addEventListener('change', maintStartDateEvent);
-	document.getElementById('maint_ed_dt').addEventListener('change', maintEndDateEvent);
-	
-	// 닫기(취소) 버튼
-	document.getElementById('addProjectClose').addEventListener('click', function(){
-		$('#modalAddProject').html('');
-	})
-	document.getElementById('cancelBtn').addEventListener('click', function(){
-		$('#modalAddProject').html('');
-	})
-	
-	// 드롭다운 이벤트
-	document.getElementById('dropdown').addEventListener('click', dropdownEvent);
-	
-	// 기술 check 이벤트
-	document.querySelectorAll('input[type="checkbox"][name="prj_sk_list"]').forEach(check => {
-		check.addEventListener('click', checkedSKEvent);
-	})
-	
-	// 삭제 버튼 이벤트
-	document.getElementById('delete_addProjectBtn').addEventListener('click', delete_addProjectEvent);
-	
-	// 모두 체크 이벤트
-	document.getElementById('allCheckAddProject').addEventListener('click', allCheckAddProjectEvent);
-	
-	// 모두 체크 되었을 때의 이벤트
-	document.querySelectorAll('.checkAddProject').forEach(check => {
-		check.addEventListener('click', isAllCheckAddProject);
-	})
-	
-	// 추가 버튼 이벤트
-	document.getElementById('addPMModalBtn').addEventListener('click', addPMModalBtnEvent);
-}
-
 // 프로젝트 시작일 변경 이벤트
 function prjStartDateChange() {
 	const prj_st_dt = document.getElementById("prj_st_dt");
@@ -98,11 +43,27 @@ function prjEndDateChange() {
 	maint_ed_dt.min = value;
 }
 
+function changeProjectDateEvent(){
+	
+	// 멤버 투입일 이벤트 추가
+	let st_dt = document.querySelectorAll(".st_dt");
+	st_dt.forEach(date => {
+		date.removeEventListener('change', startDateChangeEvent);
+		date.addEventListener('change', startDateChangeEvent);
+	})
+	
+	// 멤버 철수일 이벤트 추가
+	let ed_dt = document.querySelectorAll(".ed_dt");
+	ed_dt.forEach(date => {
+		date.removeEventListener('change', endDateChangeEvent);
+		date.addEventListener('change', endDateChangeEvent);
+	})
+}
+
 // 멤버 투입일 변경 이벤트
 function startDateChangeEvent() {
 	let index = this.getAttribute("index");
 	let date = this.value;
-	console.log(date);
 	let ed_dt = document.getElementById("pmList" + index + '.ed_dt');
 	ed_dt.min = date;
 }
@@ -111,55 +72,31 @@ function startDateChangeEvent() {
 function endDateChangeEvent() {
 	let index = this.getAttribute("index");
 	let date = this.value;
-	console.log(date);
 	let st_dt = document.getElementById("pmList" + index + '.st_dt');
 	st_dt.max = date;
 }
 
-// #dropdown 이벤트
-function dropdownEvent(){
-	let show = this.show;
-	let dropdownMenu = document.getElementById('dropdownMenu');
-	
-	if(show){
-		dropdownMenu.classList.add('none');
-		this.show = false;
-		$('#dropIcon').html('▼');
-	} else {
-		dropdownMenu.classList.remove('none');
-		this.show = true;
-		adjustDropdownMenuPosition();
-		$('#dropIcon').html('▲');
+// 멤버 관련 벨리데이션
+function errorMessagesAlert(){
+	let errorsMessage = '';
+	document.querySelectorAll('#errorMessages [id$=".errors"]').forEach(item => {
+		errorsMessage += item.innerHTML + '\n';
+	});
+	if (errorsMessage.length > 0) {
+		alert('인원 추가\n\n' + errorsMessage);
 	}
 }
 
-// dropdownMenu 위치 크기 조절
-function adjustDropdownMenuPosition() {
-    var dropdown = document.getElementById("dropdown");
-    var dropdownMenu = document.getElementById("dropdownMenu");
-
-    var dropdownRect = dropdown.getBoundingClientRect(); // #dropdown의 위치 및 크기를 가져옴
-	
-    // #dropdownMenu의 위치를 조정
-    dropdownMenu.style.top = (dropdownRect.top + dropdown.offsetHeight - 4) + "px"; // #dropdown 아래로 설정
-    dropdownMenu.style.left = dropdownRect.left + "px"; // #dropdown의 왼쪽 위치에 설정
-    dropdownMenu.style.width = (dropdownRect.width - 8) + 'px';
-}
-
-// 창사이즈가 바뀔 때마다 adjustDropdownMenuPosition 호출
-window.addEventListener("resize", function() {
-    adjustDropdownMenuPosition();
-});
-
 // 프로젝트의 필요기술 리스트를 클릭 할때마다 호출되는 이벤트
 function checkedSKEvent(){
-	let prj_sk_list = document.querySelectorAll('input[type="checkbox"][name="prj_sk_list"]');
+	let prj_sk_list = document.querySelectorAll('input[type="checkbox"][name="sk_cd_list"]');
 	let tempList = [];
 	let message = '';
 	
 	prj_sk_list.forEach(check => {
 		if(check.checked){ // 체크되어있는지?
-			tempList.push(document.querySelector('label[for="' + check.id + '"]').innerHTML);
+			tempList.push(document.querySelector('label[for="' + check.id + '"]').textContent.trim());
+			// trim을 사용하여 공백을 제거해줘야함
 		}
 	})
 	
@@ -169,8 +106,9 @@ function checkedSKEvent(){
 			message += ', ' + tempList[i];
 		}
 	}
-	
-	$('#checkMessage').html(message);
+	let label = document.querySelector('#addProjectBean .dropdown-label');
+	label.innerHTML = message;
+	label.setAttribute('title', message);
 }
 
 // 유지보수 시작일 이벤트
@@ -205,6 +143,7 @@ function delete_addProjectEvent(){
 	
 	const rows = document.getElementById('pmListBody').rows;
 	let checkAddProject = document.querySelectorAll('.checkAddProject');
+	const allCheckAddProject = document.getElementById('allCheckAddProject');
 	
 	checkAddProject.forEach((check)=> {
 		if(check.checked){
@@ -216,6 +155,10 @@ function delete_addProjectEvent(){
 	if(rows.length == 0){
 		$('#pmListBody').html('<tr><td class="text-center" colspan="8">추가된 인원이 없습니다.</td></tr>');
 	}
+	
+	allCheckAddProject.checked = false;
+	
+	isScrollAddProject();
 }
 
 // 멤버 모두 선택 #allCheckAddProject
@@ -251,11 +194,78 @@ function addPMModalBtnEvent(){
 		url: '/OJT/project/showAddPMModal',
 		success: function(result){
 			$('#modalAddProjectMember').html(result);
-			loadAddProjectMember();
 		},
 		error: function(error){
 			console.log('ajax 실패');
 			console.error(error);
 		}
 	})
+}
+
+// 스크롤을 추가하는 함수
+function isScrollAddProject(){
+	const pmListBodyRows = document.getElementById('pmListBody').rows;
+	const scrollDiv = document.getElementById('scrollDiv');
+	
+	if(pmListBodyRows.length > 4){// 행이 4개를 초과한다면
+		scrollDiv.classList.add('scroll');
+	} else {
+		scrollDiv.classList.remove('scroll');
+	}
+	
+}
+
+// submit버튼 이벤트
+function addProjectBeanSubmitEvent(){
+    const form = document.getElementById('addProjectBean');
+    const formData = new FormData(form);
+    
+   	let urlSearchParams = new URLSearchParams();
+   	
+   	formData.forEach((value, key) => {
+		urlSearchParams.append(key, value);
+	})
+   	
+    $.ajax({
+        url: '/OJT/project/addProject',
+        method: 'POST',
+        contentType: false,
+        processData: false,
+        data: urlSearchParams,
+        success: function(response){
+			$('#modalAddProject').html(response);
+			const inputSuccess = document.querySelector('input[name="success"]');
+			let success;
+			if(inputSuccess){ // input[name="success"] 이 undefined가 아닌지
+				success = inputSuccess.value;
+			}
+			
+			if(success == 'true'){ 
+	            addSuccess();
+			}
+        },
+        error: function(error){
+            console.error(error);
+        }
+    });
+}
+
+// 추가에 성공 했을 경우의 함수
+function addSuccess(){
+	alert('성공');
+	const success = document.querySelector('input[name="success"]').value;
+	const prj_seq = document.querySelector('input[name="prj_seq"]').value;
+	const form = document.querySelector('form');
+	form.action = '/OJT/project/Main?&success=' + success + '&prj_seq=' + prj_seq;
+	form.submit();
+}
+
+// 프로젝트 세부사항 길이표시 이벤트
+function projectDetailLength(){
+	const projectDetail = document.getElementById('prj_dtl');
+	const projectDetailLength = document.getElementById('prj_dtl_length');
+	let maxlength = projectDetail.getAttribute('maxlength');
+	let length = projectDetail.value.length;
+	
+	projectDetailLength.innerHTML = length + '/' + maxlength;
 }

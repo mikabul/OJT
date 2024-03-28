@@ -2,15 +2,12 @@ package com.ojt.dao;
 
 import java.util.ArrayList;
 
-import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.ojt.bean.CodeBean;
 import com.ojt.bean.CustomerBean;
-import com.ojt.bean.MemberBean;
 import com.ojt.bean.ProjectBean;
-import com.ojt.bean.ProjectMemberBean;
 import com.ojt.mapper.ProjectMapper;
 
 @Repository
@@ -41,6 +38,26 @@ public class ProjectDao {
 		projectMapper.insertProject(insertProjectBean);
 	}
 	
+	// 프로젝트 현재 시퀀스
+	public int getPrj_seq() {
+		return projectMapper.getPrj_seq();
+	}
+	
+	// 프로젝트 정보
+	public ProjectBean getProjectInfo(int prj_seq) {
+		return projectMapper.getProjectInfo(prj_seq);
+	}
+	
+	// 프로젝트 상태 리스트
+	public ArrayList<CodeBean> getPsList(){
+		return projectMapper.getPsList();
+	}
+	
+	// 프로젝트 상태 리스트 String 배열
+	public ArrayList<String> getStringListProjectState() {
+		return projectMapper.getStringListProjectState();
+	}
+	
 	// 프로젝트 상태 수정
 	public void updateProjectState(ProjectBean updateProjectBean) {
 		projectMapper.updateProjectState(updateProjectBean);
@@ -58,8 +75,8 @@ public class ProjectDao {
 	
 	//========== 프로젝트 필요 기술 ===========
 	// 프로젝트 필요기술 조회
-	public String[] getProjectSKList(String sk_cd) {
-		return projectMapper.getProjectSKList(sk_cd);
+	public ArrayList<CodeBean> getProjectSKList(int prj_seq) {
+		return projectMapper.getProjectSKList(prj_seq);
 	}
 	
 	// 기술 전체 리스트
@@ -77,39 +94,17 @@ public class ProjectDao {
 		projectMapper.deleteProjectSK(prj_seq);
 	}
 	
-	//============== 프로젝트 멤버 ====================
-	// 프로젝트 멤버 조회
-	public ArrayList<ProjectMemberBean> getProjectMemberList(int prj_seq){
-		return projectMapper.getProjectMemberList(prj_seq);
-	}
-	
-	// 프로젝트 멤버 인원 등록 조회
-	public ArrayList<MemberBean> searchNotProjectMember(int prj_seq, String mem_nm){
-		return projectMapper.searchNotProjectMember(prj_seq, mem_nm);
-	}
-	
-	// 신규 프로젝트 멤버 인원 등록 조회
-	public ArrayList<MemberBean> getNotAddProjectMember(String str, String optionalQuery){
-		return projectMapper.getNotAddProjectMember(str, optionalQuery);
-	}
-	
-	// 프로젝트 멤버 등록
-	public void insertProjectMember(ProjectMemberBean insertProjectMemberBean) {
-		projectMapper.insertProjectMember(insertProjectMemberBean);
-	}
-	
-	// 프로젝트 멤버 수정
-	public void updateProjectMember(ProjectMemberBean updateProjectMemberBean) {
-		projectMapper.updateProjectMember(updateProjectMemberBean);
-	}
-	
-	// 프로젝트 멤버 삭제
-	public void deleteProjectMember(ProjectMemberBean deleteProjectMemberBean) {
-		projectMapper.deleteProjectMember(deleteProjectMemberBean);
-	}
-	
 	// 프로젝트 역할 리스트
-	public ArrayList<CodeBean> getRole(){
+	public ArrayList<CodeBean> getRole() {
 		return projectMapper.getRole();
+	}
+	
+	//================== 밸리데이션 =========================
+	public Integer hasCustomer(int cust_seq) {
+		return projectMapper.hasCustomer(cust_seq);
+	}
+	
+	public Integer hasSkill(String query) {
+		return projectMapper.hasSkill(query);
 	}
 }
