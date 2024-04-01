@@ -7,32 +7,32 @@ import lombok.Setter;
 @Setter
 public class MemberBean {
 
-	private int mem_seq;					// 사원 번호
-	private String mem_nm;					// 사원 이름
-	private String mem_id;					// 아이디
-	private String mem_pw;					// 비밀번호
-	private String mem_pw2;					// 확인용 비밀번호
-	private String mem_rrn_prefix;			// 주민등록번호 앞자리
-	private String mem_rrn_suffix;			// 주민등록번호 뒷자리
-	private String mem_tel;					// 연락처
-	private String mem_phone;				// 휴대전화
-	private String mem_email;				// 이메일
-	private String gd_cd;					// 성별 코드
-	private String dp_cd;					// 부서 코드
-	private String ra_cd;					// 직급 코드
-	private String mem_zoneCode;			// 우편번호
-	private String mem_addr;				// 주소
-	private String mem_detailAddr;			// 상세주소
-	private String mem_extraAddr;			// 참고주소
-	private String mem_pic;					// 사진경로
-	private String st_cd;					// 재직 상태 코드
-	private String mem_hire_date;			// 입사일
-	private String mem_resignation_date;	//퇴사일
+	private int memberNumber;					// 사원 번호
+	private String memberName;					// 사원 이름
+	private String memberId;					// 아이디
+	private String memberPW;					// 비밀번호
+	private String memberPW2;					// 확인용 비밀번호
+	private String memberRnnPrefix;			// 주민등록번호 앞자리
+	private String memberRnnsuffix;			// 주민등록번호 뒷자리
+	private String tel;					// 연락처
+	private String phone;				// 휴대전화
+	private String email;				// 이메일
+	private String genderCode;					// 성별 코드
+	private String departmentCode;					// 부서 코드
+	private String positionCode;					// 직급 코드
+	private String zoneCode;			// 우편번호
+	private String address;				// 주소
+	private String detailAddress;			// 상세주소
+	private String extraAddress;			// 참고주소
+	private String picture;					// 사진경로
+	private String statusCode;					// 재직 상태 코드
+	private String hireDate;			// 입사일
+	private String resignationDate;	//퇴사일
 	
 	private String gender;					//성별
-	private String dept; 					// 부서
+	private String department; 					// 부서
 	private String position; 				// 직급
-	private String[] sk_nm; 				// 보유 기술 목록
+	private String[] skillList; 				// 보유 기술 목록
 	
 	private boolean loginState;
 	

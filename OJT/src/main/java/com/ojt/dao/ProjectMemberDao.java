@@ -27,8 +27,8 @@ public class ProjectMemberDao {
 	}
 
 	// 신규 프로젝트 멤버 인원 등록 조회
-	public ArrayList<MemberBean> getNotAddProjectMember(String str, String optionalQuery) {
-		return projectMemberMapper.getNotAddProjectMember(str, optionalQuery);
+	public ArrayList<MemberBean> getNotAddProjectMember(String str, int[] memberNumbers) {
+		return projectMemberMapper.getNotAddProjectMember(str, memberNumbers);
 	}
 
 	// 프로젝트 멤버 등록

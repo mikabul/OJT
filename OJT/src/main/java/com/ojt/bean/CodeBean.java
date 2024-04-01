@@ -7,8 +7,12 @@ import lombok.Setter;
 @Setter
 public class CodeBean {
 
-	private String mst_cd;
-	private String dtl_cd;
-	private String dtl_cd_nm;
+	private String masterCode;
+	private String detailCode;
+	private String codeName;
 	
+	@Override
+	public String toString() {
+		return "마스터 코드 : " + masterCode + " || 디테일 코드 : " + detailCode + " || 디테일 코드 네임 : " + codeName;
+	}
 }

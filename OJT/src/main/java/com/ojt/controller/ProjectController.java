@@ -26,6 +26,7 @@ import com.ojt.bean.MemberBean;
 import com.ojt.bean.ProjectBean;
 import com.ojt.bean.ProjectMemberBean;
 import com.ojt.bean.ProjectSearchBean;
+import com.ojt.service.ProjectMemberService;
 import com.ojt.service.ProjectService;
 import com.ojt.validator.ProjectValidator;
 
@@ -35,6 +36,9 @@ public class ProjectController {
 	
 	@Autowired
 	private ProjectService projectService;
+	
+	@Autowired
+	private ProjectMemberService projectMemberService;
 	
 	@RequestMapping("/Main")
 	public String main(@ModelAttribute("projectSearchBean") ProjectSearchBean projectSearchBean,
@@ -95,12 +99,12 @@ public class ProjectController {
 	
 	@GetMapping("/getNotAddProjectMember")
 	public String getNotAddProjectMember(@RequestParam("search") String search,
-										@RequestParam(name = "seqList", required = false) int[] seqList,
+										@RequestParam(name = "memberNumbers", required = false) int[] memberNumbers,
 										@RequestParam("startDate") String startDate,
 										@RequestParam("endDate") String endDate,
 										Model model) {
 		
-		ArrayList<MemberBean> memberList = projectService.getNotAddProjectMember(search, seqList); //프로젝트에 참여하지 않은 멤버 리스트
+		ArrayList<MemberBean> memberList = projectMemberService.getNotAddProjectMember(search, memberNumbers); //프로젝트에 참여하지 않은 멤버 리스트
 		ArrayList<CodeBean> roleList = projectService.getRole(); // 전체 역할 리스트
 		
 		model.addAttribute("memberList", memberList);
@@ -134,13 +138,13 @@ public class ProjectController {
 			if(addPMListNode != null && addPMListNode.isArray()) {
 				for(JsonNode node : addPMListNode) {
 					ProjectMemberBean pm = new ProjectMemberBean();
-					pm.setMem_seq(node.get("mem_seq").asInt());
-					pm.setMem_nm(node.get("mem_nm").asText());
-					pm.setDept(node.get("dept").asText());
+					pm.setMemberNumber(node.get("memberNumber").asInt());
+					pm.setMemberName(node.get("memberName").asText());
+					pm.setDepartment(node.get("department").asText());
 					pm.setPosition(node.get("position").asText());
-					pm.setSt_dt(node.get("st_dt").asText());
-					pm.setEd_dt(node.get("ed_dt").asText());
-					pm.setRo_cd(node.get("ro_cd").asText());
+					pm.setStartDate(node.get("startDate").asText());
+					pm.setEndDate(node.get("endDate").asText());
+					pm.setRoleCode(node.get("roleCode").asText());
 					
 					addPMList.add(pm);
 				}
@@ -177,20 +181,35 @@ public class ProjectController {
 			return "/project/AddProject";
 		}
 		model.addAttribute("success", true);
-		model.addAttribute("prj_seq", projectService.getPrj_seq());
+		model.addAttribute("projectNumber", projectService.getProjectNumber());
 		
 		return "/project/AddProject";
 	}
 	
 	@GetMapping("/projectInfo")
-	public String projectInfo(@RequestParam("prj_seq") int prj_seq,
+	public String projectInfo(@RequestParam("projectNumber") int projectNumber,
 								Model model) {
 
-		ProjectBean projectBean = projectService.getProjectInfo(prj_seq);
+		ProjectBean projectBean = projectService.getProjectInfo(projectNumber);
 		
 		model.addAttribute("projectBean", projectBean);
 		
 		return "/project/ProjectInfo";
+	}
+	
+	@GetMapping("/projectMember")
+	public String projectMember(@RequestParam("projectNumber") int projectNumber, Model model) {
+		
+		ProjectBean projectBean = projectService.getProjectInfo(projectNumber); // 프로젝트 정보
+		
+		ArrayList<ProjectMemberBean> projectMemberList = projectMemberService.getProjectMemberList(projectNumber); //프로젝트 멤버 리스트
+		projectBean.setPmList(projectMemberList);
+		model.addAttribute("projectBean", projectBean);
+		
+		ArrayList<CodeBean> roleList = projectService.getRole();//역할 리스트
+		model.addAttribute("roleList", roleList);
+		System.out.println(projectBean.getPmList().toString());
+		return "/project/ProjectMember";
 	}
 	
 	@InitBinder

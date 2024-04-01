@@ -18,14 +18,14 @@ public class ProjectDao {
 	
 	//=========== 프로젝트 ============
 	// 프로젝트 검색
-	public ArrayList<ProjectBean> searchProjectList(String prj_nm, String optionalQuery, int index, int endIndex){
-		return projectMapper.searchProjectList(prj_nm, optionalQuery, index, endIndex);
+	public ArrayList<ProjectBean> searchProjectList(String projectName, String optionalQuery, int index, int endIndex){
+		return projectMapper.searchProjectList(projectName, optionalQuery, index, endIndex);
 	}
 	
 	// 프로젝트 검색 - 페이징 처리
 	// 같은 조건으로 검색시의 최대 개수
-	public int searchProjectListMaxCount(String prj_nm, String optionalQuery){
-		return projectMapper.searchProjectListMaxCount(prj_nm, optionalQuery);
+	public int searchProjectListMaxCount(String projectName, String optionalQuery){
+		return projectMapper.searchProjectListMaxCount(projectName, optionalQuery);
 	}
 	
 	// select2의 데이터 리스트
@@ -39,13 +39,13 @@ public class ProjectDao {
 	}
 	
 	// 프로젝트 현재 시퀀스
-	public int getPrj_seq() {
-		return projectMapper.getPrj_seq();
+	public int getProjectNumber() {
+		return projectMapper.getProjectNumber();
 	}
 	
 	// 프로젝트 정보
-	public ProjectBean getProjectInfo(int prj_seq) {
-		return projectMapper.getProjectInfo(prj_seq);
+	public ProjectBean getProjectInfo(int projectNumber) {
+		return projectMapper.getProjectInfo(projectNumber);
 	}
 	
 	// 프로젝트 상태 리스트
@@ -69,14 +69,14 @@ public class ProjectDao {
 	}
 	
 	// 프로젝트 삭제
-	public void deleteProject(int prj_seq) {
-		projectMapper.deleteProject(prj_seq);
+	public void deleteProject(int projectNumber) {
+		projectMapper.deleteProject(projectNumber);
 	}
 	
 	//========== 프로젝트 필요 기술 ===========
 	// 프로젝트 필요기술 조회
-	public ArrayList<CodeBean> getProjectSKList(int prj_seq) {
-		return projectMapper.getProjectSKList(prj_seq);
+	public ArrayList<CodeBean> getProjectSKList(int projectNumber) {
+		return projectMapper.getProjectSKList(projectNumber);
 	}
 	
 	// 기술 전체 리스트
@@ -85,13 +85,13 @@ public class ProjectDao {
 	}
 	
 	// 프로젝트 필요기술 등록
-	public void insertProjectSK(int prj_seq, String sk_cd) {
-		projectMapper.insertProjectSK(prj_seq, sk_cd);
+	public void insertProjectSK(int projectNumber, String skillCode) {
+		projectMapper.insertProjectSK(projectNumber, skillCode);
 	}
 	
 	// 프로젝트 필요기술 삭제
-	public void deleteProjectSK(int prj_seq) {
-		projectMapper.deleteProjectSK(prj_seq);
+	public void deleteProjectSK(int projectNumber) {
+		projectMapper.deleteProjectSK(projectNumber);
 	}
 	
 	// 프로젝트 역할 리스트
@@ -100,8 +100,8 @@ public class ProjectDao {
 	}
 	
 	//================== 밸리데이션 =========================
-	public Integer hasCustomer(int cust_seq) {
-		return projectMapper.hasCustomer(cust_seq);
+	public Integer hasCustomer(int customerNumber) {
+		return projectMapper.hasCustomer(customerNumber);
 	}
 	
 	public Integer hasSkill(String query) {

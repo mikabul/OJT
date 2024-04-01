@@ -7,7 +7,7 @@ import lombok.Setter;
 @Setter
 public class CustomerBean {
 	
-	private int cust_seq;
-	private String cust_nm;
+	private int customerNumber;
+	private String customerName;
 	
 }

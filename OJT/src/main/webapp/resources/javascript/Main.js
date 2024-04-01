@@ -1,4 +1,5 @@
 // input 글자수 제한 이벤트 주입 함수
+// 호출시 input[type="text"] 와 textarea의 길이제한 이벤트 주입
 function lengthLimitEvent(){
 	document.querySelectorAll('input[type="text"], textarea').forEach(input => {
 		input.removeEventListener('keydown', lengthLimit);
@@ -11,12 +12,12 @@ function lengthLimit(event){
 
 	let limit = this.getAttribute('maxlength');
 	let name = this.getAttribute('name');
-	
+	console.log(name);
 	if(limit != '' && this.value.length >= limit && (event.keyCode !== 8 || event.which !== 8)){
-		document.getElementById(name + "_length.errors").innerHTML = limit + '글자까지 가능합니다.';
+		document.getElementById(name + "Length.errors").innerHTML = limit + '글자까지 가능합니다.';
 	}
 	else {
-		document.getElementById(name + "_length.errors").innerHTML = '';
+		document.getElementById(name + "Length.errors").innerHTML = '';
 	}
 }
 
@@ -77,4 +78,53 @@ function adjustDropdownMenuPosition(){
         dropdownMenu.style.top = (dropdownRect.top + dropdownRect.height ) + 'px';
         dropdownMenu.style.width = dropdownRect.width + 'px';
     });
+}
+
+
+// 스크롤 추가 펑션
+function isScroll(){
+	const currModal = modalStack[modalStack.length - 1];
+	const scrollDiv = document.querySelector(currModal + ' #scrollDiv');
+	const scroll = scrollDiv.dataset.scroll;
+	const rows = scrollDiv.querySelector('tbody').rows;
+	
+	if(rows.length > scroll){
+		scrollDiv.classList.add('scroll');
+	} else {
+		scrollDiv.classList.remove('scroll');
+	}
+	
+}
+
+// 체크박스 이벤트 주입
+function checkEvent(){
+	const currModal = modalStack[modalStack.length - 1];
+	const allCheckbox = document.querySelector(currModal + ' .allCheck');
+	const checkboxs = document.querySelectorAll(currModal + ' .check');
+	
+	allCheckbox.addEventListener('click', allCheckboxEvent);
+	Array.from(checkboxs).forEach(checkbox => {
+		checkbox.addEventListener('click', checkboxEvent);
+	})
+}
+
+// 모두 체크
+function allCheckboxEvent(){
+	const currModal = modalStack[modalStack.length - 1];
+	const checkboxs = document.querySelectorAll(currModal + ' .check');
+	checkboxs.forEach(checkbox => {
+		checkbox.checked = this.checked;
+	})
+}
+
+// 체크박스 클릭 이벤트
+function checkboxEvent(){
+	const currModal = modalStack[modalStack.length - 1];
+	const checkboxs = tbody.querySelectorAll(currModal + ' input[type="checkbox"]');
+	
+	if(Array.from(checkboxs).every(checkbox => checkbox.checked)){
+		document.querySelector(currModal + ' .allCheck').checked = true;
+	} else {
+		document.querySelector(currModal + ' .allCheck').checked = false;
+	}
 }

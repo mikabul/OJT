@@ -1,60 +1,60 @@
 // 프로젝트 시작일 변경 이벤트
 function prjStartDateChange() {
-	const prj_st_dt = document.getElementById("prj_st_dt");
-	const prj_ed_dt = document.getElementById('prj_ed_dt');
-	const value = prj_st_dt.value;
+	const projectStratDate = document.getElementById("projectStartDate");
+	const projectEndDate = document.getElementById('projectEndDate');
+	const value = projectStratDate.value;
 
-	const st_dt = document.querySelectorAll(".st_dt");
-	const ed_dt = document.querySelectorAll(".ed_dt");
+	const startDate = document.querySelectorAll(".startDate");
+	const endDate = document.querySelectorAll(".endDate");
 
-	st_dt.forEach(date => {
+	startDate.forEach(date => {
 		date.min = value;
 	})
 
-	ed_dt.forEach(date => {
+	endDate.forEach(date => {
 		date.min = value;
 	})
 	
-	prj_ed_dt.min = value;
+	projectEndDate.min = value;
 }
 
 // 프로젝트 종료일 변경 이벤트
 function prjEndDateChange() {
-	const prj_ed_dt = document.getElementById("prj_ed_dt");
-	const prj_st_dt = document.getElementById("prj_st_dt");
-	const value = prj_ed_dt.value;
+	const projectEndDate = document.getElementById("projectEndDate");
+	const projectStartDate = document.getElementById("projectStartDate");
+	const value = projectEndDate.value;
 
-	const st_dt = document.querySelectorAll(".st_dt");
-	const ed_dt = document.querySelectorAll(".ed_dt");
-	const maint_st_dt = document.getElementById('maint_st_dt');
-	const maint_ed_dt = document.getElementById('maint_ed_dt');
+	const startDate = document.querySelectorAll(".startDate");
+	const endDate = document.querySelectorAll(".endDate");
+	const maintStartDate = document.getElementById('maintStartDate');
+	const maintEndDate = document.getElementById('maintEndDate');
 
-	if(maint_ed_dt.value == ''){
-		st_dt.forEach(date => {
+	if(maintEndDate.value == ''){
+		startDate.forEach(date => {
 			date.max = value;
 		});
-		ed_dt.forEach(date => {
+		endDate.forEach(date => {
 			date.max = value;
 		});
 	}
 	
-	prj_st_dt.max = value;
-	maint_st_dt.min = value;
-	maint_ed_dt.min = value;
+	projectStartDate.max = value;
+	maintStartDate.min = value;
+	maintEndDate.min = value;
 }
 
 function changeProjectDateEvent(){
 	
 	// 멤버 투입일 이벤트 추가
-	let st_dt = document.querySelectorAll(".st_dt");
-	st_dt.forEach(date => {
+	let startDate = document.querySelectorAll(".startDate");
+	startDate.forEach(date => {
 		date.removeEventListener('change', startDateChangeEvent);
 		date.addEventListener('change', startDateChangeEvent);
 	})
 	
 	// 멤버 철수일 이벤트 추가
-	let ed_dt = document.querySelectorAll(".ed_dt");
-	ed_dt.forEach(date => {
+	let endDate = document.querySelectorAll(".endDate");
+	endDate.forEach(date => {
 		date.removeEventListener('change', endDateChangeEvent);
 		date.addEventListener('change', endDateChangeEvent);
 	})
@@ -64,16 +64,16 @@ function changeProjectDateEvent(){
 function startDateChangeEvent() {
 	let index = this.getAttribute("index");
 	let date = this.value;
-	let ed_dt = document.getElementById("pmList" + index + '.ed_dt');
-	ed_dt.min = date;
+	let endDate = document.getElementById("pmList" + index + '.endDate');
+	endDate.min = date;
 }
 
 // 멤버 철수일 변경 이벤트
 function endDateChangeEvent() {
 	let index = this.getAttribute("index");
 	let date = this.value;
-	let st_dt = document.getElementById("pmList" + index + '.st_dt');
-	st_dt.max = date;
+	let startDate = document.getElementById("pmList" + index + '.startDate');
+	startDate.max = date;
 }
 
 // 멤버 관련 벨리데이션
@@ -89,11 +89,11 @@ function errorMessagesAlert(){
 
 // 프로젝트의 필요기술 리스트를 클릭 할때마다 호출되는 이벤트
 function checkedSKEvent(){
-	let prj_sk_list = document.querySelectorAll('input[type="checkbox"][name="sk_cd_list"]');
+	let checkboxs = document.querySelectorAll('input[type="checkbox"][name="skillCodeList"]');
 	let tempList = [];
 	let message = '';
 	
-	prj_sk_list.forEach(check => {
+	checkboxs.forEach(check => {
 		if(check.checked){ // 체크되어있는지?
 			tempList.push(document.querySelector('label[for="' + check.id + '"]').textContent.trim());
 			// trim을 사용하여 공백을 제거해줘야함
@@ -115,27 +115,27 @@ function checkedSKEvent(){
 function maintStartDateEvent(){
 	let value = this.value;
 	
-	const maint_ed_dt = document.getElementById('maint_ed_dt');
-	maint_ed_dt.min = value;
+	const maintEndDate = document.getElementById('maintEndDate');
+	maintEndDate.min = value;
 }
 
 // 유지보수 종료일 이벤트
 function maintEndDateEvent(){
 	let value = this.value;
 	
-	const st_dt = document.querySelectorAll(".st_dt");
-	const ed_dt = document.querySelectorAll(".ed_dt");
-	const maint_st_dt = document.getElementById('maint_st_dt');
+	const startDate = document.querySelectorAll(".startDate");
+	const endDate = document.querySelectorAll(".endDate");
+	const maintStartDate = document.getElementById('maintStartDate');
 	
-	st_dt.forEach(date => {
+	startDate.forEach(date => {
 		date.max = value;
 	})
 	
-	ed_dt.forEach(date => {
+	endDate.forEach(date => {
 		date.max = value;
 	})
 	
-	maint_st_dt.max = value;
+	maintStartDate.max = value;
 }
 
 // 프로젝트 멤버 삭제 버튼 이벤트
@@ -158,7 +158,7 @@ function delete_addProjectEvent(){
 	
 	allCheckAddProject.checked = false;
 	
-	isScrollAddProject();
+	isScroll();
 }
 
 // 멤버 모두 선택 #allCheckAddProject
@@ -202,19 +202,6 @@ function addPMModalBtnEvent(){
 	})
 }
 
-// 스크롤을 추가하는 함수
-function isScrollAddProject(){
-	const pmListBodyRows = document.getElementById('pmListBody').rows;
-	const scrollDiv = document.getElementById('scrollDiv');
-	
-	if(pmListBodyRows.length > 4){// 행이 4개를 초과한다면
-		scrollDiv.classList.add('scroll');
-	} else {
-		scrollDiv.classList.remove('scroll');
-	}
-	
-}
-
 // submit버튼 이벤트
 function addProjectBeanSubmitEvent(){
     const form = document.getElementById('addProjectBean');
@@ -254,16 +241,16 @@ function addProjectBeanSubmitEvent(){
 function addSuccess(){
 	alert('성공');
 	const success = document.querySelector('input[name="success"]').value;
-	const prj_seq = document.querySelector('input[name="prj_seq"]').value;
+	const projectNumber = document.querySelector('input[name="projectNumber"]').value;
 	const form = document.querySelector('form');
-	form.action = '/OJT/project/Main?&success=' + success + '&prj_seq=' + prj_seq;
+	form.action = '/OJT/project/Main?&success=' + success + '&projectNumber=' + projectNumber;
 	form.submit();
 }
 
 // 프로젝트 세부사항 길이표시 이벤트
 function projectDetailLength(){
-	const projectDetail = document.getElementById('prj_dtl');
-	const projectDetailLength = document.getElementById('prj_dtl_length');
+	const projectDetail = document.getElementById('projectDetail');
+	const projectDetailLength = document.getElementById('projectDetailLength');
 	let maxlength = projectDetail.getAttribute('maxlength');
 	let length = projectDetail.value.length;
 	

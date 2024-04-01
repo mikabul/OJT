@@ -8,16 +8,16 @@
 <c:forEach var="item" items="${memberList}">
 	<tr>
 		<td><input type="checkbox" class="checkPM"/></td>
-		<td>${item.mem_seq}</td>
-		<td>${item.mem_nm }</td>
-		<td>${item.dept }</td>
+		<td>${item.memberNumber}</td>
+		<td>${item.memberName }</td>
+		<td>${item.department }</td>
 		<td>${item.position }</td>
 		<td><input type="date" min="${startDate}" max="${endDate}"/></td>
 		<td><input type="date" min="${startDate}" max="${endDate}"/></td>
 		<td>
 			<select name="role">
 				<c:forEach var="item" items="${roleList}">
-					<option value="${item.dtl_cd}" class="text-left">${item.dtl_cd_nm}</option>
+					<option value="${item.detailCode}" class="text-left">${item.codeName}</option>
 				</c:forEach>
 			</select>
 		</td>

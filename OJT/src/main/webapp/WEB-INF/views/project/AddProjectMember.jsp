@@ -9,32 +9,24 @@
 <meta charset="UTF-8">
 <title>프로젝트 등록 - 멤버 추가</title>
 <style>
-#resultAddPMTable {
-	min-height: 440px;
-}
-
-header {
-	margin-top: 10px;
-}
-
-section {
+.modal section {
 	margin-top: 20px;
 }
 
-section div {
+.modal section div {
 	display: flex;
 	align-items: center;
 }
 
-section div * {
+.modal section div * {
 	margin: 0 4px;
 }
 
-article div {
+.modal article div {
 	margin-top: 20px;
 }
 
-#search {
+.modal #search {
 	width: 300px;
 }
 </style>
@@ -43,18 +35,16 @@ article div {
 	<div class="modal-background">
 		<div class="modal">
 			<header>
-				<div class="justify-content-center">
-					<div class="w-20">
-						
-					</div>
-					<div class="text-center w-60">
-						<h3>프로젝트 등록 - 멤버 추가</h3>
-					</div>
-					<div class="text-right w-20">
-						<button type="button" class="closeBtn" id="addProjectMemberClose">
-							<img src="${root}resources/images/x.png" alt="" />
-						</button>
-					</div>
+				<div class="w-20">
+					<!-- 공백 -->
+				</div>
+				<div class="text-center w-60">
+					<h3>프로젝트 등록 - 멤버 추가</h3>
+				</div>
+				<div class="text-right w-20">
+					<button type="button" class="closeBtn" id="addProjectMemberClose">
+						<img src="${root}resources/images/x.png" alt="" />
+					</button>
 				</div>
 			</header>
 			<section>
@@ -67,7 +57,7 @@ article div {
 				</div>
 			</section>
 			<article>
-				<div id="resultAddPMTable">
+				<div id="scrollDiv" data-scroll="11">
 					<table class="container-center">
 						<colgroup>
 							<!-- checkbox -->

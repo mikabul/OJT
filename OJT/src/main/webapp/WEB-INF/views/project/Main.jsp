@@ -7,6 +7,9 @@
 <!DOCTYPE html>
 <html>
 <head>
+<script>
+	let modalStack = []; // 모달창을 하나씩 닫기위해 저장하는 변수
+</script>
 <meta charset="UTF-8">
 <title>INNOBL - 프로젝트</title>
 <script src="${root}resources/lib/javascript/jquery-3.7.1.min.js"></script>
@@ -26,20 +29,6 @@
 
 #searchForm>div {
 	margin: 14px 0;
-}
-
-table tbody td {
-	text-align: center;
-	padding: 5px 5px;
-	max-width: 200px;
-	overflow: hidden;
-	white-space: nowrap;
-	text-overflow: ellipsis;
-	border-top: 1px solid #E6E6E6;
-}
-
-table {
-	border-collapse: collapse;
 }
 
 table tr {
@@ -64,7 +53,7 @@ table tr {
 					<form:select class="w-30" path="customer">
 						<form:option value="0">전체</form:option>
 						<c:forEach var="item" items="${customerList}">
-							<form:option value="${item.cust_seq}">${item.cust_nm}</form:option>
+							<form:option value="${item.customerNumber}">${item.customerName}</form:option>
 						</c:forEach>
 					</form:select>
 				</div>
@@ -91,8 +80,8 @@ table tr {
 							<c:forEach var="item" items="${ psList }" varStatus="status">
 								<div>
 									<form:checkbox path="state" class="state"
-										value="${ item.dtl_cd }" />
-									<form:label path="state" for="state${status.index + 1}">${ item.dtl_cd_nm }</form:label>
+										value="${ item.detailCode }" />
+									<form:label path="state" for="state${status.index + 1}">${ item.codeName }</form:label>
 								</div>
 							</c:forEach>
 						</div>
@@ -168,20 +157,23 @@ table tr {
 							<c:forEach var="item" items="${projectList}" varStatus="status">
 								<tr>
 									<td>
-										<input type="checkbox" class="checkProject" value="${ status.index }" />
+										<label>
+											<input type="checkbox" class="checkProject" value="${ status.index }" />
+										</label>
 									</td>
-									<td>${ item.prj_seq }</td>
+									<td>${ item.projectNumber }</td>
 									<td class="text-left">
-										<a href="${root}project/projectInfo?prj_seq=${item.prj_seq}" title="${item.prj_nm} - 자세히">
-											${ item.prj_nm }
+										<a class="projectInfo" href="${root}project/projectInfo?projectNumber=${item.projectNumber}" title="${item.projectName} - 자세히">
+											${ item.projectName }
 										</a>
 									</td>
-									<td class="text-left">${ item.cust_nm }</td>
-									<td>${ item.prj_st_dt }</td>
-									<td>${ item.prj_ed_dt }</td>
-									<td data-cd="${ item.ps_cd }">${ item.ps_nm }</td>
-									<td><button type="button" class="btn"
-											value="${ item.prj_seq }">인원 관리</button></td>
+									<td class="text-left">${ item.customerName }</td>
+									<td>${ item.projectStartDate }</td>
+									<td>${ item.projectEndDate }</td>
+									<td data-cd="${ item.projectStateCode }">${ item.projectStateName }</td>
+									<td>
+										<button type="button" class="btn projectMemberBtn" value="${ item.projectNumber }">인원 관리</button>
+									</td>
 								</tr>
 							</c:forEach>
 						</c:otherwise>
@@ -234,9 +226,9 @@ table tr {
 	</div>
 	<div style="height: 100px"></div>
 	<div id="modalAddProject"></div>
-	<div id="modalAddProjectMember"></div>
 	<div id="modalProject"></div>
 	<div id="modalProjectMember"></div>
+	<div id="modalAddProjectMember"></div>
 </body>
 <script src="${root}resources/javascript/Main.js"></script>
 <script src="${root}resources/javascript/ProjectMain.js"></script>

@@ -82,20 +82,8 @@ public class ProjectService {
 		return projectDao.getRole();
 	}
 	
-	// 신규 프로젝트 인원 등록 조회
-	public ArrayList<MemberBean> getNotAddProjectMember(String str, int[] mem_seqList){
-		
-		str = "%" + str + "%";
-		String optionalQuery = getOptionalQuery(mem_seqList);
-		
-		return projectMemberDao.getNotAddProjectMember(str, optionalQuery);
-		
-	}
-	
 	// 프로젝트 등록
 	public Boolean insertProject(ProjectBean addProjectBean) {
-		
-		addProjectBean.setPs_cd("1");
 		
 		DefaultTransactionDefinition def = new DefaultTransactionDefinition();
 		TransactionStatus status = transactionManager.getTransaction(def);
@@ -105,10 +93,10 @@ public class ProjectService {
 		 * maint_st_dt와 maint_ed_dt는 null 일수 있으므로 if문을 통해 검사후 변환
 		 */
 		LocalDate now = LocalDate.now();
-		LocalDate projectStartDate = LocalDate.parse(addProjectBean.getPrj_st_dt());
-		LocalDate projectEndDate = LocalDate.parse(addProjectBean.getPrj_ed_dt());
-		String maint_st_dt = addProjectBean.getMaint_st_dt();
-		String maint_ed_dt = addProjectBean.getMaint_ed_dt();
+		LocalDate projectStartDate = LocalDate.parse(addProjectBean.getProjectStartDate());
+		LocalDate projectEndDate = LocalDate.parse(addProjectBean.getProjectEndDate());
+		String maintStartDate = addProjectBean.getMaintStartDate();
+		String maintEndDate = addProjectBean.getMaintEndDate();
 		
 		/*	
 		 * ps_cd => 상태 코드
@@ -119,52 +107,51 @@ public class ProjectService {
 		 * 5: 중단
 		 */
 		if(projectStartDate.isAfter(now)) { // 현재 날짜가 프로젝트 시작일 보다 이전일 경우
-			addProjectBean.setPs_cd("1");
+			addProjectBean.setProjectStateCode("1");
 		}
 		// 혼재 날짜가 프로젝트 시작일, 종료일 사이에 위치하거나 시작일 또는 종료일과 같을 경우
 		else if ((projectStartDate.isBefore(now) && projectEndDate.isAfter(now)) || now.equals(projectStartDate)  || now.equals(projectEndDate) ){
-			addProjectBean.setPs_cd("2");
+			addProjectBean.setProjectStateCode("2");
 		}
 		// 유지보수 시작일과 종료일 모두 비어있지 않을 경우
-		else if(maint_st_dt != null && !maint_st_dt.isEmpty() && maint_ed_dt != null && !maint_ed_dt.isEmpty()) {
-			LocalDate maintStartDate = LocalDate.parse(maint_st_dt);
-			LocalDate maintEndDate = LocalDate.parse(maint_ed_dt);
+		else if(maintStartDate != null && !maintStartDate.isEmpty() && maintEndDate != null && !maintEndDate.isEmpty()) {
+			LocalDate localMaintStartDate = LocalDate.parse(maintStartDate);
+			LocalDate localMaintEndDate = LocalDate.parse(maintEndDate);
 			
 			// 현재 날짜가 유지보수 시작일과 종료일 사이에 위치하거나 종료일과 같을 경우
-			if((maintStartDate.isBefore(now) && maintEndDate.isAfter(now)) || maintEndDate.equals(now)) {
-				addProjectBean.setPs_cd("3");
+			if((localMaintStartDate.isBefore(now) && localMaintEndDate.isAfter(now)) || maintEndDate.equals(now)) {
+				addProjectBean.setProjectStateCode("3");
 			} else {
-				addProjectBean.setPs_cd("4");
+				addProjectBean.setProjectStateCode("4");
 			}
 			
 		}
 		// 유지보수 시작일이 비어있지 않을 경우
-		else if(maint_st_dt != null && !maint_st_dt.isEmpty()){
+		else if(maintStartDate != null && !maintStartDate.isEmpty()){
 			// 종료일이 없으므로 유지보수 기간인 것으로 판단(ex 2023-01-01 ~ )
-			addProjectBean.setPs_cd("3");
+			addProjectBean.setProjectStateCode("3");
 		}
 		else {
-			addProjectBean.setPs_cd("4");
+			addProjectBean.setProjectStateCode("4");
 		}
 		
 		try {
 			// 프로젝트 등록
 			projectDao.insertProject(addProjectBean);
-			int prj_seq = projectDao.getPrj_seq();
+			int projectNumber = projectDao.getProjectNumber();
 			
 			// 프로젝트 멤버 등록
 			if(addProjectBean.getPmList() != null) {
 				for(ProjectMemberBean member : addProjectBean.getPmList()) {
-					member.setPrj_seq(prj_seq);
+					member.setProjectNumber(projectNumber);
 					projectMemberDao.insertProjectMember(member);
 				}
 			}
 			
 			// 프로젝트 필요기술 등록
-			if(addProjectBean.getSk_cd_list() != null) {
-				for(String sk_cd : addProjectBean.getSk_cd_list()) {
-					System.out.println("sk_cd : " + sk_cd);
-					projectDao.insertProjectSK(prj_seq, sk_cd);
+			if(addProjectBean.getSkillCodeList() != null) {
+				for(String skillCode : addProjectBean.getSkillCodeList()) {
+					projectDao.insertProjectSK(projectNumber, skillCode);
 				}
 			}
 			transactionManager.commit(status);
@@ -178,21 +165,21 @@ public class ProjectService {
 	}
 	
 	// 프로젝트 번호
-	public int getPrj_seq() {
-		return projectDao.getPrj_seq();
+	public int getProjectNumber() {
+		return projectDao.getProjectNumber();
 	}
 	
 	// 프로젝트 정보
-	public ProjectBean getProjectInfo(int prj_seq) {
-		ProjectBean projectBean = projectDao.getProjectInfo(prj_seq);
-		ArrayList<ProjectMemberBean> pmList = projectMemberDao.getProjectMemberList(prj_seq);
-		ArrayList<CodeBean> prj_sk_list = projectDao.getProjectSKList(prj_seq);
+	public ProjectBean getProjectInfo(int projectNumber) {
+		ProjectBean projectBean = projectDao.getProjectInfo(projectNumber);
+		ArrayList<ProjectMemberBean> pmList = projectMemberDao.getProjectMemberList(projectNumber);
+		ArrayList<CodeBean> projectSkillList = projectDao.getProjectSKList(projectNumber);
 		
 		if(pmList != null) {
 			projectBean.setPmList(pmList);
 		}
-		if(prj_sk_list != null) {
-			projectBean.setPrj_sk_list(prj_sk_list);
+		if(projectSkillList != null) {
+			projectBean.setProjectSkillList(projectSkillList);
 		}
 		
 		return projectBean;
@@ -205,13 +192,13 @@ public class ProjectService {
 	}
 	
 	// 프로젝트 삭제(여러개)
-	public Boolean deleteProjects(Integer[] projectSeqList) {
+	public Boolean deleteProjects(Integer[] projectNumbers) {
 		DefaultTransactionDefinition def = new DefaultTransactionDefinition();
 		TransactionStatus status = transactionManager.getTransaction(def);
 		try {
-			for(Integer seq : projectSeqList) {
-				if(seq != null) {
-					projectDao.deleteProject(seq);
+			for(Integer projectNumber : projectNumbers) {
+				if(projectNumber != null) {
+					projectDao.deleteProject(projectNumber);
 				}
 			}
 			transactionManager.commit(status);
@@ -223,7 +210,7 @@ public class ProjectService {
 	}
 	
 	// 프로젝트 상태 업데이트
-	public Boolean updateProjectState(int[] projectNumber, String[] projectState) {
+	public Boolean updateProjectState(int[] projectNumbers, String[] projectState) {
 		
 		DefaultTransactionDefinition def = new DefaultTransactionDefinition();
 		TransactionStatus status = transactionManager.getTransaction(def);
@@ -232,8 +219,8 @@ public class ProjectService {
 			ProjectBean testProjectBean;
 			ArrayList<String> testPsList = projectDao.getStringListProjectState();
 			ProjectBean updateProjectBean;
-			for(int i = 0; i < projectNumber.length; i++) {
-				testProjectBean = projectDao.getProjectInfo(projectNumber[i]);
+			for(int i = 0; i < projectNumbers.length; i++) {
+				testProjectBean = projectDao.getProjectInfo(projectNumbers[i]);
 				
 				// 업데이트 전 확인 없다면 result = false를 저장하고 반복문 중단
 				if(testProjectBean == null && !testPsList.contains(projectState[i])) {
@@ -242,8 +229,8 @@ public class ProjectService {
 				}
 				
 				updateProjectBean = new ProjectBean();
-				updateProjectBean.setPrj_seq(projectNumber[i]);
-				updateProjectBean.setPs_cd(projectState[i]);
+				updateProjectBean.setProjectNumber(projectNumbers[i]);
+				updateProjectBean.setProjectStateCode(projectState[i]);
 				
 				projectDao.updateProjectState(updateProjectBean);
 			}
@@ -269,14 +256,14 @@ public class ProjectService {
 	}
 	
 	// optionalQuery(프로젝트 검색)
-	private String getOptionalQuery(int cust_seq, int dateType, String firstDate, String secondDate,
+	private String getOptionalQuery(int customerNumber, int dateType, String firstDate, String secondDate,
 									int[] state) {
 		
 		String optionalQuery = "";
 		
 		// 고객사 검색 쿼리
-		if(cust_seq != 0) {
-			optionalQuery += " and prj.cust_seq = " + cust_seq + " ";
+		if(customerNumber != 0) {
+			optionalQuery += " and prj.cust_seq = " + customerNumber + " ";
 		}
 		
 		// 기간 검색 쿼리
@@ -315,27 +302,13 @@ public class ProjectService {
 		return optionalQuery;
 	}
 	
-	// optionalQuery(신규 프로젝트 인원 검색)
-	private String getOptionalQuery(int[] mem_seqList) {
-		String optionalQuery = "";
-		
-		if(mem_seqList != null && mem_seqList.length > 0) {
-			optionalQuery += "and mem.mem_seq not in (" + mem_seqList[0];
-			for(int i = 1; i < mem_seqList.length; i++) {
-				optionalQuery += "," + mem_seqList[i];
-			}
-			optionalQuery += ") ";
-		}
-		return optionalQuery;
-	}
-	
 	//================ 밸리데이션 =================
 	// 해당 고객사가 존재하는지
-	public Boolean hasCustomer(int cust_seq) {
+	public Boolean hasCustomer(int customerNumber) {
 		
-		Integer tempCust_seq = projectDao.hasCustomer(cust_seq);
+		Integer tempCustomerNumber = projectDao.hasCustomer(customerNumber);
 		
-		if(tempCust_seq != null) { // 고객사가 존재한다면 false반환
+		if(tempCustomerNumber != null) { // 고객사가 존재한다면 false반환
 			return false;
 		} else {
 			return true;
@@ -343,18 +316,15 @@ public class ProjectService {
 	}
 	
 	// 기술이 모두 존재하는지
-	public Boolean hasSkill(String[] prj_sk_list, int skLength) {
+	public Boolean hasSkill(String[] skillCodeList, int skLength) {
 		
-		String query = prj_sk_list[0];
+		String query = skillCodeList[0];
 		
-		for(int i = 1; i < prj_sk_list.length; i++) {
-			query += "," + prj_sk_list[i];
-			System.out.println( prj_sk_list[i]);
+		for(int i = 1; i < skillCodeList.length; i++) {
+			query += "," + skillCodeList[i];
 		}
 		
 		Integer countSkill = projectDao.hasSkill(query);
-		System.out.println("query : " + query);
-		System.out.println(countSkill);
 		if(countSkill == skLength) { //두개의 값이 같다면 false 반환
 			return false;
 		} else {

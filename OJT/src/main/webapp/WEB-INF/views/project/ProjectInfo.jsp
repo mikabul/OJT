@@ -9,12 +9,8 @@
 <meta charset="UTF-8">
 <title>프로젝트 정보</title>
 <style>
-	.modal header{
-		display: flex;
-		align-items: center;
-	}
 	
-	.container > div {
+	.modal .container > div {
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
@@ -22,52 +18,49 @@
 		
 	}
 	
-	.row-4 > div:nth-child(1), .row-4 > div:nth-child(3){
+	.modal .row-4 > div:nth-child(1), .modal .row-4 > div:nth-child(3){
 		width: 134px;
 	}
 	
-	.row-4 > div:nth-child(2), .row-4 > div:nth-child(4){
+	.modal .row-4 > div:nth-child(2), .modal .row-4 > div:nth-child(4){
 		width: 198px;
 /* 		border: 1px solid black; */
 /* 		background-color: #F1F3F4; */
 	}
 	
-	.row-2 > div:nth-child(1){
+	.modal .row-2 > div:nth-child(1){
 		width: 134px;
 	}
 	
-	.row-2 > div:nth-child(2){
+	.modal .row-2 > div:nth-child(2){
 		width: 548px;
 /* 		border: 1px solid black; */
 /* 		background-color: #F1F3F4; */
 	}
 	
-	.row-2 > div, .row-4 > div {
+	.modal .row-2 > div, .modal .row-4 > div {
 		margin-top: 3px;
 		margin-bottom: 3px;
 		border-radius: 0.3em;
 	}
 	
-	.container > div > div {
+	.modal .container > div > div {
 		min-height: 20px;
 		padding: 6px 4px;
 		display: flex;
 		align-items: center;
 	}
 	
-	.text-area {
+	.modal .text-area {
 		min-height: 50px;
 		font-size: 15px;
 		max-height: 132px;
 	}
 	
-	section {
+	.modal section {
 		margin-top: 30px;
 	}
-	
-	section:nth-child(3) > div:nth-child(2){
-		height: 228px;
-	}
+
 </style>
 </head>
 <body>
@@ -89,43 +82,43 @@
 				<div class="container container-center">
 					<div class="row-4">
 						<div>프로젝트 번호</div>
-						<div>${projectBean.prj_seq}</div>
+						<div>${projectBean.projectNumber}</div>
 						<div>프로젝트 상태</div>
-						<div>${projectBean.ps_nm }</div>
+						<div>${projectBean.projectStateName }</div>
 					</div>
 					
 					<div class="row-2">
 						<div>프로젝트 명</div>
-						<div>${projectBean.prj_nm}</div>
+						<div>${projectBean.projectName}</div>
 					</div>
 					
 					<div class="row-2">
 						<div>고객사</div>
-						<div>${projectBean.cust_nm }</div>
+						<div>${projectBean.customerName }</div>
 					</div>
 					
 					<div class="row-4">
 						<div>기간</div>
-						<div>${projectBean.prj_st_dt }</div>
+						<div>${projectBean.projectStartDate }</div>
 						<div>
 							<div class="w-100">~</div>
 						</div>
-						<div>${projectBean.prj_ed_dt }</div>
+						<div>${projectBean.projectEndDate }</div>
 					</div>
 					<div class="row-4">
 						<div>유지보수</div>
-						<div>${projectBean.maint_st_dt }</div>
+						<div>${projectBean.maintStartDate }</div>
 						<div>
 							<div class="w-100">~</div>
 						</div>
-						<div>${projectBean.maint_ed_dt }</div>
+						<div>${projectBean.maintEndDate }</div>
 					</div>
 					<div class="row-2">
 						<div>필요 기술</div>
 						<div>
-							<c:forEach var="item" items="${projectBean.prj_sk_list }" varStatus="status">
-								${item.dtl_cd_nm}
-								<c:if test="${fn:length(projectBean.prj_sk_list)-1 > status.index }">
+							<c:forEach var="item" items="${projectBean.projectSkillList }" varStatus="status">
+								${item.codeName}
+								<c:if test="${fn:length(projectBean.projectSkillList)-1 > status.index }">
 									<span>,&nbsp;</span>
 								</c:if>
 							</c:forEach>
@@ -135,7 +128,7 @@
 					<div class="row-2">
 						<div>세부사항</div>
 						<div>
-							<textarea readonly="readonly" class="read-area">${projectBean.prj_dtl}</textarea>
+							<textarea readonly="readonly" class="read-area">${projectBean.projectDetail}</textarea>
 						</div>
 					</div>
 				</div>
@@ -146,7 +139,7 @@
 					<div>멤버</div>
 					<div class="text-line"><hr /></div>
 				</div>
-				<div>
+				<div id="scrollDiv" data-scroll="6">
 					<table class="container-center">
 						<colgroup>
 							<!-- 사원 번호 -->
@@ -185,13 +178,13 @@
 								<c:otherwise>
 									<c:forEach var="item" items="${projectBean.pmList}">
 										<tr>
-											<td>${item.mem_seq }</td>
-											<td>${item.mem_nm }</td>
-											<td>${item.dept }</td>
+											<td>${item.memberNumber }</td>
+											<td>${item.memberName }</td>
+											<td>${item.department }</td>
 											<td>${item.position }</td>
-											<td>${item.st_dt }</td>
-											<td>${item.ed_dt }</td>
-											<td>${item.role }</td>
+											<td>${item.startDate }</td>
+											<td>${item.endDate }</td>
+											<td>${item.roleName }</td>
 										</tr>
 									</c:forEach>
 								</c:otherwise>
@@ -213,7 +206,6 @@
 </body>
 <script>
 modalStack.push('#modalProject'); //modal이 열릴때 해당 모달의 아이디를 저장
-projectInfoMemberScroll(); // 스크롤
 
 // 모달 닫기
 $('#projectInfoClose').on('click', function(){
@@ -227,18 +219,5 @@ $('#projectInfoCloseBtn').on('click', function(){
 	$('#modalProject').html('');
 	modalStack.pop();
 });
-
-// 프로젝트 멤버 인원이 6명 이상일때 스크롤 추가
-function projectInfoMemberScroll(){
-	let projectMemberInfoBody = document.getElementById('projectMemberInfoBody');
-	let rows = projectMemberInfoBody.rows;
-	if(rows.length >= 6){
-		let section = document.querySelectorAll('section')[1];
-		let div = section.querySelectorAll('div')[3];
-		div.classList.add('scroll');
-		console.log(section);
-		console.log(div);
-	}
-}
 </script>
 </html>

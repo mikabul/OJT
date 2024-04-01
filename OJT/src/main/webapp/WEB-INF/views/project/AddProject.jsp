@@ -9,30 +9,25 @@
 <meta charset="UTF-8">
 <title>프로젝트 등록</title>
 <style>
-	form > div {
+	.modal form > div {
 		margin: 3px 0;
 		padding: 0 3px;
 	}
 	
-	th, td{
+	.modal th, .modal td{
 		text-align: center;
 	}
 	
-	.text-top {
+	.modal .text-top {
 		vertical-align: top;
 	}
 	
-	tbody select, tbody input {
+	.modal tbody select, .modal tbody input {
 		padding: 3px 5px;
 		text-align: center;
 	}
 	
-	#scrollDiv {
-		min-height: 200px;
-		max-height: 200px;
-	}
-	
-	.dropdown-menu {
+	.modal .dropdown-menu {
 		max-height: 135px;
 	}
 	
@@ -41,21 +36,19 @@
 <body>
 	<div class="modal-background">
 		<input type="hidden" name="success" value="${success}"/>
-		<input type="hidden" name="prj_seq" value="${prj_seq}"/>
+		<input type="hidden" name="projectNumber" value="${projectNumber}"/>
 		<div class="modal">
 			<header>
-				<div class="justify-content-center">
-					<div class="w-20">
-						<span class="required">*</span>필수입력
-					</div>
-					<div class="text-center w-60">
-						<h3>프로젝트 등록</h3>
-					</div>
-					<div class="text-right w-20">
-						<button type="button" class="closeBtn" id="addProjectClose">
-							<img src="${root}resources/images/x.png" alt="" />
-						</button>
-					</div>
+				<div class="w-20">
+					<span class="required">*</span>필수입력
+				</div>
+				<div class="text-center w-60">
+					<h3>프로젝트 등록</h3>
+				</div>
+				<div class="text-right w-20">
+					<button type="button" class="closeBtn" id="addProjectClose">
+						<img src="${root}resources/images/x.png" alt="" />
+					</button>
 				</div>
 			</header>
 			<section>
@@ -63,14 +56,14 @@
 					<div class="justify-content-center">
 						<div class="w-20">프로젝트 명<span class="required">*</span></div>
 						<div class="w-30">
-							<form:input path="prj_nm" maxlength="20" placeholder="1 ~ 20 글자" required="true"/>
+							<form:input path="projectName" maxlength="20" placeholder="1 ~ 20 글자" required="true"/>
 						</div>
 						<div class="w-20 text-center" class="required">고객사<span class="required">*</span></div>
 						<div class="w-30">
-							<form:select path="cust_seq">
+							<form:select path="customerNumber">
 								<form:option value="0">-선택-</form:option>
 								<c:forEach var="item" items="${customerList}">
-									<form:option value="${item.cust_seq}">${item.cust_nm}</form:option>
+									<form:option value="${item.customerNumber}">${item.customerName}</form:option>
 								</c:forEach>
 							</form:select>
 						</div>
@@ -79,33 +72,33 @@
 					<div class="justify-content-center">
 						<div class="w-20"></div>
 						<div class="w-30">
-							<span id="prj_nm_length.errors"></span>
-							<form:errors path="prj_nm"></form:errors>
+							<span id="projectNameLength.errors"></span>
+							<form:errors path="projectName"></form:errors>
 						</div>
 						<div class="w-20"></div>
 						<div class="w-30">
-							<form:errors path="cust_seq"></form:errors>
+							<form:errors path="customerNumber"></form:errors>
 						</div>
 					</div>
 					<div class="justify-content-center">
 						<div class="w-20">프로젝트 기간<span class="required">*</span></div>
 						<div class="w-30">
-							<form:input type="date" path="prj_st_dt" required="true"/>
+							<form:input type="date" path="projectStartDate" required="true"/>
 						</div>
 						<div class="w-20 text-center">~</div>
 						<div class="w-30">
-							<form:input type="date" path="prj_ed_dt" required="true"/>
+							<form:input type="date" path="projectEndDate" required="true"/>
 						</div>
 					</div>
 					<!-- error -->
 					<div class="justify-content-center">
 						<div class="w-20"></div>
 						<div class="w-30">
-							<form:errors path="prj_st_dt"></form:errors>
+							<form:errors path="projectStartDate"></form:errors>
 						</div>
 						<div class="w-20"></div>
 						<div class="w-30">
-							<form:errors path="prj_ed_dt"></form:errors>
+							<form:errors path="projectEndDate"></form:errors>
 						</div>
 					</div>
 					<div class="justify-content-center" id="projectStatus">
@@ -113,22 +106,22 @@
 							유지보수 기간					
 						</div>
 						<div class="w-30">
-							<form:input type="date" path="maint_st_dt"/>
+							<form:input type="date" path="maintStartDate"/>
 						</div>
 						<div class="w-20 text-center">~</div>
 						<div class="w-30">
-							<form:input type="date" path="maint_ed_dt" />
+							<form:input type="date" path="maintEndDate" />
 						</div>
 					</div>
 					<!-- error -->
 					<div class="justify-content-center">
 						<div class="w-20"></div>
 						<div class="w-30">
-							<form:errors path="maint_st_dt"></form:errors>
+							<form:errors path="maintStartDate"></form:errors>
 						</div>
 						<div class="w-20"></div>
 						<div class="w-30">
-							<form:errors path="maint_ed_dt"></form:errors>
+							<form:errors path="maintEndDate"></form:errors>
 						</div>
 					</div>
 					<div class="justify-content-center">
@@ -145,9 +138,9 @@
 							<div class="dropdown-menu scroll" data-show="false" title="">
 								<c:forEach var="item" items="${skList}" varStatus="status">
 									<div style="display: flex;">
-										<form:checkbox path="sk_cd_list" value="${item.dtl_cd}"/>
-										<form:label style="flex: 1;" path="sk_cd_list" for="sk_cd_list${status.index + 1}">
-											${item.dtl_cd_nm}
+										<form:checkbox path="skillCodeList" value="${item.detailCode}"/>
+										<form:label style="flex: 1;" path="skillCodeList" for="skillCodeList${status.index + 1}">
+											${item.codeName}
 										</form:label>
 									</div>
 									<hr />
@@ -159,7 +152,7 @@
 					<div class="justify-content-center">
 						<div class="w-20"></div>
 						<div class="w-80">
-							<form:errors path="prj_sk_list"></form:errors>
+							<form:errors path="projectSkillList"></form:errors>
 						</div>
 					</div>
 					
@@ -167,25 +160,25 @@
 						<div class="w-20 text-top">세부사항</div>
 						<div class="w-80">
 							<div>
-								<form:textarea path="prj_dtl" maxlength="500" wrap="on"/>
+								<form:textarea path="projectDetail" maxlength="500" wrap="on"/>
 							</div>
 							<div class="text-right">
-								<span id="prj_dtl_length"></span>
+								<span id="projectDetailLength"></span>
 							</div>
 							<div>
-								<span id="prj_dtl_length.errors"></span>
+								<span id="projectDetailLength.errors"></span>
 							</div>
 						</div>
 					</div>
 					<div>
 						<div class="w-100">
-							<form:errors path="prj_dtl"></form:errors>
+							<form:errors path="projectDetail"></form:errors>
 						</div>
 					</div>
 					<div class="justify-content-center">
 						인원 추가<hr class="text-line"/>
 					</div>
-					<div id="scrollDiv" class="">
+					<div id="scrollDiv" data-scroll="4">
 						<table class="container-center">
 							<colgroup>
 								<!-- 체크박스 -->
@@ -231,27 +224,27 @@
 											<tr>
 												<td><input type="checkbox" class="checkAddProject"/></td>
 												<td>
-													<form:input path="pmList[${status.index}].mem_seq" class="read-input" readonly="true"/>
+													<form:input path="pmList[${status.index}].memberNumber" class="read-input" readonly="true"/>
 												</td>
 												<td>
-													<form:input path="pmList[${status.index}].mem_nm" class="read-input" readonly="true"/>
+													<form:input path="pmList[${status.index}].memberName" class="read-input" readonly="true"/>
 												</td>
 												<td>
-													<form:input path="pmList[${status.index}].dept" class="read-input" readonly="true"/>
+													<form:input path="pmList[${status.index}].department" class="read-input" readonly="true"/>
 												</td>
 												<td>
 													<form:input path="pmList[${status.index }].position" class="read-input" readonly="true"/>
 												</td>
 												<td>
-													<form:input type="date" path="pmList[${status.index}].st_dt" class="st_dt" index="${status.index }"/>
+													<form:input type="date" path="pmList[${status.index}].startDate" class="startDate" index="${status.index }"/>
 												</td>
 												<td>
-													<form:input type="date" path="pmList[${status.index}].ed_dt" class="ed_dt" index="${status.index }"/>
+													<form:input type="date" path="pmList[${status.index}].endDate" class="endDate" index="${status.index }"/>
 												</td>
 												<td>
-													<form:select path="pmList[${status.index}].ro_cd" class="role text-left">
+													<form:select path="pmList[${status.index}].roleCode" class="role text-left">
 														<c:forEach var="role" items="${roleList}">
-															<form:option value="${role.dtl_cd}">${role.dtl_cd_nm}</form:option>
+															<form:option value="${role.detailCode}">${role.codeName}</form:option>
 														</c:forEach>
 													</form:select>
 												</td>
@@ -263,10 +256,10 @@
 						</table>
 					</div>
 					<div class="none" id="errorMessages">
-						<form:errors path="mem_seq_error"></form:errors>
-						<form:errors path="st_dt_error"></form:errors>
-						<form:errors path="ed_dt_error"></form:errors>
-						<form:errors path="ro_cd_error"></form:errors>
+						<form:errors path="memberNumberError"></form:errors>
+						<form:errors path="startDateError"></form:errors>
+						<form:errors path="endDateError"></form:errors>
+						<form:errors path="roleCodeError"></form:errors>
 					</div>
 					<div class="text-right">
 						<button type="button" class="btn btn-red" id="delete_addProjectBtn">삭제</button>
@@ -288,12 +281,12 @@ modalStack.push('#modalAddProject');
 changeProjectDateEvent();
 
 // 프로젝트 시작일 종료일 이벤트 추가
-document.getElementById('prj_st_dt').addEventListener('change', prjStartDateChange);
-document.getElementById('prj_ed_dt').addEventListener('change', prjEndDateChange);
+document.getElementById('projectStartDate').addEventListener('change', prjStartDateChange);
+document.getElementById('projectEndDate').addEventListener('change', prjEndDateChange);
 
 // 유지보수 시작일 철수일 이벤트 추가
-document.getElementById('maint_st_dt').addEventListener('change', maintStartDateEvent);
-document.getElementById('maint_ed_dt').addEventListener('change', maintEndDateEvent);
+document.getElementById('maintStartDate').addEventListener('change', maintStartDateEvent);
+document.getElementById('maintEndDate').addEventListener('change', maintEndDateEvent);
 
 // 닫기(취소) 버튼
 document.getElementById('addProjectClose').addEventListener('click', function(){
@@ -309,7 +302,7 @@ document.getElementById('cancelBtn').addEventListener('click', function(){
 addDropdownEvent();
 
 // 기술 check 이벤트
-document.querySelectorAll('input[type="checkbox"][name="sk_cd_list"]').forEach(check => {
+document.querySelectorAll('input[type="checkbox"][name="skillCodeList"]').forEach(check => {
 	check.addEventListener('click', checkedSKEvent);
 })
 
@@ -343,10 +336,10 @@ checkedSKEvent();
 errorMessagesAlert();
 
 // 스크롤
-isScrollAddProject();
+isScroll();
 
 // 프로젝트 세부사항 현재 길이
 projectDetailLength();
-document.getElementById('prj_dtl').addEventListener('input', projectDetailLength);
+document.getElementById('projectDetail').addEventListener('input', projectDetailLength);
 </script>
 </html>

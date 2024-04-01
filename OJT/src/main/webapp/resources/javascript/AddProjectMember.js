@@ -1,27 +1,30 @@
 // 검색 조건을 가져와 getNotAddProjectMember 호출
 function searchMember(){
 	let search = document.getElementById('search').value;
-	let seqList = [];
+	let memberNumbers = [];
 	
 	let rows = document.getElementById('pmListBody').rows;
+	console.log(rows);
 	Array.from(rows).forEach(row => {
 		if(row.cells.length > 1){
 			let cell = row.cells[1];
-			let seq = cell.querySelector('input').value;
-			seqList.push(seq);
+			console.log(cell);
+			let number = cell.querySelector('input').value;
+			console.log(number);
+			memberNumbers.push(number);
 		}
 	});
 	
-	getNotAddProjectMember(search, seqList); //미참여 멤버 리스트
+	getNotAddProjectMember(search, memberNumbers); //미참여 멤버 리스트
 	
 }
 
 // 검색 ajax
-function getNotAddProjectMember(search, seqList){
+function getNotAddProjectMember(search, memberNumbers){
 	
-	let startDate = document.getElementById('prj_st_dt').value;
-	let projectEndDate = document.getElementById('prj_ed_dt').value;
-	let maintEndDate = document.getElementById('maint_ed_dt').value;
+	let startDate = document.getElementById('projectStartDate').value;
+	let projectEndDate = document.getElementById('projectEndDate').value;
+	let maintEndDate = document.getElementById('maintEndDate').value;
 	let endDate;
 	
 	if(maintEndDate != ''){
@@ -29,15 +32,14 @@ function getNotAddProjectMember(search, seqList){
 	} else {
 		endDate = projectEndDate;
 	}
-	console.log(startDate);
-	console.log(endDate);
+	
 	$.ajax({
 		url: '/OJT/project/getNotAddProjectMember',
 		method: 'GET',
 		traditional: true,
 		data: {
 			'search': search,
-			'seqList': seqList,
+			'memberNumbers': memberNumbers,
 			'startDate': startDate,
 			'endDate': endDate
 		},
@@ -48,7 +50,7 @@ function getNotAddProjectMember(search, seqList){
 			checkPM.forEach(check => {
 				check.addEventListener('click', isAllCheckAddPM);
 			});
-			isScrollPM(); // 스크롤 추가
+			isScroll(); // 스크롤 추가
 			
 			const memberList = document.getElementById('memberList').rows;
 			for(let i = 0; i < memberList.length; i++){
@@ -101,18 +103,6 @@ function isAllCheckAddPM(){
 	}
 }
 
-// 행이 9개 이상일 경우 스크롤 추가
-function isScrollPM(){
-	let resultAddPMTable = document.getElementById('resultAddPMTable');
-	let memberListRows = document.getElementById('memberList').rows;
-	
-	if(memberListRows.length >= 11){
-		resultAddPMTable.classList.add('scroll');
-	} else {
-		resultAddPMTable.classList.remove('scroll');
-	}
-}
-
 // 저장 버튼 이벤트
 function addPMBtnEvent(){
 	
@@ -139,13 +129,13 @@ function getCheckedPMList(){
 		}
 		if(cell[0].querySelector('input').checked){
 			addPMList.push({
-				mem_seq: cell[1].innerHTML,
-				mem_nm: cell[2].innerHTML,
-				dept: cell[3].innerHTML,
+				memberNumber: cell[1].innerHTML,
+				memberName: cell[2].innerHTML,
+				department: cell[3].innerHTML,
 				position: cell[4].innerHTML,
-				st_dt: cell[5].querySelector('input').value,
-				ed_dt: cell[6].querySelector('input').value,
-				ro_cd: cell[7].querySelector('select').value
+				startDate: cell[5].querySelector('input').value,
+				endDate: cell[6].querySelector('input').value,
+				roleCode: cell[7].querySelector('select').value
 			})
 		}
 	})
@@ -156,9 +146,9 @@ function getCheckedPMList(){
 // 체크된 멤버의 리스트를 이용하여 'addProject'에 추가
 function wirteAddProjectMember(addPMList){
 	const pmListBodyRows = document.getElementById('pmListBody').rows; //'#pmListBody'의 전체 행
-	const startDate = document.getElementById('prj_st_dt').value;
-	const projectEndDate = document.getElementById('prj_ed_dt').value;
-	const maintEndDate = document.getElementById('maint_st_dt').value;
+	const startDate = document.getElementById('projectStartDate').value;
+	const projectEndDate = document.getElementById('projectEndDate').value;
+	const maintEndDate = document.getElementById('maintEndDate').value;
 	let endDate;
 	
 	if(maintEndDate != ''){
@@ -192,9 +182,10 @@ function wirteAddProjectMember(addPMList){
 			pmListBodyHtml += result;
 			$('#pmListBody').html(pmListBodyHtml);
 			$('#modalAddProjectMember').html(''); // 창 닫기
+			modalStack.pop();
 			
 			//스코롤
-			isScrollAddProject();
+			isScroll();
 			changeProjectDateEvent();
 		},
 		error: function(error){

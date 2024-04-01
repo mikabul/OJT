@@ -5,78 +5,91 @@
 	<!-- 프로젝트 멤버 조회 -->
 	<select id="getProjectMemberList" parameterType="int" resultType="com.ojt.bean.ProjectMemberBean">
 		select 
-			mem.mem_seq, 
-			mem.mem_nm, 
-			dept.dtl_cd_nm as dept, 
+			mem.mem_seq as memberNumber, 
+			mem.mem_nm as memberName, 
+			dept.dtl_cd_nm as department, 
 			pos.dtl_cd_nm as position, 
-			pm.st_dt, pm.ed_dt,
-            ro.dtl_cd as ro_cd,
-            ro.dtl_cd_nm as role
+			pm.st_dt as startDate,
+			pm.ed_dt as endDate,
+            ro.dtl_cd as roleCode,
+            ro.dtl_cd_nm as roleName
 		from project_member_table pm 
 		inner join member_info mem on mem.mem_seq = pm.mem_seq 
 		inner join member_company mc on mc.mem_seq = mem.mem_seq 
 		left join code_detail dept on dept.mst_cd = 'DP01' and dept.dtl_cd = mc.dp_cd 
 		left join code_detail pos on pos.mst_cd = 'RA01' and pos.dtl_cd = mc.ra_cd 
         left join code_detail ro on ro.mst_cd = 'RO01' and ro.dtl_cd = pm.ro_cd
-		where pm.prj_seq = #{prj_seq}
+		where pm.prj_seq = #{projectNumber}
+		order by mem.mem_seq
 	</select>
 	
 	<!-- 프로젝트 멤버 인원 등록 조회 -->
 	<select id="searchNotProjectMember" resultType="com.ojt.bean.MemberBean">
 		select 
-			mem.mem_seq, 
-			mem.mem_nm, 
-			dept.dtl_cd_nm as dept, 
+			mem.mem_seq as memberNumber, 
+			mem.mem_nm as memberName, 
+			dept.dtl_cd_nm as department, 
 			pos.dtl_cd_nm as position 
 		from member_info mem 
 		inner join member_company mc on mc.mem_seq = mem.mem_seq 
 		left join code_detail dept on dept.mst_cd = 'DP01' and dept.dtl_cd = mc.dp_cd 
 		left join code_detail pos on pos.mst_cd = 'RA01' and pos.dtl_cd = mc.ra_cd 
 		where mem.mem_seq not in (
-			select 
-				pm.mem_seq
-			from project_member_table pm 
-			where pm.prj_seq = #{prj_seq}
-		) and mem.mem_nm like #{mem_nm}
+				select 
+					pm.mem_seq
+				from project_member_table pm 
+				where pm.prj_seq = #{projectNumber}
+				)
+			and mem.mem_nm like #{memberName}
+		order by mem.mem_seq
 	</select>
 	
 	<!-- 신규 프로젝트 멤버 인원 등록 조회 -->
 	<select id="getNotAddProjectMember" resultType="com.ojt.bean.MemberBean">
 		select 
-			mem.mem_seq, 
-			mem.mem_nm, 
-			dept.dtl_cd_nm as dept, 
+			mem.mem_seq as memberNumber, 
+			mem.mem_nm as memberName, 
+			dept.dtl_cd_nm as department, 
 			pos.dtl_cd_nm as position 
 		from member_info mem 
 		inner join member_company mc on mc.mem_seq = mem.mem_seq 
 		left join code_detail dept on dept.mst_cd = 'DP01' and dept.dtl_cd = mc.dp_cd 
 		left join code_detail pos on pos.mst_cd = 'RA01' and pos.dtl_cd = mc.ra_cd 
-		where mem.mem_nm like #{str} ${optionalQuery}
+		where mem.mem_nm like '%' || #{str} || '%'
+		<if test="memberNumbers != null and memberNumbers.length > 0">
+		and mem.mem_seq not in
+			(
+			<foreach item="memberNumber" collection="memberNumbers" separator=",">
+				#{memberNumber}
+			</foreach>
+			)
+		</if>
+		order by mem.mem_seq
 	</select>
 	
 	<!-- 프로젝트 멤버 등록 -->
 	<insert id="insertProjectMember" parameterType="com.ojt.bean.ProjectMemberBean">
 		insert into project_member_table values(
-			#{prj_seq},
-			#{mem_seq},
-			#{st_dt},
-			#{ed_dt},
-			#{ro_cd})
+			#{projectNumber},
+			#{memberNumber},
+			#{startDate},
+			#{endDate},
+			#{roleCode})
 	</insert>
 	
 	<!-- 프로젝트 멤버 수정 -->
 	<update id="updateProjectMember" parameterType="com.ojt.bean.ProjectMemberBean">
 		update project_member_table set 
-			st_dt = #{st_dt},
-			ed_dt = #{ed_dt},
-			ro_cd = #{ro_cd}
-		where prj_seq = #{prj_seq} and mem_seq = #{mem_seq}
+			st_dt = #{startDate},
+			ed_dt = #{endDate},
+			ro_cd = #{roleCode}
+		where prj_seq = #{projectNumber} and mem_seq = #{memberNumber}
 	</update>
 	
 	<!-- 프로젝트 멤버 삭제 -->
 	<delete id="deleteProjectMember" parameterType="com.ojt.bean.ProjectMemberBean">
 		delete project_member_table 
-		where prj_seq = #{prj_seq} and mem_seq = #{mem_seq}
+		where prj_seq = #{projectNumber} and mem_seq = #{memberNumber}
 	</delete>
 	
 </mapper>

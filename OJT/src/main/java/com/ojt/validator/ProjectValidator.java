@@ -37,39 +37,39 @@ public class ProjectValidator implements Validator{
 			ProjectBean addProjectBean = (ProjectBean)target; // 객체 주입
 			
 			// 밸리데이션을 위해 값을 하나씩 꺼냄
-			String prj_nm = addProjectBean.getPrj_nm();
-			int cust_seq = addProjectBean.getCust_seq();
-			String prj_st_dt = addProjectBean.getPrj_st_dt();
-			String prj_ed_dt = addProjectBean.getPrj_ed_dt();
-			String maint_st_dt = addProjectBean.getMaint_st_dt();
-			String maint_ed_dt = addProjectBean.getMaint_ed_dt();
-			String[] sk_cd_list = addProjectBean.getSk_cd_list();
-			String prj_dtl = addProjectBean.getPrj_dtl();
+			String prj_nm = addProjectBean.getProjectName();
+			int cust_seq = addProjectBean.getCustomerNumber();
+			String prj_st_dt = addProjectBean.getProjectStartDate();
+			String prj_ed_dt = addProjectBean.getProjectEndDate();
+			String maint_st_dt = addProjectBean.getMaintStartDate();
+			String maint_ed_dt = addProjectBean.getMaintEndDate();
+			String[] sk_cd_list = addProjectBean.getSkillCodeList();
+			String prj_dtl = addProjectBean.getProjectDetail();
 			ArrayList<ProjectMemberBean> pmList = addProjectBean.getPmList();
 			
 			
 			// ================== 프로젝트 명 =================
 			if(prj_nm == null || prj_nm.isEmpty()) { // 프로젝트명이 비어있다면
-				errors.rejectValue("prj_nm", "NameEmpty");
+				errors.rejectValue("projectName", "NameEmpty");
 			}
 			else if(prj_nm.length() > 20) { // 프로젝트명이 너무 길다면
-				errors.rejectValue("prj_nm", "NameTooLong");
+				errors.rejectValue("projectName", "NameTooLong");
 			}
 			
 			// ================== 고객사 ==================
 			if(cust_seq == 0) { // 고객사 번호가 0이라면(= 없다면)
-				errors.rejectValue("cust_seq", "CustomerEmpty");
+				errors.rejectValue("customerNumber", "CustomerEmpty");
 			}
 			else if(projectService.hasCustomer(cust_seq)) { // 등록된 고객사가 없다면
-				errors.rejectValue("cust_seq", "NotCustomer");
+				errors.rejectValue("customerNumber", "NotCustomer");
 			}
 			
 			// ================= 프로젝트 시작일 ====================
 			if(prj_st_dt == null || prj_st_dt.isEmpty()) { // 시작일이 비어있다면
-				errors.rejectValue("prj_st_dt", "DateEmpty");
+				errors.rejectValue("projectStartDate", "DateEmpty");
 			}
 			else if(!Pattern.matches(REGEXP_PATTERN_DATE, prj_st_dt)) { // 패턴에 맞지 않다면
-				errors.rejectValue("prj_st_dt", "DatePattern");
+				errors.rejectValue("projectStartDate", "DatePattern");
 			}
 			else {
 				int year = Integer.parseInt(prj_st_dt.substring(0, 4));
@@ -79,30 +79,30 @@ public class ProjectValidator implements Validator{
 				switch(month) {
 				case 1: case 3: case 5: case 7: case 8: case 10: case 12:
 					if(day > 31) {
-						errors.rejectValue("prj_st_dt", "DateOver31Day");
+						errors.rejectValue("projectStartDate", "DateOver31Day");
 					} break;
 					
 				case 4: case 6: case 9: case 11:
 					if(day > 30) {
-						errors.rejectValue("prj_st_dt", "DateOver30Day");
+						errors.rejectValue("projectStartDate", "DateOver30Day");
 					} break;
 				
 				case 2:
 					if(year % 4 == 0 && day > 29) {
-						errors.rejectValue("prj_st_dt", "DateOverLeapYear");
+						errors.rejectValue("projectStartDate", "DateOverLeapYear");
 					}
 					if(year % 4 != 0 && day > 28) {
-						errors.rejectValue("prj_st_dt", "DateOver28Day");
+						errors.rejectValue("projectStartDate", "DateOver28Day");
 					} break;
 				}
 			}//End - prj_st_dt
 			
 			// ================= 프로젝트 종료일 ====================
 			if (prj_ed_dt == null || prj_ed_dt.isEmpty()) { // 시작일이 비어있다면
-				errors.rejectValue("prj_ed_dt", "DateEmpty");
+				errors.rejectValue("projectEndDate", "DateEmpty");
 			}
 			else if (!Pattern.matches(REGEXP_PATTERN_DATE, prj_st_dt)) { // 패턴에 맞지 않다면
-				errors.rejectValue("prj_ed_dt", "DatePattern");
+				errors.rejectValue("projectEndDate", "DatePattern");
 			}
 			else {
 				int year = Integer.parseInt(prj_ed_dt.substring(0, 4));
@@ -112,31 +112,31 @@ public class ProjectValidator implements Validator{
 				switch(month) {
 				case 1: case 3: case 5: case 7: case 8: case 10: case 12:
 					if(day > 31) {
-						errors.rejectValue("prj_ed_dt", "DateOver31Day");
+						errors.rejectValue("projectEndDate", "DateOver31Day");
 					} break;
 					
 				case 4: case 6: case 9: case 11:
 					if(day > 30) {
-						errors.rejectValue("prj_ed_dt", "DateOver30Day");
+						errors.rejectValue("projectEndDate", "DateOver30Day");
 					} break;
 				
 				case 2:
 					if(year % 4 == 0 && day > 29) {
-						errors.rejectValue("prj_ed_dt", "DateOverLeapYear");
+						errors.rejectValue("projectEndDate", "DateOverLeapYear");
 					}
 					if(year % 4 != 0 && day > 28) {
-						errors.rejectValue("prj_ed_dt", "DateOver28Day");
+						errors.rejectValue("projectEndDate", "DateOver28Day");
 					} break;
 				}
 			}//End - prj_ed_dt
 			
 			// 프로젝트 두개의 날짜를 비교
-			if(!errors.hasFieldErrors("prj_st_dt") && !errors.hasFieldErrors("prj_ed_dt")) {// 프로젝트 시작일ㅡ 종료일에 에라가 없다면
+			if(!errors.hasFieldErrors("projectStartDate") && !errors.hasFieldErrors("projectEndDate")) {// 프로젝트 시작일ㅡ 종료일에 에라가 없다면
 				LocalDate startDate = LocalDate.parse(prj_st_dt);
 				LocalDate endDate = LocalDate.parse(prj_ed_dt);
 				
 				if(startDate.isAfter(endDate)) { // prj_st_dt가 prj_ed_dt보다 이후의 날짜라면
-					errors.rejectValue("prj_st_dt", "StartDateAfterEndDate");
+					errors.rejectValue("projectStartDate", "StartDateAfterEndDate");
 				}
 			}
 			
@@ -144,7 +144,7 @@ public class ProjectValidator implements Validator{
 			if(maint_st_dt != null && !maint_st_dt.isEmpty()) {
 				
 				if(!Pattern.matches(REGEXP_PATTERN_DATE, maint_st_dt)) {
-					errors.rejectValue("maint_st_dt", "DatePattern");
+					errors.rejectValue("maintStartDate", "DatePattern");
 				}
 				else {
 					int year = Integer.parseInt(maint_st_dt.substring(0, 4));
@@ -154,20 +154,20 @@ public class ProjectValidator implements Validator{
 					switch(month) {
 					case 1: case 3: case 5: case 7: case 8: case 10: case 12:
 						if(day > 31) {
-							errors.rejectValue("maint_st_dt", "DateOver31Day");
+							errors.rejectValue("maintStartDate", "DateOver31Day");
 						} break;
 						
 					case 4: case 6: case 9: case 11:
 						if(day > 30) {
-							errors.rejectValue("maint_st_dt", "DateOver30Day");
+							errors.rejectValue("maintStartDate", "DateOver30Day");
 						} break;
 					
 					case 2:
 						if(year % 4 == 0 && day > 29) {
-							errors.rejectValue("maint_st_dt", "DateOverLeapYear");
+							errors.rejectValue("maintStartDate", "DateOverLeapYear");
 						}
 						if(year % 4 != 0 && day > 28) {
-							errors.rejectValue("maint_st_dt", "DateOver28Day");
+							errors.rejectValue("maintStartDate", "DateOver28Day");
 						} break;
 					}
 				}
@@ -177,7 +177,7 @@ public class ProjectValidator implements Validator{
 			if(maint_ed_dt != null && !maint_ed_dt.isEmpty()) {
 				
 				if(!Pattern.matches(REGEXP_PATTERN_DATE, maint_ed_dt)) {
-					errors.rejectValue("maint_ed_dt", "DatePattern");
+					errors.rejectValue("maintEndDate", "DatePattern");
 				}
 				else {
 					int year = Integer.parseInt(maint_ed_dt.substring(0, 4));
@@ -187,47 +187,47 @@ public class ProjectValidator implements Validator{
 					switch(month) {
 					case 1: case 3: case 5: case 7: case 8: case 10: case 12:
 						if(day > 31) {
-							errors.rejectValue("maint_ed_dt", "DateOver31Day");
+							errors.rejectValue("maintEndDate", "DateOver31Day");
 						} break;
 						
 					case 4: case 6: case 9: case 11:
 						if(day > 30) {
-							errors.rejectValue("maint_ed_dt", "DateOver30Day");
+							errors.rejectValue("maintEndDate", "DateOver30Day");
 						} break;
 					
 					case 2:
 						if(year % 4 == 0 && day > 29) {
-							errors.rejectValue("maint_ed_dt", "DateOverLeapYear");
+							errors.rejectValue("maintEndDate", "DateOverLeapYear");
 						}
 						if(year % 4 != 0 && day > 28) {
-							errors.rejectValue("maint_ed_dt", "DateOver28Day");
+							errors.rejectValue("maintEndDate", "DateOver28Day");
 						} break;
 					}
 				}
 				// 유지보수 두 날짜 비교
-				if(!errors.hasFieldErrors("maint_st_dt") && !errors.hasFieldErrors("maint_ed_dt")) {// 유지보수 시작일, 종료일에 에러가 없다면
+				if(!errors.hasFieldErrors("maintStartDate") && !errors.hasFieldErrors("maintEndDate")) {// 유지보수 시작일, 종료일에 에러가 없다면
 					
 					if(maint_st_dt == null || maint_st_dt.isEmpty()) { // 유지보수 시작일이 비어 있다면
-						errors.rejectValue("maint_ed_dt", "MaintStartDateEmpty");
+						errors.rejectValue("maintStartDate", "MaintStartDateEmpty");
 					} else {
 						LocalDate startDate = LocalDate.parse(maint_st_dt);
 						LocalDate endDate = LocalDate.parse(maint_ed_dt);
 						
 						if(startDate.isAfter(endDate)) {
-							errors.rejectValue("maint_st_dt", "StartDateAfterEndDate");
+							errors.rejectValue("maintStartDate", "StartDateAfterEndDate");
 						}
 					}
 				}
 				
 			}//End - maint_ed_dt
 			
-			System.out.println("프로젝트 시작일 : " + !errors.hasFieldErrors("prj_st_dt"));
-			System.out.println("프로젝트 종료일 : " + !errors.hasFieldErrors("prj_ed_dt"));
-			System.out.println("유지보수 시작일 : " + !errors.hasFieldErrors("maint_st_dt"));
-			System.out.println("유지보수 종료일 : " + !errors.hasFieldErrors("maint_ed_dt"));
+			System.out.println("프로젝트 시작일 : " + !errors.hasFieldErrors("projectStartDate"));
+			System.out.println("프로젝트 종료일 : " + !errors.hasFieldErrors("projectEndDate"));
+			System.out.println("유지보수 시작일 : " + !errors.hasFieldErrors("maintStartDate"));
+			System.out.println("유지보수 종료일 : " + !errors.hasFieldErrors("maintEndDate"));
 			
-			if(!errors.hasFieldErrors("prj_st_dt") && !errors.hasFieldErrors("prj_ed_dt") // 프로젝트 시작일 종료일에 에러가 없고
-					&& !errors.hasFieldErrors("maint_st_dt") && !errors.hasFieldErrors("maint_ed_dt")) {// 유지보수 시작일, 종료일에 에러가 없다면
+			if(!errors.hasFieldErrors("projectStartDate") && !errors.hasFieldErrors("projectEndDate") // 프로젝트 시작일 종료일에 에러가 없고
+					&& !errors.hasFieldErrors("maintStartDate") && !errors.hasFieldErrors("maintEndDate")) {// 유지보수 시작일, 종료일에 에러가 없다면
 				LocalDate projectEndDate = LocalDate.parse(prj_ed_dt);
 				
 				if(maint_st_dt != null && !maint_st_dt.isEmpty() && maint_ed_dt != null && !maint_ed_dt.isEmpty()) {
@@ -235,17 +235,17 @@ public class ProjectValidator implements Validator{
 					LocalDate maintEndDate = LocalDate.parse(maint_ed_dt);
 					
 					if(maintStartDate.isBefore(projectEndDate)) {
-						errors.rejectValue("maint_st_dt", "MaintStartDateBeforeProjectStart");
+						errors.rejectValue("maintStartDate", "MaintStartDateBeforeProjectStart");
 					}
 					
 					if(maintEndDate.isBefore(projectEndDate)) {
-						errors.rejectValue("maint_ed_dt", "MaintEndDateBeforeProjectStart");
+						errors.rejectValue("maintEndDate", "MaintEndDateBeforeProjectStart");
 					} 
 				} else if(maint_st_dt != null && !maint_st_dt.isEmpty()) {
 					LocalDate maintStartDate = LocalDate.parse(maint_st_dt);
 					
 					if(maintStartDate.isBefore(projectEndDate)) {
-						errors.rejectValue("maint_st_dt", "MaintStartDateBeforeProjectStart");
+						errors.rejectValue("maintStartDate", "MaintStartDateBeforeProjectStart");
 					}
 				}
 				
@@ -254,14 +254,14 @@ public class ProjectValidator implements Validator{
 			// ================= 프로젝트 스킬 ===================
 			if(sk_cd_list != null && sk_cd_list.length > 0) {// 프로젝트 스킬이 존재한다면
 				if(projectService.hasSkill(sk_cd_list, sk_cd_list.length)) { //프로젝트 스킬이 모두 존재하는지
-					errors.rejectValue("sk_cd_list", "NotSkill");
+					errors.rejectValue("skillCodeList", "NotSkill");
 				}
 			}
 			
 			// ================= 프로젝트 세부사항 ===================
 			if(prj_dtl != null && !prj_dtl.isEmpty()) {
 				if(prj_dtl.length() > 500) {
-					errors.rejectValue("prj_dtl", "ProjectDetailTooLong");
+					errors.rejectValue("projectDetail", "ProjectDetailTooLong");
 				}
 			}
 			
@@ -271,40 +271,40 @@ public class ProjectValidator implements Validator{
 				ArrayList<String> roleCdList = new ArrayList<String>();
 				
 				for(int i = 0; i < roleList.size(); i++) {
-					roleCdList.add(roleList.get(i).getDtl_cd());
+					roleCdList.add(roleList.get(i).getDetailCode());
 				}
 				
 				for(ProjectMemberBean pm : pmList) {
 					
-					int mem_seq = pm.getMem_seq();
-					String st_dt = pm.getSt_dt();
-					String ed_dt = pm.getEd_dt();
-					String ro_cd = pm.getRo_cd();
+					int mem_seq = pm.getMemberNumber();
+					String st_dt = pm.getStartDate();
+					String ed_dt = pm.getEndDate();
+					String ro_cd = pm.getRoleCode();
 					
 					if(mem_seq == 0) {// 사원 번호가 0인지( = 비어있는지)
-						errors.rejectValue("mem_seq_error", "Empty");
+						errors.rejectValue("MemberNumberError", "Empty");
 					}
 					
-					if(st_dt == null || st_dt.isEmpty() && !errors.hasFieldErrors("st_dt_error")) {// 투입일이 비어있는지
-						errors.rejectValue("st_dt_error", "Empty");
+					if(st_dt == null || st_dt.isEmpty() && !errors.hasFieldErrors("startDateError")) {// 투입일이 비어있는지
+						errors.rejectValue("startDateError", "Empty");
 					} else if(!Pattern.matches(REGEXP_PATTERN_DATE, st_dt) && !errors.hasFieldErrors("st_dt_error")) { // 투입일이 날짜 형식인지
-						errors.rejectValue("st_dt_error", "Pattern");
+						errors.rejectValue("startDateError", "Pattern");
 					}
 					
-					if(ed_dt == null || ed_dt.isEmpty() && !errors.hasFieldErrors("ed_dt_error")) { // 철수일이 비어있는지
-						errors.rejectValue("ed_dt_error", "Empty");
+					if(ed_dt == null || ed_dt.isEmpty() && !errors.hasFieldErrors("endDateError")) { // 철수일이 비어있는지
+						errors.rejectValue("endDateError", "Empty");
 					} else if(!Pattern.matches(REGEXP_PATTERN_DATE, ed_dt) && !errors.hasFieldErrors("ed_dt_error")) { // 철수일이 날짜 형식인지
-						errors.rejectValue("ed_dt_error", "Pattern");
+						errors.rejectValue("endDateError", "Pattern");
 					}
 					
 					if(!roleCdList.contains(ro_cd)) {// 역할 전체 리스트내에 해당코드가 존재하는지
-						errors.rejectValue("ro_cd_error", "NotRole");
+						errors.rejectValue("roleCodeError", "NotRole");
 					}
 					
 					// 프로젝트 시작일, 종료일(유지보수 종료일)과 비교
-					if(!errors.hasFieldErrors("st_dt_error") && !errors.hasFieldErrors("ed_dt_error")
-							&& !errors.hasFieldErrors("prj_st_dt") && !errors.hasFieldErrors("prj_ed_dt")
-							&& !errors.hasFieldErrors("maint_ed_dt")) { //투입일, 철수일, 시작일, 종료일, 유지보수 종료일 모두 에러가 없다면
+					if(!errors.hasFieldErrors("startDateError") && !errors.hasFieldErrors("endDateError")
+							&& !errors.hasFieldErrors("projectStartDate") && !errors.hasFieldErrors("projectEndDate")
+							&& !errors.hasFieldErrors("maintEndDate")) { //투입일, 철수일, 시작일, 종료일, 유지보수 종료일 모두 에러가 없다면
 						
 						if(maint_ed_dt != null && !maint_ed_dt.isEmpty()) {
 							LocalDate memberStartDate = LocalDate.parse(st_dt);
@@ -313,15 +313,15 @@ public class ProjectValidator implements Validator{
 							LocalDate mainEndDate = LocalDate.parse(maint_ed_dt);
 							
 							if(memberStartDate.isBefore(projectStartDate)) { // 프로젝트 시작일 보다 작은지
-								errors.rejectValue("st_dt_error", "MemberBeforeStartDate");
+								errors.rejectValue("startDateError", "MemberBeforeStartDate");
 							} else if(memberStartDate.isAfter(mainEndDate)) { // 유지보수 종료일 보다 큰지
-								errors.rejectValue("st_dt_error", "MemberAfterMaintEndDate");
+								errors.rejectValue("startDateError", "MemberAfterMaintEndDate");
 							}
 							
 							if(memberEndDate.isBefore(projectStartDate)) { // 프로젝트 시작일 보다 작은지
-								errors.rejectValue("ed_dt_error", "MemberBeforeStartDate");
+								errors.rejectValue("endDateError", "MemberBeforeStartDate");
 							} else if(memberEndDate.isAfter(mainEndDate)) { // 유지보수 종료일 보다 큰지
-								errors.rejectValue("ed_dt_error", "MemberAfterMaintEndDate");
+								errors.rejectValue("endDateError", "MemberAfterMaintEndDate");
 							}
 						} else if(maint_st_dt == null || maint_st_dt.isEmpty()) {
 							
@@ -331,15 +331,15 @@ public class ProjectValidator implements Validator{
 							LocalDate projectEndDate = LocalDate.parse(prj_ed_dt);
 							
 							if(memberStartDate.isBefore(projectStartDate)) { // 프로젝트 시작일 보다 작은지
-								errors.rejectValue("st_dt_error", "MemberBeforeStartDate");
+								errors.rejectValue("startDateError", "MemberBeforeStartDate");
 							} else if(memberStartDate.isAfter(projectEndDate)) { // 프로젝트 종료일 보다 큰지
-								errors.rejectValue("st_dt_error", "MemberAfterEndDate");
+								errors.rejectValue("startDateError", "MemberAfterEndDate");
 							}
 							
 							if(memberEndDate.isBefore(projectStartDate)) { // 프로젝트 시작일 보다 작은지
-								errors.rejectValue("ed_dt_error", "MemberBeforeStartDate");
+								errors.rejectValue("endDateError", "MemberBeforeStartDate");
 							} else if(memberEndDate.isAfter(projectEndDate)) { // 프로젝트 종료일 보다 큰지
-								errors.rejectValue("ed_dt_error", "MemberAfterEndDate");
+								errors.rejectValue("endDateError", "MemberAfterEndDate");
 							}
 						} else {
 							LocalDate memberStartDate = LocalDate.parse(st_dt);
@@ -347,11 +347,11 @@ public class ProjectValidator implements Validator{
 							LocalDate projectStartDate = LocalDate.parse(prj_st_dt);
 							
 							if(memberStartDate.isBefore(projectStartDate)) {// 프로젝트 시작일 보다 작은지
-								errors.rejectValue("st_dt_error", "MemberBeforeStartDate");
+								errors.rejectValue("startDateError", "MemberBeforeStartDate");
 							}
 							
 							if(memberEndDate.isBefore(projectStartDate)) {// 프로젝트 시작일 보다 작은지
-								errors.rejectValue("ed_dt_error", "MemberBeforeStartDate");
+								errors.rejectValue("endDateError", "MemberBeforeStartDate");
 							}
 						}
 					}

@@ -13,14 +13,14 @@ import com.ojt.bean.ProjectMemberBean;
 public interface ProjectMemberMapper {
 	
 		// 프로젝트 멤버 조회
-		public ArrayList<ProjectMemberBean> getProjectMemberList(int prj_seq);
+		public ArrayList<ProjectMemberBean> getProjectMemberList(int projectNumber);
 		
 		// 프로젝트 멤버 인원 등록 조회
-		public ArrayList<MemberBean> searchNotProjectMember(@Param("prj_seq") int prj_seq, @Param("mem_nm") String mem_nm);
+		public ArrayList<MemberBean> searchNotProjectMember(@Param("projectNumber") int projectNumber, @Param("memberName") String memberName);
 		
 		// 신규 프로젝트 멤버 인원 등록 조회
 		public ArrayList<MemberBean> getNotAddProjectMember(@Param("str") String str, 
-															@Param("optionalQuery") String optionalQuery);
+															@Param("memberNumbers") int[] memberNumbers);
 		
 		// 프로젝트 멤버 등록
 		public void insertProjectMember(ProjectMemberBean insertProjectMemberBean);

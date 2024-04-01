@@ -11,38 +11,38 @@
 				<input type="checkbox" class="checkAddProject"/>
 			</td>
 			<td>
-				<input id="pmList${rowsLength + status.index}.mem_seq" name="pmList[${rowsLength + status.index}].mem_seq" 
-					class="read-input" readonly="readonly" type="text" value="${item.mem_seq }" />
+				<input id="pmList${rowsLength + status.index}.memberNumber" name="pmList[${rowsLength + status.index}].memberNumber" 
+					class="read-input" readonly="readonly" type="text" value="${item.memberNumber }" />
 			</td>
 			<td>
-				<input id="pmList${rowsLength + status.index}.mem_nm" name="pmList[${rowsLength + status.index}].mem_nm" 
-					class="read-input" readonly="readonly" type="text" value="${item.mem_nm }" />
+				<input id="pmList${rowsLength + status.index}.memberName" name="pmList[${rowsLength + status.index}].memberName" 
+					class="read-input" readonly="readonly" type="text" value="${item.memberName }" />
 			</td>
 			<td>
-				<input id="pmList${rowsLength + status.index}.dept" name="pmList[${rowsLength + status.index}].dept" 
-					class="read-input" readonly="readonly" type="text" value="${item.dept }" />
+				<input id="pmList${rowsLength + status.index}.department" name="pmList[${rowsLength + status.index}].department" 
+					class="read-input" readonly="readonly" type="text" value="${item.department }" />
 			</td>
 			<td>
 				<input id="pmList${rowsLength + status.index}.position" name="pmList[${rowsLength + status.index}].position" 
 					class="read-input" readonly="readonly" type="text" value="${item.position }" />
 			</td>
 			<td>
-				<input id="pmList${rowsLength + status.index}.st_dt" name="pmList[${rowsLength + status.index}].st_dt"
-				type="date" class="st_dt" value="${item.st_dt}" min="${startDate}" max="${item.ed_dt }" index="${status.index}" required/>
+				<input id="pmList${rowsLength + status.index}.startDate" name="pmList[${rowsLength + status.index}].startDate"
+				type="date" class="st_dt" value="${item.startDate}" min="${startDate}" max="${item.endDate }" index="${status.index}" required/>
 			</td>
 			<td>
-				<input id="pmList${rowsLength + status.index}.ed_dt" name="pmList[${rowsLength + status.index}].ed_dt"
-				type="date" class="ed_dt" value="${item.ed_dt}" min="${item.st_dt}" max="${endDate}" index="${status.index}" required/>
+				<input id="pmList${rowsLength + status.index}.endDate" name="pmList[${rowsLength + status.index}].endDate"
+				type="date" class="ed_dt" value="${item.endDate}" min="${item.startDate}" max="${endDate}" index="${status.index}" required/>
 			</td>
 			<td>
-				<select id="pmList${rowsLength + status.index}.ro_cd" name="pmList[${rowsLength + status.index }].ro_cd" class="role text-left">
+				<select id="pmList${rowsLength + status.index}.roleCode" name="pmList[${rowsLength + status.index }].roleCode" class="role text-left">
 					<c:forEach var="role" items="${roleList}">
 						<c:choose>
-							<c:when test="${role.dtl_cd == item.ro_cd}">
-								<option value="${role.dtl_cd}" selected>${role.dtl_cd_nm}</option>
+							<c:when test="${role.detailCode == item.roleCode}">
+								<option value="${role.detailCode}" selected>${role.codeName}</option>
 							</c:when>
 							<c:otherwise>
-								<option value="${role.dtl_cd}">${role.dtl_cd_nm}</option>
+								<option value="${role.detailCode}">${role.codeName}</option>
 							</c:otherwise>
 						</c:choose>
 					</c:forEach>

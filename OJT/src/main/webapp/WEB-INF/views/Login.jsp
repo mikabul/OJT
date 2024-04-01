@@ -78,10 +78,10 @@
 			<div class="login-wrap">
 				<div class="w-100 text-center">
 					<div>
-						<form:input path="mem_id" class="input-box" placeholder="아이디" />
+						<form:input path="memberId" class="input-box" placeholder="아이디" />
 					</div>
 					<div>
-						<form:password path="mem_pw" class="input-box" placeholder="비밀번호" />
+						<form:password path="memberPW" class="input-box" placeholder="비밀번호" />
 					</div>
 				</div>
 				<div class="w-100 text-center">
