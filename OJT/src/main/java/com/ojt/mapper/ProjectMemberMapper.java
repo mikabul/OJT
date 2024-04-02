@@ -16,7 +16,9 @@ public interface ProjectMemberMapper {
 		public ArrayList<ProjectMemberBean> getProjectMemberList(int projectNumber);
 		
 		// 프로젝트 멤버 인원 등록 조회
-		public ArrayList<MemberBean> searchNotProjectMember(@Param("projectNumber") int projectNumber, @Param("memberName") String memberName);
+		public ArrayList<MemberBean> searchNotProjectMember(
+				@Param("projectNumber") int projectNumber,
+				@Param("memberName") String memberName);
 		
 		// 신규 프로젝트 멤버 인원 등록 조회
 		public ArrayList<MemberBean> getNotAddProjectMember(@Param("str") String str, 
@@ -28,7 +30,14 @@ public interface ProjectMemberMapper {
 		// 프로젝트 멤버 수정
 		public void updateProjectMember(ProjectMemberBean updateProjectMemberBean);
 		
+		// 프로젝트 멤버 모두 있는지 확인
+		public int hasProjectMemberCount(
+				@Param("memberNumbers") int[] memberNumbers,
+				@Param("projectNumber") int projectNumber);
+		
 		// 프로젝트 멤버 삭제
-		public void deleteProjectMember(ProjectMemberBean deleteProjectMemberBean);
+		public void deleteProjectMember(
+				@Param("memberNumbers") int[] memberNumbers,
+				@Param("projectNumber") int projectNumber);
 		
 }

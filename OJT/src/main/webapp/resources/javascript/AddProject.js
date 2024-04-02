@@ -191,7 +191,7 @@ function isAllCheckAddProject(){
 // 추가 버튼 이벤트
 function addPMModalBtnEvent(){
 	$.ajax({
-		url: '/OJT/project/showAddPMModal',
+		url: '/OJT/addProject/showAddPMModal',
 		success: function(result){
 			$('#modalAddProjectMember').html(result);
 		},
@@ -214,7 +214,7 @@ function addProjectBeanSubmitEvent(){
 	})
    	
     $.ajax({
-        url: '/OJT/project/addProject',
+        url: '/OJT/addProject/addProject',
         method: 'POST',
         contentType: false,
         processData: false,

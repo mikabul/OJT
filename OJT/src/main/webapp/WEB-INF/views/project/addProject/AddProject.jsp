@@ -106,11 +106,11 @@
 							유지보수 기간					
 						</div>
 						<div class="w-30">
-							<form:input type="date" path="maintStartDate"/>
+							<form:input type="date" path="maintStartDate" min="${ addProjectBean.projectEndDate }"/>
 						</div>
 						<div class="w-20 text-center">~</div>
 						<div class="w-30">
-							<form:input type="date" path="maintEndDate" />
+							<form:input type="date" path="maintEndDate" min="${ addProjectBean.projectEndDate }"/>
 						</div>
 					</div>
 					<!-- error -->
@@ -236,10 +236,12 @@
 													<form:input path="pmList[${status.index }].position" class="read-input" readonly="true"/>
 												</td>
 												<td>
-													<form:input type="date" path="pmList[${status.index}].startDate" class="startDate" index="${status.index }"/>
+													<form:input type="date" path="pmList[${status.index}].startDate" class="startDate" index="${status.index }"
+														min="${addProjectBean.projectStartDate}" max="${addProjectBean.maintEndDate != '' ? addProjectBean.maintEndDate : addProjectBean.projectEndDate}"/>
 												</td>
 												<td>
-													<form:input type="date" path="pmList[${status.index}].endDate" class="endDate" index="${status.index }"/>
+													<form:input type="date" path="pmList[${status.index}].endDate" class="endDate" index="${status.index }"
+														min="${addProjectBean.projectStartDate}" max="${addProjectBean.maintEndDate != '' ? addProjectBean.maintEndDate : addProjectBean.projectEndDate}"/>
 												</td>
 												<td>
 													<form:select path="pmList[${status.index}].roleCode" class="role text-left">

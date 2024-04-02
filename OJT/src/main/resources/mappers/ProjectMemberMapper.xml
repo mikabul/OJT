@@ -40,7 +40,7 @@
 				from project_member_table pm 
 				where pm.prj_seq = #{projectNumber}
 				)
-			and mem.mem_nm like #{memberName}
+			and mem.mem_nm like '%' || #{memberName} || '%'
 		order by mem.mem_seq
 	</select>
 	
@@ -86,10 +86,29 @@
 		where prj_seq = #{projectNumber} and mem_seq = #{memberNumber}
 	</update>
 	
+	<!-- 프로젝트에 멤버가 모두 있는지 확인 -->
+	<select id="hasProjectMemberCount" resultType="int">
+		select
+			count(mem_seq)
+		from project_member_table
+		where 
+			mem_seq in (
+				<foreach collection="memberNumbers" item="memberNumber" separator=",">
+					#{memberNumber}
+				</foreach>
+			)
+			and prj_seq = #{projectNumber}
+	</select>
+	
 	<!-- 프로젝트 멤버 삭제 -->
-	<delete id="deleteProjectMember" parameterType="com.ojt.bean.ProjectMemberBean">
+	<delete id="deleteProjectMember">
 		delete project_member_table 
-		where prj_seq = #{projectNumber} and mem_seq = #{memberNumber}
+		where prj_seq = #{projectNumber}
+			and mem_seq in (
+				<foreach collection="memberNumbers" item="memberNumber" separator=",">
+					#{memberNumber}
+				</foreach>
+			)
 	</delete>
 	
 </mapper>

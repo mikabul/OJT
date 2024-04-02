@@ -136,7 +136,7 @@ table tr {
 				</colgroup>
 				<thead>
 					<tr>
-						<th scope="col"><input type="checkbox" id="allCheckbox"/></th>
+						<th scope="col"><input type="checkbox" class="allCheck"/></th>
 						<th scope="col">번호</th>
 						<th scope="col">프로젝트 명</th>
 						<th scope="col">고객사</th>
@@ -158,7 +158,7 @@ table tr {
 								<tr>
 									<td>
 										<label>
-											<input type="checkbox" class="checkProject" value="${ status.index }" />
+											<input type="checkbox" class="check" value="${ status.index }" />
 										</label>
 									</td>
 									<td>${ item.projectNumber }</td>

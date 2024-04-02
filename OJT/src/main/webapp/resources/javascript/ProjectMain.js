@@ -209,7 +209,7 @@ function deleteProjectAjax(projectValue) {
 // 프로젝트 등록 모달 호출
 function addProjectBtnEvent() {
 	$.ajax({
-		url: '/OJT/project/addProjectModal',
+		url: '/OJT/addProject/addProjectModal',
 		dataType: 'HTML',
 		success: function(result) {
 			$('#modalAddProject').html(result);
@@ -292,7 +292,7 @@ function modifyProjectStateButtonEvent() {
 		if (firstDate >= now) {
 			slectHtml += '<option value="' + psList[0].detailCode + '">' + psList[0].codeName + '</option>';
 		}
-		console.log(psList[0].detailCode, ' + ', psList[0].codeName)
+		
 		for (let i = 1; i < psList.length; i++) {
 			slectHtml += '<option value="' + psList[i].detailCode + '">' + psList[i].codeName + '</option>';
 		}
@@ -304,33 +304,59 @@ function modifyProjectStateButtonEvent() {
 
 	// 프로젝트 상태 변경 이벤트
 	document.querySelectorAll('.changeState').forEach(select => {
-		select.addEventListener('change', function() {
-			const row = select.closest('tr');
-			const cell = row.cells[0];
-			const cd = row.cells[6].dataset.cd;
-			const checkbox = cell.querySelector('input[type="checkbox"]'); // 또는 .get(0) 메서드를 사용할 수도 있습니다.
-			if (select.value == cd) {
-				checkbox.checked = false;
-			} else {
-				checkbox.checked = true;
-			}
-			checkboxEvent();
-		})
-	})
+		select.addEventListener('change', stateChangeEvent);
+	});
 
+	// 체크 해제 이벤트
 	document.querySelectorAll('.check').forEach(check => {
-		check.addEventListener('change', function() {
-			if (!check.checked) {
-				const row = check.closest('tr');
-				const cell = row.cells[6];
-				const select = cell.querySelector('select');
-				select.value = cell.dataset.cd;
-			}
-		})
-	})
+		check.addEventListener('change', stateChangeCheckEvent);
+	});
+	
+	// 모두 체크 이벤트
+	document.querySelector('.allCheck').addEventListener('click', stateChangeAllCheckEvent);
 
 	document.getElementById('BeforeSwitchBtn').classList.add('none');
 	document.getElementById('AfterSwitchBtn').classList.remove('none');
+}
+
+// 프로젝트 상태 변경 이벤트
+function stateChangeEvent(){
+	console.log(this);
+	const row = this.closest('tr');
+	const cell = row.cells[0];
+	const cd = row.cells[6].dataset.cd;
+	const checkbox = cell.querySelector('input[type="checkbox"]');
+	if (this.value == cd) {
+		checkbox.checked = false;
+	} else {
+		checkbox.checked = true;
+	}
+	checkboxEvent();
+}
+
+// 프로젝트 체크 해제 버튼 이벤트
+function stateChangeCheckEvent(){
+	if (!this.checked) {
+		console.log(this);
+		const row = this.closest('tr');
+		const cell = row.cells[6];
+		const select = cell.querySelector('select');
+		select.value = cell.dataset.cd;
+	}
+}
+
+// 프로젝트 전체 체크 해제 이벤트
+function stateChangeAllCheckEvent(){
+	if(!this.checked){
+		const table = this.closest('table');
+		const rows = table.querySelector('tbody').rows;
+		Array.from(rows).forEach(row => {
+			row.querySelector('.check').checked = false;
+			const cd = row.cells[6].dataset.cd;
+			const select = row.cells[6].querySelector('select');
+			select.value = cd;
+		})
+	}
 }
 
 // 상태 수정 저장 버튼 이벤트
@@ -394,16 +420,31 @@ function changeStateCancleEvent() {
 		psCell.innerHTML = psCell.querySelector('select option[value="' + cd + '"]').innerText;
 		checkbox.checked = false;
 	})
+	
+	// 프로젝트 상태 변경 이벤트 제거
+	document.querySelectorAll('.changeState').forEach(select => {
+		select.removeEventListener('change', stateChangeEvent);
+	});
+
+	// 체크 해제 이벤트 제거
+	document.querySelectorAll('.check').forEach(check => {
+		check.removeEventListener('change', stateChangeCheckEvent);
+	});
+	
+	// 모두 체크 이벤트 제거
+	document.querySelector('.allCheck').removeEventListener('click', stateChangeAllCheckEvent);
+
 
 	document.getElementById('BeforeSwitchBtn').classList.remove('none');
 	document.getElementById('AfterSwitchBtn').classList.add('none');
 }
 
+// 인원관리 버튼 클릭 이벤트
 function projectMemberBtnEvent() {
 	let projectNumber = this.value;
 
 	$.ajax({
-		url: '/OJT/project/projectMember',
+		url: '/OJT/projectMember/',
 		method: 'GET',
 		data: {
 			'projectNumber': projectNumber

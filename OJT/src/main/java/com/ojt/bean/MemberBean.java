@@ -36,4 +36,8 @@ public class MemberBean {
 	
 	private boolean loginState;
 	
+	@Override
+	public String toString() {
+		return "번호 : " + memberNumber + ", 이름 : " + memberName + ", 부서 : " + department + ", 직급 : " + position + "\n";
+	}
 }

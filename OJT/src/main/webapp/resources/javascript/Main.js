@@ -98,7 +98,7 @@ function isScroll(){
 
 // 체크박스 이벤트 주입
 function checkEvent(){
-	const currModal = modalStack[modalStack.length - 1];
+	const currModal = getCurrModal();
 	const allCheckbox = document.querySelector(currModal + ' .allCheck');
 	const checkboxs = document.querySelectorAll(currModal + ' .check');
 	
@@ -110,7 +110,7 @@ function checkEvent(){
 
 // 모두 체크
 function allCheckboxEvent(){
-	const currModal = modalStack[modalStack.length - 1];
+	const currModal = getCurrModal();
 	const checkboxs = document.querySelectorAll(currModal + ' .check');
 	checkboxs.forEach(checkbox => {
 		checkbox.checked = this.checked;
@@ -119,12 +119,21 @@ function allCheckboxEvent(){
 
 // 체크박스 클릭 이벤트
 function checkboxEvent(){
-	const currModal = modalStack[modalStack.length - 1];
-	const checkboxs = tbody.querySelectorAll(currModal + ' input[type="checkbox"]');
+	const currModal = getCurrModal();
+	const checkboxs = document.querySelectorAll(currModal + ' input[type="checkbox"].check');
 	
 	if(Array.from(checkboxs).every(checkbox => checkbox.checked)){
 		document.querySelector(currModal + ' .allCheck').checked = true;
 	} else {
 		document.querySelector(currModal + ' .allCheck').checked = false;
 	}
+}
+
+function getCurrModal(){
+	return modalStack.length > 0 ? modalStack[modalStack.length - 1] : '';
+}
+
+function getCurrModalDom(){
+	const currModalSlice = getCurrModal().slice(1);
+	return document.getElementById(currModalSlice);
 }

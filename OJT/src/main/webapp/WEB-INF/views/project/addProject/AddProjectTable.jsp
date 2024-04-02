@@ -28,11 +28,11 @@
 			</td>
 			<td>
 				<input id="pmList${rowsLength + status.index}.startDate" name="pmList[${rowsLength + status.index}].startDate"
-				type="date" class="st_dt" value="${item.startDate}" min="${startDate}" max="${item.endDate }" index="${status.index}" required/>
+				type="date" class="startDate" value="${item.startDate}" min="${startDate}" max="${item.endDate }" index="${status.index}" required/>
 			</td>
 			<td>
 				<input id="pmList${rowsLength + status.index}.endDate" name="pmList[${rowsLength + status.index}].endDate"
-				type="date" class="ed_dt" value="${item.endDate}" min="${item.startDate}" max="${endDate}" index="${status.index}" required/>
+				type="date" class="endDate" value="${item.endDate}" min="${item.startDate}" max="${endDate}" index="${status.index}" required/>
 			</td>
 			<td>
 				<select id="pmList${rowsLength + status.index}.roleCode" name="pmList[${rowsLength + status.index }].roleCode" class="role text-left">

@@ -219,5 +219,7 @@ $('#projectInfoCloseBtn').on('click', function(){
 	$('#modalProject').html('');
 	modalStack.pop();
 });
+
+isScroll();
 </script>
 </html>

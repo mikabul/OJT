@@ -34,7 +34,7 @@ function getNotAddProjectMember(search, memberNumbers){
 	}
 	
 	$.ajax({
-		url: '/OJT/project/getNotAddProjectMember',
+		url: '/OJT/addProject/getNotAddProjectMember',
 		method: 'GET',
 		traditional: true,
 		data: {
@@ -168,7 +168,7 @@ function wirteAddProjectMember(addPMList){
 	}
 	
 	$.ajax({
-		url: '/OJT/project/addProjectTable',
+		url: '/OJT/addProject/addProjectTable',
 		method: 'POST',
 		contentType: 'application/json',
 		data: JSON.stringify({

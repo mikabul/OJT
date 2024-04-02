@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 
 import com.ojt.bean.MemberBean;
 import com.ojt.bean.ProjectMemberBean;
+import com.ojt.mapper.ProjectMapper;
 import com.ojt.mapper.ProjectMemberMapper;
 
 @Repository
@@ -22,8 +23,8 @@ public class ProjectMemberDao {
 	}
 
 	// 프로젝트 멤버 인원 등록 조회
-	public ArrayList<MemberBean> searchNotProjectMember(int prj_seq, String mem_nm) {
-		return projectMemberMapper.searchNotProjectMember(prj_seq, mem_nm);
+	public ArrayList<MemberBean> searchNotProjectMember(int projectNumber, String memberName) {
+		return projectMemberMapper.searchNotProjectMember(projectNumber, memberName);
 	}
 
 	// 신규 프로젝트 멤버 인원 등록 조회
@@ -40,10 +41,14 @@ public class ProjectMemberDao {
 	public void updateProjectMember(ProjectMemberBean updateProjectMemberBean) {
 		projectMemberMapper.updateProjectMember(updateProjectMemberBean);
 	}
+	
+	public int hasProjectMemberCount(int[] memberNumbers, int projectNumber) {
+		return projectMemberMapper.hasProjectMemberCount(memberNumbers, projectNumber);
+	}
 
 	// 프로젝트 멤버 삭제
-	public void deleteProjectMember(ProjectMemberBean deleteProjectMemberBean) {
-		projectMemberMapper.deleteProjectMember(deleteProjectMemberBean);
+	public void deleteProjectMember(int[] memberNumbers, int projectNumber) {
+		projectMemberMapper.deleteProjectMember(memberNumbers, projectNumber);
 	}
 
 }

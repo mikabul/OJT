@@ -74,4 +74,23 @@ public class ProjectRestController {
 			return ResponseEntity.status(500).body("");
 		}
 	}
+	
+	// 프로젝트 멤버 삭제(POST)
+	@PostMapping("/deleteProjectMember")
+	public ResponseEntity<Boolean> deleteProjectMember(@RequestParam(name = "memberNumbers") int[] memberNumbers,
+														@RequestParam(name ="projectNumber") int projectNumber){
+		
+		if(!projectMemberService.hasProjectMemberCount(memberNumbers, projectNumber)) {// 멤버가 모두 존재하는지
+			return ResponseEntity.status(400).body(false);
+		}
+		
+		Boolean result = projectMemberService.deleteProjectMember(memberNumbers, projectNumber);// 삭제를 진행 후 성공여부 반환
+		
+		if(result) { //성공 했다면
+			return ResponseEntity.ok(true);
+		} else {
+			return ResponseEntity.status(500).body(false);
+		}
+	}
+	
 }
