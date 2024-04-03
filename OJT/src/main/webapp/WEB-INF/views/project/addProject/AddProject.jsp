@@ -294,10 +294,12 @@ document.getElementById('maintEndDate').addEventListener('change', maintEndDateE
 document.getElementById('addProjectClose').addEventListener('click', function(){
 	$('#modalAddProject').html('');
 	modalStack.pop();
+	currModal = getCurrModalDom();
 })
 document.getElementById('cancelBtn').addEventListener('click', function(){
 	$('#modalAddProject').html('');
 	modalStack.pop();
+	currModal = getCurrModalDom();
 })
 
 // 드롭다운 이벤트 추가

@@ -17,13 +17,13 @@
 			<td>${ item.department }</td>
 			<td>${ item.position }</td>
 			<td>
-				<input type="date" min="${ startDate }" max="${ endDate }"/>
+				<input type="date" class="startDate" min="${ startDate }" max="${ endDate }"/>
 			</td>
 			<td>
-				<input type="date" min="${ startDate }" max="${ endDate }"/>
+				<input type="date" class="endDate" min="${ startDate }" max="${ endDate }"/>
 			</td>
 			<td>
-				<select>
+				<select class="role">
 					<c:forEach var="role" items="${ roleList }">
 						<option value="${ role.detailCode }">${ role.codeName }</option>
 					</c:forEach>

@@ -109,12 +109,14 @@ modalStack.push('#modalAddProjectMember');
 document.getElementById('addProjectMemberClose').addEventListener('click', function(){
 	$('#modalAddProjectMember').html('');
 	modalStack.pop();
+	currModal = getCurrModalDom();
 })
 
 // 취소 버튼
 document.getElementById('cancelAddPMBtn').addEventListener('click', function(){
 	$('#modalAddProjectMember').html('');
 	modalStack.pop();
+	currModal = getCurrModalDom();
 })
 
 // 처음 진입시 검색 실행

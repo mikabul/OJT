@@ -27,6 +27,7 @@ public class ProjectMemberController {
 	@Autowired
 	private ProjectMemberService projectMemberService;
 	
+	//인원 관리 모달
 	@GetMapping("/")
 	public String projectMember(@RequestParam("projectNumber") int projectNumber, Model model) {
 		
@@ -38,14 +39,23 @@ public class ProjectMemberController {
 		
 		ArrayList<CodeBean> roleList = projectService.getRole();//역할 리스트
 		model.addAttribute("roleList", roleList);
+		
 		return "/project/projectMember/ProjectMember";
 	}
 	
+	// 인원 추가 모달
 	@GetMapping("/modalAddProjectMember")
-	public String modalAddProjectMember() {
+	public String modalAddProjectMember( int projectNumber, String projectStartDate, String projectEndDate, String maintEndDate, Model model) {
+		
+		model.addAttribute("projectNumber", projectNumber);
+		model.addAttribute("projectStartDate", projectStartDate);
+		model.addAttribute("projectEndDate", projectEndDate);
+		model.addAttribute("maintEndDate", maintEndDate);
+		
 		return "/project/projectMember/addProjectMember";
 	}
 	
+	// 인원 추가 - 조회
 	@PostMapping("/addProjectMemberSearch")
 	public String addProjectMemberSearch(
 			@RequestParam(value = "memberName") String memberName,
@@ -56,10 +66,6 @@ public class ProjectMemberController {
 		
 		ArrayList<MemberBean> memberList = projectMemberService.searchNotProjectMember(projectNumber, memberName);
 		ArrayList<CodeBean> roleList = projectService.getRole();
-		
-		System.out.println();
-		System.out.println(memberList.toString());
-		System.out.println(roleList.toString());
 		
 		model.addAttribute("memberList", memberList);
 		model.addAttribute("roleList", roleList);

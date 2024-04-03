@@ -162,8 +162,7 @@
 	
 	/* 	페이지 로딩 끝날시 실행	*/
 	modalStack.push('#modalProjectMember');
-	const currModal = getCurrModalDom();
-	console.log(currModal);
+	currModal = getCurrModalDom();
 	
 	currModal.querySelector('#projectMemberClose').addEventListener('click', projectMemberCloseButtonEvent); // 닫기 버튼 이벤트
 	currModal.querySelector('#projectMemberCloseButton').addEventListener('click', projectMemberCloseButtonEvent); // 취소 버튼 이벤트
@@ -185,6 +184,7 @@
 	// 닫기 이벤트(닫기 버튼, 취소 버튼)
 	function projectMemberCloseButtonEvent(){
 		modalStack.pop();
+		currModal = getCurrModalDom();
 		$('#modalProjectMember').html('');
 	}
 	
@@ -265,11 +265,21 @@
 		})
 	}
 	
-	// 멤버 추가 모달 불러오기, 추가 버튼 이벤트
+	// 인원 추가 모달 불러오기, 추가 버튼 이벤트
 	function projectMemberAddButtonEvent(){
+		const projectNumber = currModal.querySelector('input[type="hidden"][name="projectNumber"]').value;
+		const projectStartDate = currModal.querySelector('input[type="hidden"][name="projectStartDate"]').value;
+		const projectEndDate = currModal.querySelector('input[type="hidden"][name="projectEndDate"]').value;
+		const maintEndDate = currModal.querySelector('input[type="hidden"][name="maintEndDate"]').value;
 		$.ajax({
 			url: '/OJT/projectMember/modalAddProjectMember',
 			method: 'GET',
+			data: {
+				projectNumber : projectNumber,
+				projectStartDate : projectStartDate,
+				projectEndDate : projectEndDate,
+				maintEndDate : maintEndDate
+			},
 			success: function(result){
 				$('#modalAddProjectMember').html(result);
 			},

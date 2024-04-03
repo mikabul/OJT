@@ -45,6 +45,10 @@
 	 	order by cust_seq
 	</select>
 	
+	<!-- 프로젝트 번호, 시작일, 종료일, 유지보수 종료일 검사 -->
+	<select id="matchProjectInfo" parameterType="com.ojt.bean.ProjectBean">
+		
+	</select>
 	<!-- 프로젝트 등록 -->
 	<insert id="insertProject" parameterType="com.ojt.bean.ProjectBean">
 		insert into project_info values(

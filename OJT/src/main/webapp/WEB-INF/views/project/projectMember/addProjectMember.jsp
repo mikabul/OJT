@@ -44,6 +44,10 @@
 			</section>
 			<section>
 				<div id="scrollDiv" data-scroll="9">
+					<input type="hidden" name="projectNumber" value="${ projectNumber }"/>
+					<input type="hidden" name="projectStartDate" value="${ projectStartDate }" />
+					<input type="hidden" name="projectEndDate" value="${ projectEndDate }" />
+					<input type="hidden" name="maintEndDate" value="${ maintEndDate }"/>
 					<table>
 						<colgroup>
 							<!-- 체크 박스 -->
@@ -81,39 +85,40 @@
 					</table>
 				</div>
 			</section>
-			<section>
+			<section class="text-center">
 				<button type="button" class="btn btn-green" id="addProjectMemberButton">저장</button>
-				<button type="button" class="btn btn-orange" id="">취소</button>
+				<button type="button" class="btn btn-orange" id="addProjectMemberCancleButton">취소</button>
 			</section>
 		</div>
 	</div>
 </body>
 <script>
 	modalStack.push('#modalAddProjectMember');
-	document.getElementById('addProjectMemberClose').addEventListener('click', closeEvent); // 닫기 버튼 이벤트
-	document.getElementById('addProjectMemberSearch').addEventListener('submit', addProjectMemberSearchEvent); // 조회 이벤트
+	currModal = getCurrModalDom();
+	currModal.querySelector('#addProjectMemberClose').addEventListener('click', closeEvent); // 닫기 버튼 이벤트
+	currModal.querySelector('#addProjectMemberCancleButton').addEventListener('click', closeEvent); // 취소 버튼 이벤트
+	currModal.querySelector('#addProjectMemberSearch').addEventListener('submit', addProjectMemberSearchEvent); // 조회 이벤트
+	currModal.querySelector('#addProjectMemberButton').addEventListener('click', addProjectMemberButtonEvent); //저장 버튼 이벤트
 	
-	let event = new Event('submit');
-	console.log(event);
-	document.getElementById('addProjectMemberSearch').dispatchEvent(event);
 	/* 함수 실행 */
-// 	document.querySelector(getCurrModal() + ' button[type="submit"]').click();
+	currModal.querySelector('#addProjectMemberSearch').dispatchEvent(new Event('submit')); // 로딩 후 실행
 	
 	// 닫기 이벤트
 	function closeEvent(){
 		$(modalStack.pop()).html('');
+		currModal = getCurrModalDom();
 	}
 	
 	// 조회 이벤트
 	function addProjectMemberSearchEvent(event){
 		event.preventDefault(); // 기본이벤트 비활성화
-				
-		const currModal = getCurrModal();
-		const memberName = document.querySelector(currModal + ' input[type="text"][name="memberName"]').value;
-		const projectNumber = document.querySelector('input[type="hidden"][name="projectNumber"]').value;
-		const projectStartDate = document.querySelector('input[type="hidden"][name="projectStartDate"]').value;
-		const projectEndDate = document.querySelector('input[type="hidden"][name="projectEndDate"]').value;
-		const maintEndDate = document.querySelector('input[type="hidden"][name="maintEndDate"]').value;
+		
+		const memberName = currModal.querySelector('input[type="text"][name="memberName"]').value;
+		const projectNumber = currModal.querySelector('input[type="hidden"][name="projectNumber"]').value;
+		const projectStartDate = currModal.querySelector('input[type="hidden"][name="projectStartDate"]').value;
+		const projectEndDate = currModal.querySelector('input[type="hidden"][name="projectEndDate"]').value;
+		const maintEndDate = currModal.querySelector('input[type="hidden"][name="maintEndDate"]').value;
+		
 		let endDate;
 	
 		if(maintEndDate != ''){
@@ -121,8 +126,6 @@
 		} else {
 			endDate = projectEndDate;
 		}
-		
-		console.log(endDate);
 		
 		$.ajax({
 			url: '/OJT/projectMember/addProjectMemberSearch',
@@ -135,12 +138,148 @@
 				'endDate' : endDate
 			},
 			success: function(result){
-				document.querySelector(currModal + ' tbody').innerHTML = result;
+				currModal.querySelector('tbody').innerHTML = result;
 				isScroll();
 				checkEvent();
+				projectMemberAddEventFunction();
 			}
 		})
 	}
 	
+	// 투입일, 철수일, 역할 변경 이벤트 추가
+	function projectMemberAddEventFunction(){
+		const startDates = currModal.querySelectorAll('.startDate');
+		const endDates = currModal.querySelectorAll('.endDate');
+		const roles = currModal.querySelectorAll('.role');
+		
+		startDates.forEach(startDate => {
+			startDate.addEventListener('change', projectMemberStartDateChangeEvent);
+			startDate.addEventListener('change', projectMemberChangeEvent);
+		});
+		
+		endDates.forEach(endDate => {
+			endDate.addEventListener('change', projectMemberStartDateChangeEvent);
+			endDate.addEventListener('change', projectMemberChangeEvent);
+		});
+		
+		roles.forEach(role => {
+			role.addEventListener('change', projectMemberChangeEvent);
+		});
+	}
+	
+	// 투입일 변경 이벤트
+	function projectMemberStartDateChangeEvent(){
+		const row = this.closest('tr');
+		const startDate = row.cells[6].querySelector('input');
+		startDate.min = this.value;
+	}
+	
+	// 철수일 변경 이벤트
+	function projectMemberEndDateChangeEvent(){
+		const row = this.closest('tr');
+		const endDate = row.cells[5].querySelector('input');
+		endDate.max = this.value;
+	}
+	
+	// 변경시 체크 이벤트
+	function projectMemberChangeEvent(){
+		const row = this.closest('tr');
+		const checkbox = row.querySelector('input[type="checkbox"].check');
+		if(!checkbox.checked){
+			checkbox.checked = true;
+		}
+	}
+	
+	// 저장 버튼
+	function addProjectMemberButtonEvent(){
+		
+		const projectNumber = currModal.querySelector('input[type="hidden"][name="projectNumber"]').value;
+		const projectStartDate = currModal.querySelector('input[type="hidden"][name="projectStartDate"]').value;
+		const projectEndDate = currModal.querySelector('input[type="hidden"][name="projectEndDate"]').value;
+		const maintEndDate = currModal.querySelector('input[type="hidden"][name="maintEndDate"]').value;
+		
+		const rows = currModal.querySelector('tbody').rows;
+		console.log(projectNumber);
+		const datePattern = /^[0-9]{4}\-(0[1-9]|1[0-2])\-(0[1-9]|[12][0-9]|3[01])$/;
+		let errors = [];
+		let pmList = [];
+		
+		for(let i = 0; i < rows.length; i++){
+			const row = rows[i];
+			if(row.querySelector('input[type="checkbox"].check').checked && errors.length == 0){
+				
+				/* 데이터 추출 */
+				const memberNumber = row.cells[1].innerText;
+				const startDate = row.querySelector('.startDate').value;
+				const endDate = row.querySelector('.endDate').value;
+				const roleCode = row.querySelector('.role').value;
+				
+				/* 유효성 검사 */
+				if(memberNumber === undefined || memberNumber == ''){
+					errors.push('사원번호는 비어있을수 없습니다');
+				}
+				if(startDate !== undefined && startDate != ''){
+					if(!datePattern.test(startDate)){
+						errors.push('투입일이 날짜 형식이 아닙니다.');
+					}
+				} 
+				
+				if(endDate !== undefined && endDate != ''){
+					if(!datePattern.test(endDate)){
+						errors.push('철수일이 날짜 형식이 아닙니다.');
+					}
+				} 
+				
+				if(roleCode === undefined || roleCode == ''){
+					errors.push('역할은 비어있을수 없습니다.')
+				}
+				
+				if(errors.length != 0){
+					errorMessage = '';
+					for(let error = 0; error < errors.length; error++){
+						errorMessage += errors[error] + '\n';
+					}
+					alert(errorMessage);
+					return;
+				}
+				
+				/* 데이터 저장 */
+				pmList.push({
+					projectNumber : projectNumber,
+					memberNumber : memberNumber,
+					startDate : startDate,
+					endDate : endDate,
+					roleCode : roleCode
+				});
+			}
+		}
+		
+		// 선택된 멤버가 없다면 alert후 메서드 종료
+		if(pmList.length == 0){
+			alert('추가할 인원이 없습니다.');
+			return;
+		}
+		
+		console.log(JSON.stringify(pmList));
+		
+		$.ajax({
+			url: '/OJT/projectRest/addProjectMember',
+			method: 'POST',
+			contentType: 'application/json',
+			data: JSON.stringify({
+				projectNumber: projectNumber,
+				projectStartDate : projectStartDate,
+				projectEndDate : projectEndDate,
+				maintEndDate : maintEndDate,
+				pmList : pmList
+			}),
+			success: function(result){
+				console.log('성공');
+			},
+			error: function(error){
+				console.log('실패');
+			}
+		});
+	}
 </script>
 </html>

@@ -1,3 +1,4 @@
+let currModal;
 // input 글자수 제한 이벤트 주입 함수
 // 호출시 input[type="text"] 와 textarea의 길이제한 이벤트 주입
 function lengthLimitEvent(){

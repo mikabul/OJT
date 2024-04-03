@@ -24,11 +24,14 @@ public interface ProjectMapper {
 	// 프로젝트 검색 - 페이징 처리
 	// 같은 조건으로 검색시의 최대 개수
 	public int searchProjectListMaxCount(@Param("projectName") String projectName,
-															@Param("optionalQuery") String optionalQuery);
+										@Param("optionalQuery") String optionalQuery);
 	
 	// select2의 데이터 리스트
 	// 고객사 번호, 이름
 	public ArrayList<CustomerBean> getCustomerList(String customer);
+	
+	// 프로젝트 번호, 시작일, 종료일, 유지보수 종료일을 검사
+	public int matchProjectInfo(ProjectBean projectBean);
 	
 	// 프로젝트 등록
 	public void insertProject(ProjectBean insertProjectBean);

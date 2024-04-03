@@ -250,6 +250,7 @@ function projectAddSuccess() {
 $(document).keydown(function(event) {
 	if (event.keyCode == 27 || event.which == 27) {
 		$(modalStack.pop()).html('');
+		currModal = getCurrModalDom();
 		window.history.pushState({}, '', '/OJT/project/Main');
 	}
 });

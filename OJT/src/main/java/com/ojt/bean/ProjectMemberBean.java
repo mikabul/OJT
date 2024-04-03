@@ -17,6 +17,11 @@ public class ProjectMemberBean {
 	private String department; 		// 부서
 	private String position; 		// 직급
 	private String roleName;		// 역할
+	
+	public ProjectMemberBean() {
+		// TODO Auto-generated constructor stub
+	}
+	
 	@Override
 	public String toString() {
 		return "ProjectMemberBean [projectNumber=" + projectNumber + ", memberNumber=" + memberNumber + ", memberName="
