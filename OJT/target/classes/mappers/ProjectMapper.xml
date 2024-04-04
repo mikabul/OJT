@@ -12,13 +12,13 @@
 				prj.prj_nm as projectName,
 				cust.cust_nm as customerName,
 				prj.prj_st_dt as projectStartDate,
-				prj.prj_ed_dt as projectEndDate, 
+				prj.prj_ed_dt as projectEndDate,
 				prj.maint_st_dt as maintStartDate,
 				prj.maint_ed_dt as maintEndDate,
 				cd.dtl_cd_nm AS projectStateName,
 				cd.dtl_cd as projectStateCode,
 				row_number() OVER (ORDER BY prj.prj_seq DESC) AS rn
-			FROM project_info prj 
+			FROM project_info prj
 			LEFT JOIN code_detail cd ON cd.mst_cd = 'PS01' AND prj.ps_cd = cd.dtl_cd
 			LEFT JOIN customer cust ON cust.cust_seq = prj.cust_seq
 			WHERE prj.prj_nm LIKE #{projectName}
@@ -47,7 +47,14 @@
 	
 	<!-- 프로젝트 번호, 시작일, 종료일, 유지보수 종료일 검사 -->
 	<select id="matchProjectInfo" parameterType="com.ojt.bean.ProjectBean">
-		
+		select count(prj_seq)
+		from project_info
+		where prj_seq = #{projectNumber}
+		    and prj_st_dt = #{projectStartDate}
+		    and prj_ed_dt = #{projectEndDate}
+		    <if test="maintEndDate != null AND maintEndDate = ''">
+		    	and maint_ed_dt = #{maintEndDate}
+		    </if>
 	</select>
 	<!-- 프로젝트 등록 -->
 	<insert id="insertProject" parameterType="com.ojt.bean.ProjectBean">

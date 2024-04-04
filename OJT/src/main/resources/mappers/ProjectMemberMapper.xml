@@ -100,6 +100,17 @@
 			and prj_seq = #{projectNumber}
 	</select>
 	
+	<!-- 모두 존재하는 멤버인지 -->
+	<select id="hasMember" resultType="int">
+		SELECT count(mem_seq)
+		FROM MEMBER_INFO
+		WHERE mem_seq IN (
+			<foreach collection="memberNumbers" item="memberNumber" separator=",">
+				#{memberNumber}
+			</foreach>
+			)
+	</select>
+	
 	<!-- 프로젝트 멤버 삭제 -->
 	<delete id="deleteProjectMember">
 		delete project_member_table 

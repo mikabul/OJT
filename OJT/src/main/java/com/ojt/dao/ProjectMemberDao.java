@@ -31,6 +31,11 @@ public class ProjectMemberDao {
 	public ArrayList<MemberBean> getNotAddProjectMember(String str, int[] memberNumbers) {
 		return projectMemberMapper.getNotAddProjectMember(str, memberNumbers);
 	}
+	
+	// 멤버가 모두 존재하는지
+	public int hasMember(int[] memberNumbers) {
+		return projectMemberMapper.hasMember(memberNumbers);
+	}
 
 	// 프로젝트 멤버 등록
 	public void insertProjectMember(ProjectMemberBean insertProjectMemberBean) {

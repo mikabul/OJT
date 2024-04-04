@@ -48,6 +48,11 @@ public class ProjectMemberService {
 		}
 	}
 	
+	// 멤버가 전부 존재하는지
+	public int hasMember(int[] memberNumbers) {
+		return projectMemberDao.hasMember(memberNumbers);
+	}
+	
 	// 프로젝트 멤버 삭제
 	public boolean deleteProjectMember(int[] memberNumbers, int projectNumber) {
 		

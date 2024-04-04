@@ -24,6 +24,9 @@ public interface ProjectMemberMapper {
 		public ArrayList<MemberBean> getNotAddProjectMember(@Param("str") String str, 
 															@Param("memberNumbers") int[] memberNumbers);
 		
+		// 멤버가 모두 존재하는지
+		public int hasMember(int[] memberNumbers);
+		
 		// 프로젝트 멤버 등록
 		public void insertProjectMember(ProjectMemberBean insertProjectMemberBean);
 		

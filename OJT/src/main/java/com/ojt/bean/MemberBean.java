@@ -7,7 +7,7 @@ import lombok.Setter;
 @Setter
 public class MemberBean {
 
-	private int memberNumber;					// 사원 번호
+	private int memberNumber;					// 사원 번호mem_seq, mmemberNumber
 	private String memberName;					// 사원 이름
 	private String memberId;					// 아이디
 	private String memberPW;					// 비밀번호

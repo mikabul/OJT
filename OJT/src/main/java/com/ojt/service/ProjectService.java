@@ -77,6 +77,11 @@ public class ProjectService {
 		return projectDao.getCustomerList(customer);
 	}
 	
+	// 프로젝트 번호, 시작일, 종료일, 유지보수 종료일이 모두 일치하는지
+	public int matchProjectInfo(ProjectBean projectBean) {
+		return projectDao.matchProjectInfo(projectBean);
+	}
+	
 	// 프로젝트 역할 리스트
 	public ArrayList<CodeBean> getRole(){
 		return projectDao.getRole();
