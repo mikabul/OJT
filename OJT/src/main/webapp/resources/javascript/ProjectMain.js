@@ -121,7 +121,7 @@ function deleteProject() {
 
 // checkbox의 index를 가져오는 함수
 function getCheckbox() {
-	let checkboxs = document.querySelectorAll('.checkProject');
+	let checkboxs = document.querySelectorAll('.check');
 	let checkbox_value = [];
 
 	if (checkboxs.length)

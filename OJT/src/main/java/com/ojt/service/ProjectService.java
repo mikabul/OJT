@@ -87,6 +87,11 @@ public class ProjectService {
 		return projectDao.getRole();
 	}
 	
+	// 프로젝트 역할 코드 배열
+	public ArrayList<String> getRoleCodeList() {
+		return projectDao.getRoleCodeList();
+	}
+	
 	// 프로젝트 등록
 	public Boolean insertProject(ProjectBean addProjectBean) {
 		

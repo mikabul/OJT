@@ -1,11 +1,13 @@
 package com.ojt.validator;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.regex.Pattern;
 
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
+import com.ojt.bean.CodeBean;
 import com.ojt.bean.ProjectBean;
 import com.ojt.bean.ProjectMemberBean;
 import com.ojt.service.ProjectMemberService;
@@ -39,6 +41,13 @@ public class ProjectMemberValidator implements Validator{
 		String projectEndDate = projectBean.getProjectEndDate();
 		String maintEndDate = projectBean.getMaintEndDate();
 		ArrayList<ProjectMemberBean> pmList = projectBean.getPmList();
+		
+		ArrayList<CodeBean> roleList = projectService.getRole();
+		ArrayList<String> roleCodeList = new ArrayList<String>();
+		for(CodeBean codeBean : roleList) {
+			roleCodeList.add(codeBean.getDetailCode());
+		}
+//		ArrayList<String> roleCodeList = projectService.getRoleCodeList();
 		int memberNumbers[] = new int[pmList.size()];
 		
 		// 프로젝트 번호 검사, 0이라면 비어있는 것
@@ -95,7 +104,44 @@ public class ProjectMemberValidator implements Validator{
 			errors.rejectValue("memberNumberError", "NotMember");
 		}
 		
-		
+		for(ProjectMemberBean pm : pmList) {
+			
+			String startDate = pm.getStartDate();
+			String endDate = pm.getEndDate();
+			String roleCode = pm.getRoleCode();
+			
+			//투입일 검사
+			if(!errors.hasFieldErrors("startDateError") && startDate != null && !startDate.isEmpty()) {
+				if(!Pattern.matches(REGEXP_PATTERN_DATE, startDate)) {
+					errors.rejectValue("startDateError", "StartDatePattern");
+				}
+			}
+			
+			//철수일 검사
+			if(!errors.hasFieldErrors("endDateError") && endDate != null && !endDate.isEmpty()) {
+				if(!Pattern.matches(REGEXP_PATTERN_DATE, endDate)) {
+					errors.rejectValue("endDateError", "EndDatePattern");
+				}
+			}
+			
+			// 투입일이 철수일보다 큰지
+			if(!errors.hasFieldErrors("startDateError") && !errors.hasFieldErrors("startDateError")
+				&& startDate != null && !startDate.isEmpty()
+				&& endDate != null && !endDate.isEmpty()) {
+				
+				LocalDate startDateLocal = LocalDate.parse(startDate);
+				LocalDate endDateLocal = LocalDate.parse(endDate);
+				
+				if(startDateLocal.isBefore(endDateLocal)) {
+					errors.rejectValue("startDateError", "StartDateAfterEndDate");
+				}
+			}
+			
+			// 역할이 존재하는지
+			if(!roleCodeList.contains(roleCode)) {
+				errors.rejectValue("roleCodeError", "NotRoleCode");
+			}
+		}
 	}
 
 }

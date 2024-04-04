@@ -25,7 +25,7 @@ public interface ProjectMemberMapper {
 															@Param("memberNumbers") int[] memberNumbers);
 		
 		// 멤버가 모두 존재하는지
-		public int hasMember(int[] memberNumbers);
+		public int hasMember(@Param("memberNumbers")int[] memberNumbers);
 		
 		// 프로젝트 멤버 등록
 		public void insertProjectMember(ProjectMemberBean insertProjectMemberBean);

@@ -1,9 +1,12 @@
 package com.ojt.controller;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,6 +19,7 @@ import com.ojt.bean.CodeBean;
 import com.ojt.bean.ProjectBean;
 import com.ojt.service.ProjectMemberService;
 import com.ojt.service.ProjectService;
+import com.ojt.validator.ProjectMemberValidator;
 
 @RestController
 @RequestMapping(value = "/projectRest")
@@ -95,11 +99,28 @@ public class ProjectRestController {
 	}
 	
 	@RequestMapping("/addProjectMember")
-	public ResponseEntity<String> addProjectMember(@RequestBody ProjectBean projectBean){
+	public ResponseEntity<String> addProjectMember(@RequestBody ProjectBean projectBean, BindingResult result){
 		
+		ProjectMemberValidator projectMemberValidator = new ProjectMemberValidator(projectService, projectMemberService);
+		projectMemberValidator.validate(projectBean, result);
 		
+		ObjectMapper mapper = new ObjectMapper();
+		String jsonString = "";
 		
-		return ResponseEntity.ok("");
+		List<FieldError> fieldError = result.getFieldErrors();
+		for(FieldError error : fieldError) {
+			System.out.println(error.toString());
+		}
+		
+		try {
+			jsonString = mapper.writeValueAsString(fieldError);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		System.out.println(jsonString);
+		
+		return ResponseEntity.ok(jsonString);
 	}
 	
 }

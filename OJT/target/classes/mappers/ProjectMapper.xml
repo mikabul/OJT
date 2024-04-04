@@ -46,16 +46,17 @@
 	</select>
 	
 	<!-- 프로젝트 번호, 시작일, 종료일, 유지보수 종료일 검사 -->
-	<select id="matchProjectInfo" parameterType="com.ojt.bean.ProjectBean">
+	<select id="matchProjectInfo" parameterType="com.ojt.bean.ProjectBean" resultType="int">
 		select count(prj_seq)
 		from project_info
 		where prj_seq = #{projectNumber}
 		    and prj_st_dt = #{projectStartDate}
 		    and prj_ed_dt = #{projectEndDate}
-		    <if test="maintEndDate != null AND maintEndDate = ''">
+		    <if test="maintEndDate != null and maintEndDate = ''">
 		    	and maint_ed_dt = #{maintEndDate}
 		    </if>
 	</select>
+	
 	<!-- 프로젝트 등록 -->
 	<insert id="insertProject" parameterType="com.ojt.bean.ProjectBean">
 		insert into project_info values(
@@ -173,6 +174,14 @@
 			dtl_cd_nm as codeName
 		from code_detail where mst_cd = 'RO01'
 		order by dtl_cd
+	</select>
+	
+	<!-- 프로젝트 역할 코드 리스트 -->
+	<select id="getRoleCodeList" resultType="String">
+		select
+			dtl_cd
+		from code_detail
+		where mst_cd = 'RO01'
 	</select>
 	
 	<!-- ===== 밸리데이션 ===== -->

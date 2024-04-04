@@ -73,6 +73,8 @@ public interface ProjectMapper {
 	// 프로젝트 역할 리스트
 	public ArrayList<CodeBean> getRole();
 	
+	// 프로젝트 역할 코드 배열
+	public ArrayList<String> getRoleCodeList();
 	//================== 밸리데이션 ===================
 	// 고객사가 존재하는지
 	public Integer hasCustomer(int customerNumber);

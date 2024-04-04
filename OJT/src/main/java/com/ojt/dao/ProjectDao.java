@@ -104,6 +104,11 @@ public class ProjectDao {
 		return projectMapper.getRole();
 	}
 	
+	// 프로젝트 역할 코드 배열
+	public ArrayList<String> getRoleCodeList() {
+		return projectMapper.getRoleCodeList();
+	}
+	
 	//================== 밸리데이션 =========================
 	public Integer hasCustomer(int customerNumber) {
 		return projectMapper.hasCustomer(customerNumber);
