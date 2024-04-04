@@ -147,3 +147,58 @@ select
         
         
 select PRJ_DTL from project_info;
+
+
+select 
+			mem.mem_seq, 
+			mem.mem_nm, 
+			dept.dtl_cd_nm as dept, 
+			pos.dtl_cd_nm as position, 
+			pm.st_dt, pm.ed_dt,
+            ro.dtl_cd as ro_cd,
+            ro.dtl_cd_nm as role
+		from project_member_table pm 
+		inner join member_info mem on mem.mem_seq = pm.mem_seq 
+		inner join member_company mc on mc.mem_seq = mem.mem_seq 
+		left join code_detail dept on dept.mst_cd = 'DP01' and dept.dtl_cd = mc.dp_cd 
+		left join code_detail pos on pos.mst_cd = 'RA01' and pos.dtl_cd = mc.ra_cd 
+        left join code_detail ro on ro.mst_cd = 'RO01' and ro.dtl_cd = pm.ro_cd
+		where pm.prj_seq =1;
+        
+
+select 
+			mem.mem_seq as memberNumber, 
+			mem.mem_nm as memberName, 
+			dept.dtl_cd_nm as department, 
+			pos.dtl_cd_nm as position 
+		from member_info mem 
+		inner join member_company mc on mc.mem_seq = mem.mem_seq 
+		left join code_detail dept on dept.mst_cd = 'DP01' and dept.dtl_cd = mc.dp_cd 
+		left join code_detail pos on pos.mst_cd = 'RA01' and pos.dtl_cd = mc.ra_cd 
+		where mem.mem_nm like '%%'
+		
+		and mem.mem_seq not in
+			(6)
+
+		order by mem.mem_seq;
+        
+        
+select count(mem_seq) from project_member_table where mem_seq in (1,2) and prj_seq = 1;
+select * from project_member_table where prj_seq = 1;
+delete project_member_table where prj_seq = 1 and mem_seq in (1,2);
+
+
+select count(prj_seq)
+from project_info
+where prj_seq = 763
+    and prj_st_dt = '2024-04-03'
+    and prj_ed_dt = '2024-04-04'
+    AND maint_st_dt = ''
+    and maint_ed_dt = '';
+
+select * from project_info where prj_seq = 763;
+SELECT * FROM project_info;
+
+SELECT count(mem_seq)
+FROM MEMBER_INFO
+WHERE mem_seq IN (1,2,3);

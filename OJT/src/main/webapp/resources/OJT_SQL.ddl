@@ -94,8 +94,8 @@ ALTER TABLE project_info ADD CONSTRAINT prokect_info_pk PRIMARY KEY ( prj_seq );
 CREATE TABLE project_member_table (
     prj_seq NUMBER(10) NOT NULL,
     mem_seq NUMBER(10) NOT NULL,
-    st_dt   VARCHAR2(12) NOT NULL,
-    ed_dt   VARCHAR2(12) NOT NULL,
+    st_dt   VARCHAR2(12),
+    ed_dt   VARCHAR2(12),
     ro_cd   VARCHAR2(2)
 );
 
