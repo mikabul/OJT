@@ -16,6 +16,9 @@
 <!-- select2 -->
 <link href="${root}resources/lib/style/select2.min.css" rel="stylesheet" />
 <script src="${root}resources/lib/javascript/select2.min.js"></script>
+<!-- SweetAlert2 -->
+<link href="${root}resources/lib/style/sweetalert2.min.css" rel="stylesheet"/>
+<script src="${root}resources/lib/javascript/sweetalert2.min.js"></script>
 <!-- 외부 css -->
 <link rel="stylesheet" href="${root}resources/style/Main.css" />
 <style>

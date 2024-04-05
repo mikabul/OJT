@@ -108,15 +108,44 @@ function projectCheckboxCellClickEvent(event) {
 // 삭제 버튼 이벤트
 function deleteProject() {
 	let checkbox_value = getCheckbox();
+	
 	if (checkbox_value.length == 0) {
-		alert("선택된 프로젝트가 없습니다.");
+		Swal.fire({
+			toast: true,
+			showConfirmButton: false,
+			position: 'top',
+			timer: 2500,
+			title: '선택된 프로젝트가 없습니다.',
+			icon: 'info'
+		});
 		return;
 	}
 	
 	let projectValue = getTableProjetcInfo(checkbox_value);
-	if (deleteAlert(projectValue)) {
-		deleteProjectAjax(projectValue);
+	
+	// 얼럿 메세지 작성
+	let confirmMessage = '';
+	for (let i = 0; i < projectValue.length; i++) {
+		confirmMessage += '프로젝트명 : ' + projectValue[i].projectName + '\t고객사 : ' + projectValue[i].customerName + '\n';
 	}
+	confirmMessage += '삭제 하시겠습니까?'
+	// 얼럿 메세지 표시
+	Swal.fire({
+		icon: 'warning',
+		title: '프로젝트 삭제',
+		text: confirmMessage,
+		showCancelButton: true,
+		confirmButtonText: '삭제',
+		cancelButtonText: '취소',
+	}).then((result) => {
+		if(result.isConfirmed){
+			deleteProjectAjax(projectValue);
+			console.log('confirm');
+		} else {
+			console.log('cancel');
+			return;
+		}
+	});
 }
 
 // checkbox의 index를 가져오는 함수
@@ -156,25 +185,6 @@ function getTableProjetcInfo(checkbox_value) {
 	return projectValue;
 }
 
-// 삭제를 진행할지 여부를 묻는 alert
-function deleteAlert(projectValue) {
-	// 얼럿 메세지 작성
-	let confirmMessage = '';
-	for (let i = 0; i < projectValue.length; i++) {
-		confirmMessage += '프로젝트명 : ' + projectValue[i].projectName + '\t고객사 : ' + projectValue[i].customerName + '\n';
-	}
-	confirmMessage += '삭제 하시겠습니까?'
-	// 얼럿 메세지 표시
-	var result = confirm(confirmMessage);
-	if (result) {
-		return true;
-	} else {
-		// '취소' 버튼이 클릭된 경우 또는 창이 닫힌 경우
-		alert("취소되었습니다.");
-		return false;
-	}
-}
-
 // 삭제를 진행하기 위한 ajax
 function deleteProjectAjax(projectValue) {
 
@@ -193,10 +203,16 @@ function deleteProjectAjax(projectValue) {
 		},
 		success: function(result) {
 			if (result) {
-				alert('삭제에 성공하였습니다.');
-				location.reload();
+				Swal.fire({
+					icon: 'success',
+					title: '삭제에 성공하였습니다.',
+					timer: 3000,
+					timerProgressBar: true
+				}).then(() => {
+					location.reload();
+				})
 			} else {
-				alert('삭제에 실패하였습니다.');
+				Swal.fire('삭제에 실패하였습니다.', '', 'error');
 			}
 		},
 		error: function(error) {
@@ -292,6 +308,8 @@ function modifyProjectStateButtonEvent() {
 
 		if (firstDate >= now) {
 			slectHtml += '<option value="' + psList[0].detailCode + '">' + psList[0].codeName + '</option>';
+		} else {
+			slectHtml += '<option value="' + psList[0].detailCode + '" hidden>' + psList[0].codeName + '</option>';
 		}
 		
 		for (let i = 1; i < psList.length; i++) {
@@ -377,29 +395,45 @@ function changeSubmitEvent() {
 	})
 
 	if (projectNumber.length != projectState.length) { // 프로젝트 번호 배열과 상태의 배열의 길이가 다르면
-		alert('문제가 발생하였습니다.');
+		Swal.fire('문제가 발생하였습니다.', '', 'error');
 		return;
 	}
 
 	if (projectNumber.length == 0) { // 선택된 프로젝트가 없다면
-		alert('변경될 프로젝트가 없습니다.');
+		Swal.fire({
+			toast: true,
+			position: 'top',
+			icon: 'info',
+			title: '변경될 프로젝트가 없습니다.',
+			showConfirmButton: false,
+			timer: 2500,
+			timerProgressBar: true
+		});
 		return;
 	}
 
 	$.ajax({
 		url: "/OJT/projectRest/updateProjectState",
 		method: 'POST',
-		traditional: true,
 		data: {
-			'projectNumber': projectNumber,
+			'projectNumbers': projectNumber,
 			'projectState': projectState
 		},
 		success: function() {
-			alert('업데이트에 성공하였습니다!');
-			location.reload();
+			Swal.fire({
+				icon: 'success',
+				title: '성공!',
+				text: '업데이트에 성공하였습니다!'
+			}).then(() => {
+				location.reload();
+			});
 		},
 		error: function(error) {
-			alert('업데이트에 실패하였습니다.');
+			Swal.fire({
+				icon: 'error',
+				title: '실패',
+				text: '업데이트에 실패하였습니다.'
+			});
 			console.error(error);
 		}
 	})
@@ -454,7 +488,7 @@ function projectMemberBtnEvent() {
 			$('#modalProjectMember').html(result);
 		},
 		error: function(error) {
-			alert('로딩에 실패하였습니다');
+			Swal.fire('로딩에 실패하였습니다.', '', 'error');
 			console.error(error);
 		}
 	});

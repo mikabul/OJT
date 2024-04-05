@@ -109,7 +109,15 @@ function addPMBtnEvent(){
 	let addPMList = getCheckedPMList();
 	
 	if(addPMList.length == 0){// 선택된 멤버가 있는지?
-		alert('선택된 멤버가 없습니다.');
+		Swal.fire({
+			toast: true,
+			position: 'top',
+			showConfirmButton: false,
+			timer: 2500,
+			timerProgressBar: true,
+			icon: 'info',
+			text: '선택된 인원이 없습니다.'
+		});
 		return;
 	}
 	
@@ -124,7 +132,15 @@ function getCheckedPMList(){
 	Array.from(addPMRows).forEach(row => {
 		let cell = row.cells;
 		if(cell.length == 1){
-			alert('선택된 멤버가 없습니다.');
+			Swal.fire({
+				toast: true,
+				position: 'top',
+				showConfirmButton: false,
+				timer: 2500,
+				timerProgressBar: true,
+				icon: 'info',
+				text: '선택된 인원이 없습니다.'
+			});
 			return;
 		}
 		if(cell[0].querySelector('input').checked){

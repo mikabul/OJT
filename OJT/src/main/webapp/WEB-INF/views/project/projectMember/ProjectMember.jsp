@@ -6,7 +6,6 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<link rel="stylesheet" href="${root}resources/style/Main.css" />
 <style type="text/css">
 	.modal header {
 		display: flex;
@@ -122,12 +121,12 @@
 											<td>
 												<form:input type="date" path="pmList[${status.index}].startDate" class="startDate"
 													data-value="${ projectBean.pmList[status.index].startDate }"
-													min="${ projectBean.projectStartDate }" max="${ projectBean.maintEndDate != '' ? projectBean.maintEndDate : projectBean.projectStartDate }"/>
+													min="${ projectBean.projectStartDate }" max="${ projectBean.maintEndDate != null ? projectBean.maintEndDate : projectBean.projectEndDate }"/>
 											</td>
 											<td>
 												<form:input type="date" path="pmList[${status.index}].endDate" class="endDate"
 													data-value="${ projectBean.pmList[status.index].endDate }"
-													min="${ projectBean.projectStartDate }" max="${ projectBean.maintEndDate != '' ? projectBean.maintEndDate : projectBean.projectStartDate }"/>
+													min="${ projectBean.projectStartDate }" max="${ projectBean.maintEndDate != null ? projectBean.maintEndDate : projectBean.projectEndDate }"/>
 											</td>
 											<td>
 												<form:select path="pmList[${status.index}].roleCode" data-value="${ projectBean.pmList[status.index].roleCode }">
@@ -171,7 +170,7 @@
 	currModal.querySelectorAll('.check').forEach(checkbox => { // checkbox 변경 이벤트
 		checkbox.addEventListener('change', projectMemberCheckboxChangeEvent);
 	});
-	currModal.querySelector('.allCheck').addEventListener('change', projectMemberAllCheckboxChangeEvent);
+	currModal.querySelector('.allCheck').addEventListener('change', projectMemberAllCheckboxChangeEvent); // 모두 선택 checkbox 이벤트
 	
 	projectMemberDateChangeAddEvent(); // 멤버 날짜 변경 이벤트 추가 펑션
 	isScroll(); // 프로젝트 멤버 리스트 스크롤
@@ -204,47 +203,73 @@
 		});
 		
 		if(memberNumbers.length == 0){ //length == 0이라면 체크된 인원이 없다고 판단
-			alert('선택된 인원이 없습니다.');
+			Swal.fire({
+				toast: true,
+				position: 'top',
+				showConfirmButton: false,
+				timer: 2500,
+				timerProgressBar: true,
+				icon: 'info',
+				text: '선택된 인원이 없습니다.'
+			});
 			return;
 		}
 		
 		let confirmMessage = '';// 확인을 위한 메시지 작성
 		
-		for(let i = 0; i < memberNumbers.length; i++){
-			const memberName = rows[memberNumbers[i]].cells[2].querySelector('input').value;
-			const department = rows[memberNumbers[i]].cells[3].querySelector('input').value;
-			const position = rows[memberNumbers[i]].cells[4].querySelector('input').value;
-			
-			confirmMessage += memberName + '\t' + department + '\t' + position + '\n';
-		}
+		Array.from(rows).forEach(row => {
+			if(row.cells[0].querySelector('input[type="checkbox"]').checked){//첫번째 cell의 체크박스에 체크가 되어있다면
+				
+				const memberName = row.cells[2].querySelector('input').value;
+				const department = row.cells[3].querySelector('input').value;
+				const position = row.cells[4].querySelector('input').value;
+				confirmMessage += memberName + '\t' + department + '\t' + position + '\n';
+			}
+		});
 		
 		let confirmResult = confirm(confirmMessage + '삭제 하시겠습니까?');// 결과 저장
-		if(confirmResult){
-			$.ajax({
-				url: '/OJT/projectRest/deleteProjectMember',
-				method: 'POST',
-				traditional: true,
-				data: {
-					'memberNumbers' : memberNumbers,
-					'projectNumber' : projectNumber
-				},
-				success: function(result){
-					alert('삭제에 성공하였습니다.');
-					reloadProjectMember(projectNumber); //삭제후 모달 재생성
-				},
-				error: function(error){
-					console.error(error);
-				}
-			})
-		} else {
-			alert('취소 되었습니다.');
-		}
+		Swal.fire({
+			icon: 'warning',
+			title: '멤버 삭제',
+			text: confirmMessage + '삭제 하시겠습니까?',
+			confirmButtonText: '삭제',
+			showCancelButton: true,
+			cancelButtonText: '취소'
+		}).then((result) => {
+			if(result.isConfirmed){
+				$.ajax({
+					url: '/OJT/projectRest/deleteProjectMember',
+					method: 'POST',
+					traditional: true,
+					data: {
+						'memberNumbers' : memberNumbers,
+						'projectNumber' : projectNumber
+					},
+					success: function(result){
+						Swal.fire({
+							icon: 'success',
+							title: '성공',
+							text: '삭제에 성공하였습니다.',
+							timer: 3000,
+							timerProgressBar: true
+						}).then(() => {
+							reloadProjectMember(projectNumber); //삭제후 모달 재생성
+						});
+					},
+					error: function(error){
+						console.error(error);
+					}
+				});
+			} else {
+				Swal.fire('', '취소 되었습니다.', '');
+			}
+		});
 	}// 삭제 버튼 끝
 	
 	// 모달 새로 불러오기
 	function reloadProjectMember(projectNumber){
 		$.ajax({
-			url: '/OJT/project/projectMember',
+			url: '/OJT/projectMember/',
 			method: 'GET',
 			data: {
 				'projectNumber' : projectNumber
@@ -255,9 +280,9 @@
 			},
 			error: function(xhr, status, error){
 				if(xhr.status === 400 && error === false){
-					alert('인원을 다시한번 확인해주시기 바랍니다.');
+					Swal.fire('', '인원을 다시한번 확인해주시기 바랍니다.', 'error');
 				} else if(xhr.status === 500 && error === false){
-					alert('삭제에 실패하였습니다.\n문제가 계속되면 관리자에게 문의해주시기 바랍니다.');
+					Swal.fire('', '삭제에 실패하였습니다.\n문제가 계속되면 관리자에게 문의해주시기 바랍니다.', 'error');
 				} else {
 					console.error(error);
 				}
@@ -295,28 +320,102 @@
 		const endDates = currModal.querySelectorAll('.endDate');
 		
 		startDates.forEach(startDate => {
-			startDate.addEventListener('change', projectMemberStartDateChangeEvent);
+			startDate.addEventListener('focus', projectMemberDateFocusEvent);
+			startDate.addEventListener('focusout', projectMemberStartDateFocusoutEvent);
 		});
 		
 		endDates.forEach(endDate => {
-			endDate.addEventListener('change', projectMemberEndDateChangeEvent);
+			endDate.addEventListener('focus', projectMemberDateFocusEvent);
+			endDate.addEventListener('focusout', projectMemberEndDateFocusoutEvent);
 		})
 	}
 	
-	// 투입일 변경 이벤트
-	function projectMemberStartDateChangeEvent(){
-		const row = this.closest('tr');
-		const endDate = row.querySelector('input[name$=".endDate"]');
-		
-		endDate.min = this.value;
+	// focus 시 기존 날짜 저장
+	function projectMemberDateFocusEvent(){
+		preDate = this.value;
 	}
 	
-	// 철수일 변경 이벤트
-	function projectMemberEndDateChangeEvent(){
-		const row = this.closest('tr');
-		const startDate = row.querySelector('input[name$=".startDate"]');
+	// 투입일 focusout 시 프로젝트 시작일과 비교
+	function projectMemberStartDateFocusoutEvent(){
 		
-		startDate.max = this.value;
+		const row = this.closest('tr');
+		const startDate = new Date(this.value);
+		const endDate = new Date(row.querySelector('.endDate').value);
+		const projectStartDate = new Date(currModal.querySelector('input[type="hidden"][name="projectStartDate"]').value);
+		const formattedStartDate = 	projectStartDate.getFullYear() + '-'
+								+	String(projectStartDate.getMonth() + 1).padStart(2, '0') + '-'
+								+	String(projectStartDate.getDate()).padStart(2, '0');
+		
+		const projectEnd = currModal.querySelector('input[type="hidden"][name="projectEndDate"]').value;
+		const maintEnd = currModal.querySelector('input[type="hidden"][name="maintEndDate"]').value;
+		let projectEndDate;
+		if(maintEnd != null && maintEnd != ''){// 유지보수 종료일이 비어있지 않다면
+			projectEndDate = new Date(maintEnd); 
+		} else {
+			projectEndDate = new Date(projectEnd);
+		}
+		const formattedEndDate = 	projectEndDate.getFullYear() + '-'
+								+	String(projectEndDate.getMonth() + 1).padStart(2, '0') + '-'
+								+	String(projectEndDate.getDate()).padStart(2, '0');
+		
+		
+		if(projectStartDate > startDate){ // 프로젝트 시작일보다 작은지?
+				
+			projectMemberDateAlert({html: '<html><p>투입일은 프로젝트 시작일보다 작을수 없습니다.</p><p>프로젝트 시작일 : ' + formattedStartDate +'</p></html>'});
+			this.value = preDate == '' ? formattedStartDate : preDate;
+			
+		} else if(projectEndDate < startDate){ // 프로젝트 종료일 보다 큰지?
+			
+			projectMemberDateAlert({html : '<p>투입일은 프로젝트 종료일보다 클수 없습니다.</p><p>프로젝트 종료일 : ' + formattedEndDate + '</p>'});
+			this.value = preDate == '' ? formattedEndDate : preDate;
+			
+		} else if(startDate > endDate){ // 투입일 보다 큰지?
+			
+			projectMemberDateAlert({text : '투입일은 철수일보다 클수 없습니다.'});
+			this.value = preDate;
+			
+		}
+	}
+
+	
+	// 철수일 focusout 시 프로젝트 종료일과 비교
+	function projectMemberEndDateFocusoutEvent(){
+		
+		const row = this.closest('tr');
+		const startDate = new Date(row.querySelector('.startDate').value);
+		const endDate = new Date(this.value);
+		const projectStartDate = new Date(currModal.querySelector('input[type="hidden"][name="projectStartDate"]').value);
+		const formattedStartDate = 	projectStartDate.getFullYear() + '-'
+								+	String(projectStartDate.getMonth() + 1).padStart(2, '0') + '-'
+								+	String(projectStartDate.getDate()).padStart(2, '0');
+		
+		const projectEnd = currModal.querySelector('input[type="hidden"][name="projectEndDate"]').value;
+		const maintEnd = currModal.querySelector('input[type="hidden"][name="maintEndDate"]').value;
+		let projectEndDate;
+		if(maintEnd != null && maintEnd != ''){ // 유지보수 종료일이 비어있지 않다면
+			projectEndDate = new Date(maintEnd); 
+		} else {
+			projectEndDate = new Date(projectEnd);
+		}
+		const formattedEndDate = 	projectEndDate.getFullYear() + '-'
+								+	String(projectEndDate.getMonth() + 1).padStart(2, '0') + '-'
+								+	String(projectEndDate.getDate()).padStart(2, '0');
+		
+		if(projectStartDate > endDate){
+			
+			projectMemberDateAlert({html: '<p>철수일은 프로젝트 시작일보다 작을수 없습니다.</p><p>프로젝트 시작일 : ' + formattedStartDate + '</p>'});
+			this.value = preDate == '' ? formattedStartDate : preDate;
+			
+		} else if(projectEndDate < endDate){
+			
+			projectMemberDateAlert({html : '<p>철수일은 프로젝트 종료일보다 클수 없습니다.</p><p>프로젝트 종료일 : ' + formattedEndDate +'</p>'});
+			this.value = preDate == '' ? formattedEndDate : preDate;
+			
+		} else if(startDate > endDate){
+			
+			projectMemberDateAlert({text: '철수일은 투입일보다 작을수 없습니다.'});
+			this.value = preDate;
+		}
 	}
 	
 	// input select change 이벤트 주입

@@ -83,7 +83,7 @@ function errorMessagesAlert(){
 		errorsMessage += item.innerHTML + '\n';
 	});
 	if (errorsMessage.length > 0) {
-		alert('인원 추가\n\n' + errorsMessage);
+		Swal.fire('인원 추가', errorsMessage, 'error');
 	}
 }
 
@@ -239,12 +239,16 @@ function addProjectBeanSubmitEvent(){
 
 // 추가에 성공 했을 경우의 함수
 function addSuccess(){
-	alert('성공');
-	const success = document.querySelector('input[name="success"]').value;
-	const projectNumber = document.querySelector('input[name="projectNumber"]').value;
-	const form = document.querySelector('form');
-	form.action = '/OJT/project/Main?&success=' + success + '&projectNumber=' + projectNumber;
-	form.submit();
+	Swal.fire({
+		icon: 'success',
+		title: '성공!'
+	}).then(() => {
+		const success = document.querySelector('input[name="success"]').value;
+		const projectNumber = document.querySelector('input[name="projectNumber"]').value;
+		const form = document.querySelector('form');
+		form.action = '/OJT/project/Main?&success=' + success + '&projectNumber=' + projectNumber;
+		form.submit();
+	})
 }
 
 // 프로젝트 세부사항 길이표시 이벤트

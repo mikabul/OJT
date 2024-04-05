@@ -69,4 +69,25 @@ public class ProjectMemberService {
 			return false;
 		}
 	}
+	
+	// 프로젝트 멤버 등록
+	public Boolean insertProjectMemberList(ArrayList<ProjectMemberBean> pmList) {
+		
+		DefaultTransactionDefinition def = new DefaultTransactionDefinition();
+		TransactionStatus status = transactionManager.getTransaction(def);
+		
+		try {
+			
+			for(ProjectMemberBean projectMemberBean : pmList) {
+				projectMemberDao.insertProjectMember(projectMemberBean);
+			}
+			
+			transactionManager.commit(status);
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			transactionManager.rollback(status);
+			return false;
+		}
+	}
 }

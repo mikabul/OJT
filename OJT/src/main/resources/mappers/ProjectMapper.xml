@@ -52,7 +52,7 @@
 		where prj_seq = #{projectNumber}
 		    and prj_st_dt = #{projectStartDate}
 		    and prj_ed_dt = #{projectEndDate}
-		    <if test="maintEndDate != null and maintEndDate = ''">
+		    <if test="maintEndDate != null and maintEndDate != ''">
 		    	and maint_ed_dt = #{maintEndDate}
 		    </if>
 	</select>

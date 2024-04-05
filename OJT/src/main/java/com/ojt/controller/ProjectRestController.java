@@ -1,7 +1,9 @@
 package com.ojt.controller;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ojt.bean.CodeBean;
 import com.ojt.bean.ProjectBean;
+import com.ojt.bean.ProjectMemberBean;
 import com.ojt.service.ProjectMemberService;
 import com.ojt.service.ProjectService;
 import com.ojt.validator.ProjectMemberValidator;
@@ -70,8 +73,8 @@ public class ProjectRestController {
 	
 	// 프로젝트 상태 변경
 	@PostMapping("/updateProjectState")
-	public ResponseEntity<String> searchMember(@RequestParam(name = "projectNumbers") int[] projectNumbers,
-												@RequestParam(name = "projectState") String[] projectState){
+	public ResponseEntity<String> searchMember(@RequestParam(name = "projectNumbers[]") int[] projectNumbers,
+												@RequestParam(name = "projectState[]") String[] projectState){
 		Boolean result = projectService.updateProjectState(projectNumbers, projectState);
 		if(result) {
 			return ResponseEntity.ok("");
@@ -98,7 +101,8 @@ public class ProjectRestController {
 		}
 	}
 	
-	@RequestMapping("/addProjectMember")
+	// 프로젝트 멤버 추가
+	@RequestMapping(value = "/addProjectMember", produces = "application/json")
 	public ResponseEntity<String> addProjectMember(@RequestBody ProjectBean projectBean, BindingResult result){
 		
 		ProjectMemberValidator projectMemberValidator = new ProjectMemberValidator(projectService, projectMemberService);
@@ -107,18 +111,36 @@ public class ProjectRestController {
 		ObjectMapper mapper = new ObjectMapper();
 		String jsonString = "";
 		
-		List<FieldError> fieldError = result.getFieldErrors();
-		for(FieldError error : fieldError) {
-			System.out.println(error.toString());
+		Map<String, Object> map = new HashMap<String, Object>();
+		
+		if(result.hasErrors()) {
+			
+			map.put("result", false);
+			List<FieldError> fieldError = result.getFieldErrors();
+			ArrayList<String> errorMessage = new ArrayList<String>();
+			for(FieldError error : fieldError) {
+				errorMessage.add(error.getDefaultMessage());
+			}
+			map.put("errorMessage", errorMessage);
+			
+		} else {
+			
+			ArrayList<ProjectMemberBean> pmList = projectBean.getPmList();
+			map.put("result", true);
+			
+			if(!projectMemberService.insertProjectMemberList(pmList)) {// 멤버 등록, 실패 또는 성공이 Boolean으로 반환
+				return ResponseEntity.status(516).body("등록에 실패하였습니다.");
+			}
+			
 		}
 		
 		try {
-			jsonString = mapper.writeValueAsString(fieldError);
+			jsonString = mapper.writeValueAsString(map);
 		} catch (Exception e) {
 			e.printStackTrace();
+			System.out.println("json변환 실패");
+			return ResponseEntity.status(515).body("등록에 실패하였습니다.");
 		}
-		
-		System.out.println(jsonString);
 		
 		return ResponseEntity.ok(jsonString);
 	}

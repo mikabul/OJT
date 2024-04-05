@@ -11,6 +11,15 @@
 	.modal table td {
 		text-align: center;
 	}
+	
+	table thead tr:nth-child(2) td {
+		padding: 5px 5px;
+	}
+	
+	#projectMemberDateAllChangeButton{
+		padding-right: 7px;
+		padding-left: 7px;
+	}
 </style>
 </head>
 <body>
@@ -78,6 +87,22 @@
 								<td>철수일</td>
 								<td>역할</td>
 							</tr>
+<!-- 							<tr> -->
+<!-- 								<td></td> -->
+<!-- 								<td></td> -->
+<!-- 								<td></td> -->
+<!-- 								<td></td> -->
+<!-- 								<td></td> -->
+<!-- 								<td> -->
+<%-- 									<input type="date" id="allStartDate" min="${ projectStartDate }" max="${ projectEndDate }" value="${ projectStartDate }"/> --%>
+<!-- 								</td> -->
+<!-- 								<td> -->
+<%-- 									<input type="date" id="allEndDate" min="${ projectStartDate }" max="${ projectEndDate }" value="${ projectEndDate }"/> --%>
+<!-- 								</td> -->
+<!-- 								<td> -->
+<!-- 									<button type="button" id="projectMemberDateAllChangeButton" class="btn">모두 적용</button> -->
+<!-- 								</td> -->
+<!-- 							</tr> -->
 						</thead>
 						<tbody>
 							
@@ -99,6 +124,11 @@
 	currModal.querySelector('#addProjectMemberCancleButton').addEventListener('click', closeEvent); // 취소 버튼 이벤트
 	currModal.querySelector('#addProjectMemberSearch').addEventListener('submit', addProjectMemberSearchEvent); // 조회 이벤트
 	currModal.querySelector('#addProjectMemberButton').addEventListener('click', addProjectMemberButtonEvent); //저장 버튼 이벤트
+// 	currModal.querySelector('#allStartDate').addEventListener('focus', projectMemberDateFocusEvent);
+// 	currModal.querySelector('#allStartDate').addEventListener('focusout', projectMemberStartDateFocusoutEvent);
+// 	currModal.querySelector('#allEndDate').addEventListener('focus', projectMemberDateFocusEvent);
+// 	currModal.querySelector('#allEndDate').addEventListener('focusout', projectMemberEndDateFocusoutEvent);
+	
 	
 	/* 함수 실행 */
 	currModal.querySelector('#addProjectMemberSearch').dispatchEvent(new Event('submit')); // 로딩 후 실행
@@ -153,32 +183,20 @@
 		const roles = currModal.querySelectorAll('.role');
 		
 		startDates.forEach(startDate => {
-			startDate.addEventListener('change', projectMemberStartDateChangeEvent);
 			startDate.addEventListener('change', projectMemberChangeEvent);
+			startDate.addEventListener('focus', projectMemberDateFocusEvent);
+			startDate.addEventListener('focusout', projectMemberStartDateFocusoutEvent);
 		});
 		
 		endDates.forEach(endDate => {
-			endDate.addEventListener('change', projectMemberStartDateChangeEvent);
 			endDate.addEventListener('change', projectMemberChangeEvent);
+			endDate.addEventListener('focus', projectMemberDateFocusEvent);
+			endDate.addEventListener('focusout', projectMemberEndDateFocusoutEvent);
 		});
 		
 		roles.forEach(role => {
 			role.addEventListener('change', projectMemberChangeEvent);
 		});
-	}
-	
-	// 투입일 변경 이벤트
-	function projectMemberStartDateChangeEvent(){
-		const row = this.closest('tr');
-		const startDate = row.cells[6].querySelector('input');
-		startDate.min = this.value;
-	}
-	
-	// 철수일 변경 이벤트
-	function projectMemberEndDateChangeEvent(){
-		const row = this.closest('tr');
-		const endDate = row.cells[5].querySelector('input');
-		endDate.max = this.value;
 	}
 	
 	// 변경시 체크 이벤트
@@ -187,6 +205,92 @@
 		const checkbox = row.querySelector('input[type="checkbox"].check');
 		if(!checkbox.checked){
 			checkbox.checked = true;
+		}
+	}
+	
+	// focus 시 기존 날짜 저장
+	function projectMemberDateFocusEvent(){
+		preDate = this.value;
+	}
+	
+	// 투입일 focusout 시 프로젝트 시작일과 비교
+	function projectMemberStartDateFocusoutEvent(){
+		
+		const row = this.closest('tr');
+		const startDate = new Date(this.value);
+		const endDate = new Date(row.querySelector('.endDate').value);
+		const projectStartDate = new Date(currModal.querySelector('input[type="hidden"][name="projectStartDate"]').value);
+		const formattedStartDate = 	projectStartDate.getFullYear() + '-'
+								+	String(projectStartDate.getMonth() + 1).padStart(2, '0') + '-'
+								+	String(projectStartDate.getDate()).padStart(2, '0');
+		const projectEnd = currModal.querySelector('input[type="hidden"][name="projectEndDate"]').value;
+		const maintEnd = currModal.querySelector('input[type="hidden"][name="maintEndDate"]').value;
+		let projectEndDate;
+		if(maintEnd != null && maintEnd != ''){// 유지보수 종료일이 비어있지 않다면
+			projectEndDate = new Date(maintEnd); 
+		} else {
+			projectEndDate = new Date(projectEnd);
+		}
+		const formattedEndDate = 	projectEndDate.getFullYear() + '-'
+								+	String(projectEndDate.getMonth() + 1).padStart(2, '0') + '-'
+								+	String(projectEndDate.getDate()).padStart(2, '0');
+		
+		
+		if(projectStartDate > startDate){ // 프로젝트 시작일보다 작은지?
+				
+			projectMemberDateAlert({html : '<p>투입일은 프로젝트 시작일보다 작을수 없습니다.</p><p>프로젝트 시작일 : ' + formattedStartDate +'</p>'});
+			this.value = preDate == '' ? formattedStartDate : preDate;
+			
+		} else if(projectEndDate < startDate){ // 프로젝트 종료일 보다 큰지?
+			
+			projectMemberDateAlert({html : '<p>투입일은 프로젝트 종료일보다 클수 없습니다.</p><p>프로젝트 종료일 : ' + formattedEndDate + '</p>'});
+			this.value = preDate == '' ? formattedEndDate : preDate;
+			
+		} else if(startDate > endDate){ // 투입일 보다 큰지?
+			
+			projectMemberDateAlert({text : '투입일은 철수일보다 클수 없습니다.'});
+			this.value = preDate;
+			
+		}
+	}
+
+	
+	// 철수일 focusout 시 프로젝트 종료일과 비교
+	function projectMemberEndDateFocusoutEvent(){
+		
+		const row = this.closest('tr');
+		const startDate = new Date(row.querySelector('.startDate').value);
+		const endDate = new Date(this.value);
+		const projectStartDate = new Date(currModal.querySelector('input[type="hidden"][name="projectStartDate"]').value);
+		const formattedStartDate = 	projectStartDate.getFullYear() + '-'
+								+	String(projectStartDate.getMonth() + 1).padStart(2, '0') + '-'
+								+	String(projectStartDate.getDate()).padStart(2, '0');
+		const projectEnd = currModal.querySelector('input[type="hidden"][name="projectEndDate"]').value;
+		const maintEnd = currModal.querySelector('input[type="hidden"][name="maintEndDate"]').value;
+		let projectEndDate;
+		if(maintEnd != null && maintEnd != ''){// 유지보수 종료일이 비어있지 않다면
+			projectEndDate = new Date(maintEnd); 
+		} else {
+			projectEndDate = new Date(projectEnd);
+		}
+		const formattedEndDate = 	projectEndDate.getFullYear() + '-'
+								+	String(projectEndDate.getMonth() + 1).padStart(2, '0') + '-'
+								+	String(projectEndDate.getDate()).padStart(2, '0');
+		
+		if(projectStartDate > endDate){
+			
+			projectMemberDateAlert({html : '<p>철수일은 프로젝트 시작일보다 작을수 없습니다.</p><p>프로젝트 시작일 : ' + formattedStartDate + '</p>'});
+			this.value = preDate == '' ? formattedStartDate : preDate;
+			
+		} else if(projectEndDate < endDate){
+			
+			projectMemberDateAlert({html : '<p>철수일은 프로젝트 종료일보다 클수 없습니다.</p><p>프로젝트 종료일 : ' + formattedEndDate +'</p>'});
+			this.value = preDate == '' ? formattedEndDate : preDate;
+			
+		} else if(startDate > endDate){
+			
+			projectMemberDateAlert({text : '철수일은 투입일보다 작을수 없습니다.'});
+			this.value = preDate;
 		}
 	}
 	
@@ -199,7 +303,6 @@
 		const maintEndDate = currModal.querySelector('input[type="hidden"][name="maintEndDate"]').value;
 		
 		const rows = currModal.querySelector('tbody').rows;
-		console.log(projectNumber);
 		const datePattern = /^[0-9]{4}\-(0[1-9]|1[0-2])\-(0[1-9]|[12][0-9]|3[01])$/;
 		let errors = [];
 		let pmList = [];
@@ -260,8 +363,6 @@
 			return;
 		}
 		
-		console.log(JSON.stringify(pmList));
-		
 		$.ajax({
 			url: '/OJT/projectRest/addProjectMember',
 			method: 'POST',
@@ -274,10 +375,26 @@
 				pmList : pmList
 			}),
 			success: function(result){
-				console.log('성공');
+				if(result.result == true){
+					alert('등록에 성공하였습니다.');
+					reloadProjectMember(projectNumber);
+					$(modalStack.pop()).html('');
+					currModal = getCurrModalDom();
+				} else {
+					let errorMessage = '';
+					for(let i = 0; i < result.errorMessage.length; i++){
+						errorMessage += result.errorMessage[i] + "\n";
+					}
+					
+					alert(errorMessage);
+				}
 			},
-			error: function(error){
-				console.log('실패');
+			error: function(xhr, status, error){
+				if(status == 515){
+					alert(error);
+				} else {
+					console.error(error);
+				}
 			}
 		});
 	}

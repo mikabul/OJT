@@ -1,4 +1,6 @@
 let currModal;
+let preDate;
+
 // input 글자수 제한 이벤트 주입 함수
 // 호출시 input[type="text"] 와 textarea의 길이제한 이벤트 주입
 function lengthLimitEvent(){
@@ -130,11 +132,30 @@ function checkboxEvent(){
 	}
 }
 
+// 현재 모달의 아이디 반환
 function getCurrModal(){
 	return modalStack.length > 0 ? modalStack[modalStack.length - 1] : '';
 }
 
+// 현재 모달의 dom반환
 function getCurrModalDom(){
 	const currModalSlice = getCurrModal().slice(1);
 	return document.getElementById(currModalSlice);
+}
+
+// 날짜 경고 alert
+function projectMemberDateAlert(option) {
+	
+	const defaultOption = {
+		toast: true,
+		position: 'top',
+		showConfirmButton: false,
+		timer: 2500,
+		timerProgressBar: true,
+		icon: 'warning'
+	};
+	
+	const mergedOption = Object.assign({}, defaultOption, option);
+	console.log(mergedOption);
+	Swal.fire(mergedOption);
 }
