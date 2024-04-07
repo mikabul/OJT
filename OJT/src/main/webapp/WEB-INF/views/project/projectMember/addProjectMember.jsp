@@ -87,22 +87,6 @@
 								<td>철수일</td>
 								<td>역할</td>
 							</tr>
-<!-- 							<tr> -->
-<!-- 								<td></td> -->
-<!-- 								<td></td> -->
-<!-- 								<td></td> -->
-<!-- 								<td></td> -->
-<!-- 								<td></td> -->
-<!-- 								<td> -->
-<%-- 									<input type="date" id="allStartDate" min="${ projectStartDate }" max="${ projectEndDate }" value="${ projectStartDate }"/> --%>
-<!-- 								</td> -->
-<!-- 								<td> -->
-<%-- 									<input type="date" id="allEndDate" min="${ projectStartDate }" max="${ projectEndDate }" value="${ projectEndDate }"/> --%>
-<!-- 								</td> -->
-<!-- 								<td> -->
-<!-- 									<button type="button" id="projectMemberDateAllChangeButton" class="btn">모두 적용</button> -->
-<!-- 								</td> -->
-<!-- 							</tr> -->
 						</thead>
 						<tbody>
 							
@@ -124,11 +108,6 @@
 	currModal.querySelector('#addProjectMemberCancleButton').addEventListener('click', closeEvent); // 취소 버튼 이벤트
 	currModal.querySelector('#addProjectMemberSearch').addEventListener('submit', addProjectMemberSearchEvent); // 조회 이벤트
 	currModal.querySelector('#addProjectMemberButton').addEventListener('click', addProjectMemberButtonEvent); //저장 버튼 이벤트
-// 	currModal.querySelector('#allStartDate').addEventListener('focus', projectMemberDateFocusEvent);
-// 	currModal.querySelector('#allStartDate').addEventListener('focusout', projectMemberStartDateFocusoutEvent);
-// 	currModal.querySelector('#allEndDate').addEventListener('focus', projectMemberDateFocusEvent);
-// 	currModal.querySelector('#allEndDate').addEventListener('focusout', projectMemberEndDateFocusoutEvent);
-	
 	
 	/* 함수 실행 */
 	currModal.querySelector('#addProjectMemberSearch').dispatchEvent(new Event('submit')); // 로딩 후 실행

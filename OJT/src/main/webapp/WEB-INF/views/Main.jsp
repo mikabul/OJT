@@ -12,6 +12,5 @@
 <body style="margin: 60px 0;">
 	<c:import url="/WEB-INF/views/include/TopMenu.jsp" />
 	
-	<div>통계 추가 필요</div>
 </body>
 </html>

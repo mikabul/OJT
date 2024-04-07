@@ -151,11 +151,16 @@
 							<button type="button" class="btn" id="projectMemberCloseButton">닫기</button>
 						</div>
 					</section>
+					<div class="none">
+						<form:errors path="memberNumberError"></form:errors>
+						<form:errors path="startDateError"></form:errors>
+						<form:errors path="endDateError"></form:errors>
+						<form:errors path="roleCodeError"></form:errors>
+					</div>
 				</form:form>
 			</section>
 		</div>
 	</div>
-	
 </body>
 <script type="text/javascript">
 	
@@ -171,15 +176,17 @@
 		checkbox.addEventListener('change', projectMemberCheckboxChangeEvent);
 	});
 	currModal.querySelector('.allCheck').addEventListener('change', projectMemberAllCheckboxChangeEvent); // 모두 선택 checkbox 이벤트
+	currModal.querySelector('form#projectBean').addEventListener('submit', projectMemberModifySubmitEvent); // submit 이벤트
 	
 	projectMemberDateChangeAddEvent(); // 멤버 날짜 변경 이벤트 추가 펑션
 	isScroll(); // 프로젝트 멤버 리스트 스크롤
 	checkEvent(); // checkbox 이벤트
 	projectMemberInputChangeEvent(); // 멤버 정보 변경시 이벤트
+	startUpProjectMember(); // 로딩 시 실행 함수
 	
-	/*             */
-	/* 이벤트 펑션 들 */
-	/*             */
+	/*             	*/
+	/*  이벤트 펑션 들 	*/
+	/*             	*/
 	// 닫기 이벤트(닫기 버튼, 취소 버튼)
 	function projectMemberCloseButtonEvent(){
 		modalStack.pop();
@@ -463,6 +470,68 @@
 				endDate.value = endDate.dataset.value;
 				select.value = select.dataset.value;
 			})
+		}
+	}
+	
+	// submit 이벤트
+	function projectMemberModifySubmitEvent(event){
+		event.preventDefault(); // 기본 이벤트 차단
+		
+		const form = this;
+		
+		const checkboxs = form.querySelectorAll('input[type="checkbox"].check');
+		let count = 0;
+		checkboxs.forEach(checkbox => {
+			if(checkbox.checked){
+				count++;
+			}
+		});
+		
+		if(count == 0 ){
+			Swal.fire({
+				icon: 'info',
+				title: '변경될 인원이 없습니다.',
+				toast: true,
+				showConfirmButton: false,
+				timer: 2500,
+				timerProgressBar: true
+			});
+			return;
+		}
+		
+		const formData = new FormData(form);
+		
+		$.ajax({
+			url: '/OJT/projectMember/modifyProjectMember',
+			method: 'POST',
+			contentType: false,
+			processData: false,
+			data: {
+				'formData' : formData
+			},
+			success: function(result){
+				$(modalStack.pop()).html(result);
+			},
+			error: function(error){
+				Swal.fire({
+					icon: 'error',
+					title: '실패',
+					text: '등록에 실패하였습니다. 문제가 계속 될시 관리자에게 문의 바랍니다.'
+				});
+				console.error(error);
+			}
+		});
+	}
+	
+	function startUpProjectMember(){
+		const success = `${success}`;
+		console.log(success);
+		if(success == true){
+			alert('성공');
+		} else if(success == false){
+			alert('실패');
+		} else {
+			alert('???');
 		}
 	}
 </script>

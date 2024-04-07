@@ -5,8 +5,10 @@ import java.util.ArrayList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -16,6 +18,7 @@ import com.ojt.bean.ProjectBean;
 import com.ojt.bean.ProjectMemberBean;
 import com.ojt.service.ProjectMemberService;
 import com.ojt.service.ProjectService;
+import com.ojt.validator.ProjectMemberValidator;
 
 @Controller
 @RequestMapping("/projectMember")
@@ -73,5 +76,24 @@ public class ProjectMemberController {
 		model.addAttribute("endDate", endDate);
 		
 		return "/project/projectMember/addProjectMemberTable";
+	}
+	
+	// 프로젝트 멤버 수정
+	@PostMapping("modifyProjectMember")
+	public String modifyProjetcMember(
+			@RequestParam("formData") ProjectBean projectBean,
+			BindingResult result,
+			Model model) {
+		
+		ProjectMemberValidator projectMemberValidator = new ProjectMemberValidator(projectService, projectMemberService);
+		projectMemberValidator.validate(projectBean, result);
+		
+		if(result.hasErrors()) {
+			model.addAttribute("success", false);
+			return "/project/projectMember/ProjectMember";
+		}
+		
+		model.addAttribute("success", true);
+		return "/project/projectMember/ProjectMember";
 	}
 }
