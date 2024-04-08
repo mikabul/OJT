@@ -196,7 +196,7 @@
 			<section>
 				<div>
 					<div class="text-center">
-						<button type="button" class="btn btn-green" id="projectModifyBtn">수정</button>
+						<button type="button" class="btn btn-green" id="modifyProjectInfoButton">수정</button>
 						<button type="button" class="btn btn-orange" id="projectInfoCloseBtn">닫기</button>
 					</div>
 				</div>
@@ -206,20 +206,37 @@
 </body>
 <script>
 modalStack.push('#modalProject'); //modal이 열릴때 해당 모달의 아이디를 저장
+currModal = getCurrModalDom();
 
-// 모달 닫기
-$('#projectInfoClose').on('click', function(){
-	window.history.pushState({}, '', '/OJT/project/Main');
-	$('#modalProject').html('');
-	modalStack.pop();
-})
-
-$('#projectInfoCloseBtn').on('click', function(){
-	window.history.pushState({}, '', '/OJT/project/Main');
-	$('#modalProject').html('');
-	modalStack.pop();
-});
+$('#projectInfoClose').on('click', projectInfoCloseEvent);// 모달 닫기 이벤트
+$('#projectInfoCloseBtn').on('click', projectInfoCloseEvent);// 모달 닫기 이벤트
+document.getElementById('modifyProjectInfoButton').addEventListener('click', modifyProjectInfoButtonEvent); // 프로젝트 수정 모달
 
 isScroll();
+
+function projectInfoCloseEvent(){
+	window.history.pushState({}, '', '/OJT/project/Main');
+	$(modalStack.pop()).html('');
+	currModal = getCurrModalDom();
+}
+
+function modifyProjectInfoButtonEvent(){
+	const projectNumber = `${projectBean.projectNumber}`;
+	
+	$.ajax({
+		url: '/OJT/projectModify/',
+		method: 'GET',
+		data: {
+			'projectNumber' : projectNumber
+		},
+		success: function(result){
+			$('#modalModifyProject').html(result);
+		},
+		error: function(error){
+			Swal.fire('실패', '페이지로딩에 실패하였습니다.', 'error');
+			console.error(error);
+		}
+	});
+}
 </script>
 </html>

@@ -157,7 +157,7 @@ public class ProjectMemberValidator implements Validator{
 			}
 			
 			// 존재하지 않는 역할인지
-			if(!roleCodeList.contains(roleCode)) {
+			if(!roleCodeList.contains(roleCode) && !errors.hasFieldErrors("roleCodeError")) {
 				errors.rejectValue("roleCodeError", "NotRoleCode", "존재하지 않는 역할 입니다.");
 			}
 		}

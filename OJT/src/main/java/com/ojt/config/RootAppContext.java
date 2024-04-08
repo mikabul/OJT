@@ -14,5 +14,4 @@ public class RootAppContext {
 	public MemberBean loginMemberBean() {
 		return new MemberBean();
 	}
-	
 }

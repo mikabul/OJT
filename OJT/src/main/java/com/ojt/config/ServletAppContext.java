@@ -15,6 +15,7 @@ import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -109,5 +110,13 @@ public class ServletAppContext implements WebMvcConfigurer{
 		
 		return factory;
 		
+	}
+	
+	@Bean
+	public CommonsMultipartResolver multipartResolver() {
+		CommonsMultipartResolver resolver = new CommonsMultipartResolver();
+		resolver.setMaxUploadSize(20971520);
+		resolver.setMaxUploadSizePerFile(4096);
+		return resolver;
 	}
 }

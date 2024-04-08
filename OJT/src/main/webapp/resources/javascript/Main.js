@@ -1,6 +1,15 @@
 let currModal;
 let preDate;
 
+//esc누를시 모달 닫힘
+$(document).keydown(function(event) {
+	if (event.keyCode == 27 || event.which == 27) {
+		$(modalStack.pop()).html('');
+		currModal = getCurrModalDom();
+		window.history.pushState({}, '', '/OJT/project/Main');
+	}
+});
+
 // input 글자수 제한 이벤트 주입 함수
 // 호출시 input[type="text"] 와 textarea의 길이제한 이벤트 주입
 function lengthLimitEvent(){
@@ -83,6 +92,30 @@ function adjustDropdownMenuPosition(){
     });
 }
 
+// 드롭다운 라벨 표시
+function dropdownLabelDraw(){
+	let checkboxs = currModal.querySelectorAll('input[type="checkbox"][name="skillCodeList"]');
+	let tempList = [];
+	let message = '';
+	
+	checkboxs.forEach(check => {
+		if(check.checked){ // 체크되어있는지?
+			tempList.push(document.querySelector('label[for="' + check.id + '"]').textContent.trim());
+			// trim을 사용하여 공백을 제거해줘야함
+		}
+	})
+	
+	if(tempList.length >= 1){ //리스트에 값이 있는지?
+		message += tempList[0];
+		for(let i = 1; i < tempList.length; i++){
+			message += ', ' + tempList[i];
+		}
+	}
+	let label = currModal.querySelector('.dropdown-label');
+	label.innerHTML = message;
+	label.setAttribute('title', message);
+}
+
 
 // 스크롤 추가 펑션
 function isScroll(){
@@ -99,16 +132,23 @@ function isScroll(){
 	
 }
 
+/*											*/
+/* ================= 체크박스 ===============	*/
+/*											*/
 // 체크박스 이벤트 주입
 function checkEvent(){
 	const currModal = getCurrModal();
 	const allCheckbox = document.querySelector(currModal + ' .allCheck');
 	const checkboxs = document.querySelectorAll(currModal + ' .check');
 	
-	allCheckbox.addEventListener('click', allCheckboxEvent);
-	Array.from(checkboxs).forEach(checkbox => {
-		checkbox.addEventListener('click', checkboxEvent);
-	})
+	if(allCheckbox){
+		allCheckbox.addEventListener('click', allCheckboxEvent);
+	}
+	if(checkboxs){
+		Array.from(checkboxs).forEach(checkbox => {
+			checkbox.addEventListener('click', checkboxEvent);
+		})
+	}
 }
 
 // 모두 체크
@@ -141,6 +181,43 @@ function getCurrModal(){
 function getCurrModalDom(){
 	const currModalSlice = getCurrModal().slice(1);
 	return document.getElementById(currModalSlice);
+}
+
+
+/*											*/
+/* ================== 날짜 ================	*/
+/*											*/
+// 프로젝트 날짜 이벤트 주입
+function addProjectDateEvent(){
+	
+	const projetcStartDate = currModal
+	
+}
+
+// 프로젝트 시작일 변경 이벤트
+function projectStartDateChangeEvent(){
+	const projectEndDate = currModal.querySelector('input[name="projectStartDate"]');
+	projectEndDate.min = this.value;
+}
+
+// 프로젝트 종료일 변경 이벤트
+function projectEndDateChangeEvent(){
+	const projectStartDate = currModal.querySelector('input[name="projectEndDate"]');
+	const maintStartDate = currModal.querySelector('input[name="maintStartDate"]');
+	projectStartDate.max = this.value;
+	maintStartDate.min = this.value;
+}
+
+// 유지보수 시작일 변경 이벤트
+function maintStartDateChangeEvent(){
+	const maintEndDate = currModal.querySelector('input[name="maintEndDate"]');
+	maintEndDate.min = this.value;
+}
+
+// 유지보수 종료일 변경 이벤트
+function maintEndDateChangeEvent(){
+	const maintStartDate = currModal.querySelector('input[name="maintStartDate"]');
+	maintStartDate.max = this.value;
 }
 
 // 날짜 경고 alert

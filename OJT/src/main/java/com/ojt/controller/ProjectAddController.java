@@ -30,7 +30,7 @@ import com.ojt.validator.ProjectValidator;
 
 @Controller
 @RequestMapping(value = "/addProject")
-public class AddProjectController {
+public class ProjectAddController {
 	
 	@Autowired
 	private ProjectService projectService;

@@ -50,7 +50,7 @@
 			</header>
 			
 			<section>
-				<form:form modelAttribute="projectBean" method="POST" action="#">
+				<form:form modelAttribute="modifyProjectBean" method="POST" enctype="multipart/form-data">
 					<section class="justify-content-center">
 						<form:hidden path="projectNumber"/>
 						<form:hidden path="projectStartDate"/>
@@ -103,7 +103,7 @@
 									</tr>
 								</thead>
 								<tbody>
-									<c:forEach var="item" items="${ projectBean.pmList }" varStatus="status">
+									<c:forEach var="item" items="${ modifyProjectBean.pmList }" varStatus="status">
 										<tr>
 											<td><input type="checkbox" class="check"/></td>
 											<td>
@@ -133,6 +133,7 @@
 													<c:forEach var="role" items="${ roleList }">
 														<form:option value="${ role.detailCode }">${ role.codeName }</form:option>
 													</c:forEach>
+													<form:option value="9999">error-test</form:option>
 												</form:select>
 											</td>
 										</tr>
@@ -176,7 +177,7 @@
 		checkbox.addEventListener('change', projectMemberCheckboxChangeEvent);
 	});
 	currModal.querySelector('.allCheck').addEventListener('change', projectMemberAllCheckboxChangeEvent); // 모두 선택 checkbox 이벤트
-	currModal.querySelector('form#projectBean').addEventListener('submit', projectMemberModifySubmitEvent); // submit 이벤트
+	currModal.querySelector('form#modifyProjectBean').addEventListener('submit', projectMemberModifySubmitEvent); // submit 이벤트
 	
 	projectMemberDateChangeAddEvent(); // 멤버 날짜 변경 이벤트 추가 펑션
 	isScroll(); // 프로젝트 멤버 리스트 스크롤
@@ -234,7 +235,6 @@
 			}
 		});
 		
-		let confirmResult = confirm(confirmMessage + '삭제 하시겠습니까?');// 결과 저장
 		Swal.fire({
 			icon: 'warning',
 			title: '멤버 삭제',
@@ -432,10 +432,30 @@
 		
 		input.forEach(i => {
 			i.addEventListener('change', function(){
-				const row = i.closest('tr');
+				
+				const row = i.closest('tr'); // 해당하는 input select의 가장 가까운 부모를 가져옴
+				const startDate = row.querySelector('input[name$=".startDate"]');
+				const endDate = row.querySelector('input[name$=".endDate"]');
+				const roleCode = row.querySelector('select[name$=".roleCode"]');
 				const checkbox = row.querySelector('input[type="checkbox"]');
-				if(!checkbox.checked){
-					checkbox.click();
+				
+				// 각 input select에 있는 data-value의 값을 가져옴
+				const startDateValue = startDate.dataset.value ?? '';
+				const endDateValue = endDate.dataset.value ?? '';
+				const roleCodeValue = roleCode.dataset.value ?? '';
+				
+				if(	startDateValue !== startDate.value || endDateValue !== endDate.value || roleCodeValue !== roleCode.value){
+					
+					if(!checkbox.checked){
+						checkbox.click();
+					}
+					
+				} else {
+					
+					if(checkbox.checked){
+						checkbox.click();
+					}
+					
 				}
 			});
 		});
@@ -449,9 +469,9 @@
 			const endDate = row.querySelector('input[name$=".endDate"]');
 			const select = row.querySelector('select[name$=".roleCode"]');
 			
-			startDate.value = startDate.dataset.value;
-			endDate.value = endDate.dataset.value;
-			select.value = select.dataset.value;
+			startDate.value = startDate.dataset.value ?? '';
+			endDate.value = endDate.dataset.value ?? '';
+			select.value = select.dataset.value ?? '';
 		}
 	}
 	
@@ -466,9 +486,9 @@
 				const endDate = row.querySelector('input[name$=".endDate"]');
 				const select = row.querySelector('select[name$=".roleCode"]');
 				
-				startDate.value = startDate.dataset.value;
-				endDate.value = endDate.dataset.value;
-				select.value = select.dataset.value;
+				startDate.value = startDate.dataset.value ?? '';
+				endDate.value = endDate.dataset.value ?? '';
+				select.value = select.dataset.value ?? '';
 			})
 		}
 	}
@@ -481,13 +501,14 @@
 		
 		const checkboxs = form.querySelectorAll('input[type="checkbox"].check');
 		let count = 0;
+		// 반복문을 통해 체크된 인원이 있을 때 count 증가
 		checkboxs.forEach(checkbox => {
 			if(checkbox.checked){
 				count++;
 			}
 		});
 		
-		if(count == 0 ){
+		if(count == 0 ){ // count == 0 은 변경할 인원이 없는 것
 			Swal.fire({
 				icon: 'info',
 				title: '변경될 인원이 없습니다.',
@@ -506,9 +527,7 @@
 			method: 'POST',
 			contentType: false,
 			processData: false,
-			data: {
-				'formData' : formData
-			},
+			data: formData,
 			success: function(result){
 				$(modalStack.pop()).html(result);
 			},
@@ -525,14 +544,40 @@
 	
 	function startUpProjectMember(){
 		const success = `${success}`;
-		console.log(success);
-		if(success == true){
-			alert('성공');
-		} else if(success == false){
-			alert('실패');
-		} else {
-			alert('???');
+		if(success == 'true'){
+			Swal.fire('성공', '업데이트에 성공하였습니다.', 'success');
+		} else if(success == 'false'){
+			const code = `${code}`;
+			if(code == 400){
+				const errorMessages = currModal.querySelectorAll('span[id$=".errors"]');
+				let errorMessageHtml = '';
+				
+				errorMessages.forEach(message => {
+					errorMessageHtml += '<p>' + message.innerText + '</p>'
+				});
+				
+				Swal.fire({
+					icon: 'error',
+					title: '실패',
+					html: errorMessageHtml
+				});
+			} else if (code == 500){
+				Swal.fire('실패', '업데이트에 실패하였습니다. 문제가 계속될 경우 관리자에게 문의해주세요. CODE : 500', 'error');
+			}
+			
 		}
+		
+		// 각 input select중 하나라도 dataset.value와 값이 다르면 체크
+		const inputs = currModal.querySelectorAll('form#modifyProjectBean input[type="date"], form#modifyProjectBean select');
+		Array.from(inputs).forEach(input => {
+			const value = input.dataset.value ?? '';
+			
+			if(value != input.value){
+				const row = input.closest('tr');
+				const checkbox = row.cells[0].querySelector('input[type="checkbox"]');
+				checkbox.checked = true;
+			}
+		});
 	}
 </script>
 </html>

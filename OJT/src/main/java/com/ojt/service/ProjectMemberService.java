@@ -9,6 +9,7 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import com.ojt.bean.MemberBean;
+import com.ojt.bean.ProjectBean;
 import com.ojt.bean.ProjectMemberBean;
 import com.ojt.dao.ProjectMemberDao;
 
@@ -80,6 +81,29 @@ public class ProjectMemberService {
 			
 			for(ProjectMemberBean projectMemberBean : pmList) {
 				projectMemberDao.insertProjectMember(projectMemberBean);
+			}
+			
+			transactionManager.commit(status);
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			transactionManager.rollback(status);
+			return false;
+		}
+	}
+	
+	// 프로젝트 멤버 업데이트
+	public Boolean updateProjectMember(ProjectBean projectBean) {
+		
+		DefaultTransactionDefinition def = new DefaultTransactionDefinition();
+		TransactionStatus status = transactionManager.getTransaction(def);
+		
+		try {
+			ArrayList<ProjectMemberBean> pmList = projectBean.getPmList();
+			
+			for(ProjectMemberBean projectMemberBean : pmList) {
+				projectMemberBean.setProjectNumber(projectBean.getProjectNumber());
+				projectMemberDao.updateProjectMember(projectMemberBean);
 			}
 			
 			transactionManager.commit(status);

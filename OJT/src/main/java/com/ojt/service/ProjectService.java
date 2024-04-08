@@ -184,12 +184,21 @@ public class ProjectService {
 		ProjectBean projectBean = projectDao.getProjectInfo(projectNumber);
 		ArrayList<ProjectMemberBean> pmList = projectMemberDao.getProjectMemberList(projectNumber);
 		ArrayList<CodeBean> projectSkillList = projectDao.getProjectSKList(projectNumber);
+		String[] skillCodeList;
+		
+		
 		
 		if(pmList != null) {
 			projectBean.setPmList(pmList);
 		}
 		if(projectSkillList != null) {
 			projectBean.setProjectSkillList(projectSkillList);
+			
+			skillCodeList = new String[projectSkillList.size()];
+			for(int i = 0; i < skillCodeList.length; i++) {
+				skillCodeList[i] = projectSkillList.get(i).getDetailCode();
+			}
+			projectBean.setSkillCodeList(skillCodeList);
 		}
 		
 		return projectBean;

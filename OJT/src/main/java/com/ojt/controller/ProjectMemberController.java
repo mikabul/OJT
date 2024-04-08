@@ -7,8 +7,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -34,10 +34,13 @@ public class ProjectMemberController {
 	@GetMapping("/")
 	public String projectMember(@RequestParam("projectNumber") int projectNumber, Model model) {
 		
-		ProjectBean projectBean = projectService.getProjectInfo(projectNumber); // 프로젝트 정보
+		ProjectBean modifyProjectBean = projectService.getProjectInfo(projectNumber); // 프로젝트 정보
+		ProjectBean projectBean = projectService.getProjectInfo(projectNumber);
 		
 		ArrayList<ProjectMemberBean> projectMemberList = projectMemberService.getProjectMemberList(projectNumber); //프로젝트 멤버 리스트
+		modifyProjectBean.setPmList(projectMemberList);
 		projectBean.setPmList(projectMemberList);
+		model.addAttribute("modifyProjectBean", modifyProjectBean);
 		model.addAttribute("projectBean", projectBean);
 		
 		ArrayList<CodeBean> roleList = projectService.getRole();//역할 리스트
@@ -80,20 +83,36 @@ public class ProjectMemberController {
 	
 	// 프로젝트 멤버 수정
 	@PostMapping("modifyProjectMember")
-	public String modifyProjetcMember(
-			@RequestParam("formData") ProjectBean projectBean,
-			BindingResult result,
-			Model model) {
+	public String modifyProjetcMember( @ModelAttribute("modifyProjectBean") ProjectBean modifyProjectBean, BindingResult result, Model model) {
 		
 		ProjectMemberValidator projectMemberValidator = new ProjectMemberValidator(projectService, projectMemberService);
-		projectMemberValidator.validate(projectBean, result);
+		projectMemberValidator.validate(modifyProjectBean, result);
+		
+		ArrayList<CodeBean> roleList = projectService.getRole();//역할 리스트
+		model.addAttribute("roleList", roleList);
 		
 		if(result.hasErrors()) {
+			
 			model.addAttribute("success", false);
-			return "/project/projectMember/ProjectMember";
+			model.addAttribute("code", 400);
+			
+		} else if(projectMemberService.updateProjectMember(modifyProjectBean)) {
+			
+			model.addAttribute("success", true);
+			
+		} else {
+			
+			model.addAttribute("success", false);
+			model.addAttribute("code", 500);
+			
 		}
 		
-		model.addAttribute("success", true);
+		ProjectBean projectBean = projectService.getProjectInfo(modifyProjectBean.getProjectNumber());
+		ArrayList<ProjectMemberBean> projectMemberList = projectMemberService.getProjectMemberList(modifyProjectBean.getProjectNumber()); //프로젝트 멤버 리스트
+		projectBean.setPmList(projectMemberList);
+		model.addAttribute("projectBean", projectBean);
+		
 		return "/project/projectMember/ProjectMember";
+		
 	}
 }

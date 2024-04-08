@@ -87,30 +87,6 @@ function errorMessagesAlert(){
 	}
 }
 
-// 프로젝트의 필요기술 리스트를 클릭 할때마다 호출되는 이벤트
-function checkedSKEvent(){
-	let checkboxs = document.querySelectorAll('input[type="checkbox"][name="skillCodeList"]');
-	let tempList = [];
-	let message = '';
-	
-	checkboxs.forEach(check => {
-		if(check.checked){ // 체크되어있는지?
-			tempList.push(document.querySelector('label[for="' + check.id + '"]').textContent.trim());
-			// trim을 사용하여 공백을 제거해줘야함
-		}
-	})
-	
-	if(tempList.length >= 1){ //리스트에 값이 있는지?
-		message += tempList[0];
-		for(let i = 1; i < tempList.length; i++){
-			message += ', ' + tempList[i];
-		}
-	}
-	let label = document.querySelector('#addProjectBean .dropdown-label');
-	label.innerHTML = message;
-	label.setAttribute('title', message);
-}
-
 // 유지보수 시작일 이벤트
 function maintStartDateEvent(){
 	let value = this.value;

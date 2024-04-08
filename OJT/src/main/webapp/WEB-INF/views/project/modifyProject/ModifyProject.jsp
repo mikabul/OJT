@@ -1,13 +1,13 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
-<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
+<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <c:set var="root" value="${pageContext.request.contextPath}/" />
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
-<title>프로젝트 등록</title>
+<title>프로젝트 수정</title>
 <style>
 	.modal form > div {
 		margin: 3px 0;
@@ -31,28 +31,27 @@
 		max-height: 135px;
 	}
 	
+	
 </style>
 </head>
 <body>
 	<div class="modal-background">
-		<input type="hidden" name="success" value="${success}"/>
-		<input type="hidden" name="projectNumber" value="${projectNumber}"/>
 		<div class="modal">
 			<header>
-				<div class="w-20">
-					<span class="required">*</span>필수입력
+				<div class="w-30">
+					<span>*</span>&nbsp;필수
 				</div>
-				<div class="text-center w-60">
-					<h3>프로젝트 등록</h3>
+				<div class="w-40 text-center">
+					<h3>프로젝트 수정</h3>
 				</div>
-				<div class="text-right w-20">
-					<button type="button" class="closeBtn" id="addProjectClose">
-						<img src="${root}resources/images/x.png" alt="" />
+				<div class="w-30 text-right">
+					<button type="button" class="closeBtn" id="modifyProjectCloseButton">
+						<img src="${root}resources/images/x.png" alt="닫기" />
 					</button>
 				</div>
 			</header>
 			<section>
-				<form:form action="${root}project/addProject" method="POST" modelAttribute="addProjectBean" enctype="application/x-www-form-urlcencoded">
+				<form:form action="#" method="POST" modelAttribute="modifyProjectBean" onsubmit="return false;">
 					<div class="justify-content-center">
 						<div class="w-20">프로젝트 명<span class="required">*</span></div>
 						<div class="w-30">
@@ -83,11 +82,11 @@
 					<div class="justify-content-center">
 						<div class="w-20">프로젝트 기간<span class="required">*</span></div>
 						<div class="w-30">
-							<form:input type="date" path="projectStartDate" required="true"/>
+							<form:input type="date" path="projectStartDate" required="true" max="${ modifyProjectBean.projectEndDate }"/>
 						</div>
 						<div class="w-20 text-center">~</div>
 						<div class="w-30">
-							<form:input type="date" path="projectEndDate" required="true"/>
+							<form:input type="date" path="projectEndDate" required="true" min="${ modifyProjectBean.projectStartDate }"/>
 						</div>
 					</div>
 					<!-- error -->
@@ -106,11 +105,11 @@
 							유지보수 기간					
 						</div>
 						<div class="w-30">
-							<form:input type="date" path="maintStartDate" min="${ addProjectBean.projectEndDate }"/>
+							<form:input type="date" path="maintStartDate" min="${ modifyProjectBean.projectEndDate }"/>
 						</div>
 						<div class="w-20 text-center">~</div>
 						<div class="w-30">
-							<form:input type="date" path="maintEndDate" min="${ addProjectBean.projectEndDate }"/>
+							<form:input type="date" path="maintEndDate" min="${ modifyProjectBean.projectEndDate }"/>
 						</div>
 					</div>
 					<!-- error -->
@@ -200,7 +199,7 @@
 							</colgroup>
 							<thead>
 								<tr>
-									<th scope="col"><input type="checkbox" id="allCheckAddProject" value="false"/></th>
+									<th scope="col"><input type="checkbox" class="allCheck" value="false"/></th>
 									<th scope="col">사원 번호</th>
 									<th scope="col">이름</th>
 									<th scope="col">부서</th>
@@ -212,7 +211,7 @@
 							</thead>
 							<tbody id="pmListBody">
 								<c:choose>
-									<c:when test="${fn:length(addProjectBean.pmList) == 0 }">
+									<c:when test="${fn:length(modifyProjectBean.pmList) == 0 }">
 										<tr>
 											<td class="text-center" colspan="8">
 												추가된 인원이 없습니다.
@@ -220,9 +219,9 @@
 										</tr>
 									</c:when>
 									<c:otherwise>
-										<c:forEach var="item" items="${addProjectBean.pmList}" varStatus="status">
+										<c:forEach var="item" items="${modifyProjectBean.pmList}" varStatus="status">
 											<tr>
-												<td><input type="checkbox" class="checkAddProject"/></td>
+												<td><input type="checkbox" class="check"/></td>
 												<td>
 													<form:input path="pmList[${status.index}].memberNumber" class="read-input" readonly="true"/>
 												</td>
@@ -237,11 +236,11 @@
 												</td>
 												<td>
 													<form:input type="date" path="pmList[${status.index}].startDate" class="startDate" index="${status.index }"
-														min="${addProjectBean.projectStartDate}" max="${addProjectBean.maintEndDate != '' ? addProjectBean.maintEndDate : addProjectBean.projectEndDate}"/>
+														min="${modifyProjectBean.projectStartDate}" max="${modifyProjectBean.maintEndDate != '' ? modifyProjectBean.maintEndDate : modifyProjectBean.projectEndDate}"/>
 												</td>
 												<td>
 													<form:input type="date" path="pmList[${status.index}].endDate" class="endDate" index="${status.index }"
-														min="${addProjectBean.projectStartDate}" max="${addProjectBean.maintEndDate != '' ? addProjectBean.maintEndDate : addProjectBean.projectEndDate}"/>
+														min="${modifyProjectBean.projectStartDate}" max="${modifyProjectBean.maintEndDate != '' ? modifyProjectBean.maintEndDate : modifyProjectBean.projectEndDate}"/>
 												</td>
 												<td>
 													<form:select path="pmList[${status.index}].roleCode" class="role text-left">
@@ -269,7 +268,7 @@
 					</div>
 					<div class="text-center">
 						<button type="submit" class="btn btn-green">저장</button>
-						<button type="button" class="btn btn-orange" id="cancelBtn">취소</button>
+						<button type="button" class="btn btn-orange" id="modifyProjectCancelButton">취소</button>
 					</div>
 				</form:form>
 			</section>
@@ -277,74 +276,30 @@
 	</div>
 </body>
 <script>
-modalStack.push('#modalAddProject');
-currModal = getCurrModalDom();
-
-//멤버 투입일, 철수일 변경 이벤트 추가
-changeProjectDateEvent();
-
-// 프로젝트 시작일 종료일 이벤트 추가
-document.getElementById('projectStartDate').addEventListener('change', prjStartDateChange);
-document.getElementById('projectEndDate').addEventListener('change', prjEndDateChange);
-
-// 유지보수 시작일 철수일 이벤트 추가
-document.getElementById('maintStartDate').addEventListener('change', maintStartDateEvent);
-document.getElementById('maintEndDate').addEventListener('change', maintEndDateEvent);
-
-// 닫기(취소) 버튼
-document.getElementById('addProjectClose').addEventListener('click', function(){
-	$('#modalAddProject').html('');
-	modalStack.pop();
+	modalStack.push('#modalModifyProject');
 	currModal = getCurrModalDom();
-})
-document.getElementById('cancelBtn').addEventListener('click', function(){
-	$('#modalAddProject').html('');
-	modalStack.pop();
-	currModal = getCurrModalDom();
-})
-
-// 드롭다운 이벤트 추가
-addDropdownEvent();
-
-// 기술 check 이벤트
-document.querySelectorAll('input[type="checkbox"][name="skillCodeList"]').forEach(check => {
-	check.addEventListener('click', dropdownLabelDraw);
-})
-
-// 삭제 버튼 이벤트
-document.getElementById('delete_addProjectBtn').addEventListener('click', delete_addProjectEvent);
-
-// 모두 체크 이벤트
-document.getElementById('allCheckAddProject').addEventListener('click', allCheckAddProjectEvent);
-
-// 모두 체크 되었을 때의 이벤트
-document.querySelectorAll('.checkAddProject').forEach(check => {
-	check.addEventListener('click', isAllCheckAddProject);
-})
-
-// 추가 버튼 이벤트
-document.getElementById('addPMModalBtn').addEventListener('click', addPMModalBtnEvent);
-
-// submit 이벤트
-document.getElementById('addProjectBean').addEventListener('submit', function(event){
-	event.preventDefault();
-	addProjectBeanSubmitEvent();
-})
-
-// 길이제한 이벤트 추가
-lengthLimitEvent();
-
-// 필요기술을 표시하기위해 checkedSKEvent() 호출
-dropdownLabelDraw();
-
-// 멤버 벨리데이션 얼럿
-errorMessagesAlert();
-
-// 스크롤
-isScroll();
-
-// 프로젝트 세부사항 현재 길이
-projectDetailLength();
-document.getElementById('projectDetail').addEventListener('input', projectDetailLength);
+	
+	currModal.querySelector('#modifyProjectCloseButton').addEventListener('click', modifyProjectCloseEvent); // 닫기 버튼 이벤트
+	currModal.querySelector('#modifyProjectCancelButton').addEventListener('click', modifyProjectCloseEvent); // 취소 버튼 이벤트
+	currModal.querySelectorAll('input[type="checkbox"][name="skillCodeList"]').forEach(skill => { // 프로젝트 필요기술 체크 이벤트
+		skill.addEventListener('click', dropdownLabelDraw);
+	});
+	
+	
+	addDropdownEvent();
+	isScroll();
+	checkEvent();
+	dropdownLabelDraw();
+	lengthLimitEvent();
+	
+	function modifyProjectCloseEvent(){
+		$(modalStack.pop()).html('');
+		currModal = getCurrModalDom();
+	}
+	
+	function modifyProjectStartDateChangeEvent(){
+		const projectEndDate
+	}
+	
 </script>
 </html>

@@ -262,15 +262,6 @@ function projectAddSuccess() {
 	}
 }
 
-//esc누를시 모달 닫힘
-$(document).keydown(function(event) {
-	if (event.keyCode == 27 || event.which == 27) {
-		$(modalStack.pop()).html('');
-		currModal = getCurrModalDom();
-		window.history.pushState({}, '', '/OJT/project/Main');
-	}
-});
-
 // 드롭다운 내부 체크박스 클릭 이벤트
 function dropdownCheckboxClickEvent() {
 	const dropdown = document.querySelector('#projectSearchBean .dropdown');
