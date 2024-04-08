@@ -39,7 +39,7 @@
 		<div class="modal">
 			<header>
 				<div class="w-30">
-					<span>*</span>&nbsp;필수
+					<span class="required">*</span>&nbsp;필수
 				</div>
 				<div class="w-40 text-center">
 					<h3>프로젝트 수정</h3>
@@ -82,11 +82,11 @@
 					<div class="justify-content-center">
 						<div class="w-20">프로젝트 기간<span class="required">*</span></div>
 						<div class="w-30">
-							<form:input type="date" path="projectStartDate" required="true" max="${ modifyProjectBean.projectEndDate }"/>
+							<form:input type="date" path="projectStartDate" required="true"/>
 						</div>
 						<div class="w-20 text-center">~</div>
 						<div class="w-30">
-							<form:input type="date" path="projectEndDate" required="true" min="${ modifyProjectBean.projectStartDate }"/>
+							<form:input type="date" path="projectEndDate" required="true"/>
 						</div>
 					</div>
 					<!-- error -->
@@ -284,7 +284,12 @@
 	currModal.querySelectorAll('input[type="checkbox"][name="skillCodeList"]').forEach(skill => { // 프로젝트 필요기술 체크 이벤트
 		skill.addEventListener('click', dropdownLabelDraw);
 	});
-	
+	currModal.querySelectorAll('input[type="date"]').forEach(date => { // 날짜 포커스 이벤트
+		date.addEventListener('focus', modifyProjectDateFocusEvent);
+	});
+	currModal.querySelector('input[name="projectEndDate"]').addEventListener('focusout', modifyProjectEndDateFocusoutEvent);
+	currModal.querySelector('input[name="maintStartDate"]').addEventListener('focusout', modifyMaintStartDateFocusoutEvent);
+	currModal.querySelector('input[name="maintEndDate"]').addEventListener('focusout', modifyMaintEndDateFocusoutEvent);
 	
 	addDropdownEvent();
 	isScroll();
@@ -292,13 +297,78 @@
 	dropdownLabelDraw();
 	lengthLimitEvent();
 	
+	/*            */
+	/* 이벤트 펑션 들 */
+	/*            */
+	// 닫기 이벤트
 	function modifyProjectCloseEvent(){
 		$(modalStack.pop()).html('');
 		currModal = getCurrModalDom();
 	}
 	
-	function modifyProjectStartDateChangeEvent(){
-		const projectEndDate
+	// 프로젝트(유지보수) 시작일, 종료일 포커스 이벤트
+	function modifyProjectDateFocusEvent(){
+		preDate = this.value;
+		projectStart = currModal.querySelector('input[name="projectStartDate"]');
+		projectEnd = currModal.querySelector('input[name="projectEndDate"]');
+		maintStart = currModal.querySelector('input[name="maintStartDate"]');
+		maintEnd = currModal.querySelector('input[name="maintEndDate"]');
+	}
+
+	// 프로젝트 종료일 포커스 아웃 이벤트
+	function modifyProjectEndDateFocusoutEvent(){
+		
+		const projectStartDate = new Date(projectStart.value);
+		const projectEndDate = new Date(this.value);
+		const maintStartDate = new Date(maintStart.value);
+		const maintEndDate = new Date(maintEnd.value);
+		
+		if(projectStartDate > projectEndDate){
+			projectStart.value = this.value;
+		}
+		if(maintStartDate < projectEndDate && maintStart){
+			maintStart.value = this.value;
+		}
+		if(maintEndDate < projectEndDate && maintEnd){
+			maintEnd.value = this.value;
+			maintEnd.min = this.value;
+		}
+		
+		maintStart.min = this.value;
+	}
+	
+	// 유지보수 시작일 포커스 아웃 이벤트
+	function modifyMaintStartDateFocusoutEvent(){
+		const projectEndDate = new Date(projectEnd.value);
+		const maintStartDate = new Date(maintStart.value);
+		const maintEndDate = new Date(maintEnd.value);
+		
+		if(maintStartDate < projectEndDate){
+			projectMemberDateAlert({text : '유지보수 시작일은 프로젝트 종료일보다 이전일수 없습니다.'});
+			this.value = preDate;
+			return;
+		}
+		maintEnd.min = this.value;
+		if(maintEndDate < maintStartDate){
+			maintEnd.value = this.value;
+		}
+	}
+	
+	// 유지보수 종료일 포커스 아웃 이벤트
+	function modifyMaintEndDateFocusoutEvent(){
+		const projectEndDate = new Date(projectEnd.value);
+		const maintStartDate = new Date(maintStart.value);
+		const maintEndDate = new Date(maintEnd.value);
+		
+		if(projectEndDate > maintEndDate){
+			projectMemberDateAlert({text : '유지보수 종료일은 프로젝트 종료일보다 이전일수 없습니다.'});
+			this.value = preDate;
+			return;
+		}
+		if(maintStartDate > maintEndDate){
+			maintStart.value = this.value;
+		}
+		maintStart.max = this.value;
 	}
 	
 </script>

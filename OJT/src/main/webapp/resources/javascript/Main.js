@@ -1,6 +1,11 @@
 let currModal;
 let preDate;
 
+let projectStart;
+let projectEnd;
+let maintStart;
+let maintEnd;
+
 //esc누를시 모달 닫힘
 $(document).keydown(function(event) {
 	if (event.keyCode == 27 || event.which == 27) {
