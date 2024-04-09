@@ -33,6 +33,11 @@ public class ProjectDao {
 		return projectMapper.getCustomerList(customer);
 	}
 	
+	// 프로젝트가 존재하는지
+	public int hasProject(int projectNumber) {
+		return projectMapper.hasProject(projectNumber);
+	}
+	
 	// 프로젝트 번호, 시작일, 종료일, 유지보수 종료일이 모두 일치하는지
 	public int matchProjectInfo(ProjectBean projectBean) {
 		return projectMapper.matchProjectInfo(projectBean);

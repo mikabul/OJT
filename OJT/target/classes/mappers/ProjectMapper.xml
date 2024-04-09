@@ -45,6 +45,13 @@
 	 	order by cust_seq
 	</select>
 	
+	<!-- 프로젝트가 존재하는 지 -->
+	<select id="hasProject" resultType="int">
+		select count(prj_seq)
+		from project_info
+		where prj_seq = #{projectNumber}
+	</select>
+	
 	<!-- 프로젝트 번호, 시작일, 종료일, 유지보수 종료일 검사 -->
 	<select id="matchProjectInfo" parameterType="com.ojt.bean.ProjectBean" resultType="int">
 		select count(prj_seq)
@@ -97,6 +104,7 @@
 		where prj.prj_seq = #{projectNumber}
 	</select>
 	
+	<!-- 프로젝트 상태 전체 리스트 -->
 	<select id="getPsList" resultType="com.ojt.bean.CodeBean">
 		select
 			dtl_cd as detailCode,

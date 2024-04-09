@@ -192,39 +192,6 @@ function getCurrModalDom(){
 /*											*/
 /* ================== 날짜 ================	*/
 /*											*/
-// 프로젝트 날짜 이벤트 주입
-function addProjectDateEvent(){
-	
-	const projetcStartDate = currModal
-	
-}
-
-// 프로젝트 시작일 변경 이벤트
-function projectStartDateChangeEvent(){
-	const projectEndDate = currModal.querySelector('input[name="projectStartDate"]');
-	projectEndDate.min = this.value;
-}
-
-// 프로젝트 종료일 변경 이벤트
-function projectEndDateChangeEvent(){
-	const projectStartDate = currModal.querySelector('input[name="projectEndDate"]');
-	const maintStartDate = currModal.querySelector('input[name="maintStartDate"]');
-	projectStartDate.max = this.value;
-	maintStartDate.min = this.value;
-}
-
-// 유지보수 시작일 변경 이벤트
-function maintStartDateChangeEvent(){
-	const maintEndDate = currModal.querySelector('input[name="maintEndDate"]');
-	maintEndDate.min = this.value;
-}
-
-// 유지보수 종료일 변경 이벤트
-function maintEndDateChangeEvent(){
-	const maintStartDate = currModal.querySelector('input[name="maintStartDate"]');
-	maintStartDate.max = this.value;
-}
-
 // 날짜 경고 alert
 function projectMemberDateAlert(option) {
 	
@@ -238,6 +205,5 @@ function projectMemberDateAlert(option) {
 	};
 	
 	const mergedOption = Object.assign({}, defaultOption, option);
-	console.log(mergedOption);
 	Swal.fire(mergedOption);
 }

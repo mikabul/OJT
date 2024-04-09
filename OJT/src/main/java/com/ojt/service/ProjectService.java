@@ -77,6 +77,11 @@ public class ProjectService {
 		return projectDao.getCustomerList(customer);
 	}
 	
+	// 프로젝트가 존재하는지
+	public int hasProject(int projectNumber) {
+		return projectDao.hasProject(projectNumber);
+	}
+	
 	// 프로젝트 번호, 시작일, 종료일, 유지보수 종료일이 모두 일치하는지
 	public int matchProjectInfo(ProjectBean projectBean) {
 		return projectDao.matchProjectInfo(projectBean);
@@ -223,6 +228,38 @@ public class ProjectService {
 			transactionManager.commit(status);
 			return true;
 		} catch (Exception e) {
+			transactionManager.rollback(status);
+			return false;
+		}
+	}
+	
+	// 프로젝트 수정
+	public Boolean modifyProject(ProjectBean projectBean) {
+		DefaultTransactionDefinition def = new DefaultTransactionDefinition();
+		TransactionStatus status = transactionManager.getTransaction(def);
+		
+		try {
+			int projectNumber = projectBean.getProjectNumber();
+			String[] skillCodeList = projectBean.getSkillCodeList();
+			ArrayList<ProjectMemberBean> pmList = projectBean.getPmList();
+			
+			projectDao.updateProject(projectBean);
+			// 프로젝트 필요기술 삭제후 등록
+			projectDao.deleteProjectSK(projectNumber);
+			for(String skillCode : skillCodeList) {
+				projectDao.insertProjectSK(projectNumber, skillCode);
+			}
+			
+			// 프로젝트 멤버 정보 업데이트
+			for(ProjectMemberBean pm : pmList) {
+				pm.setProjectNumber(projectNumber);
+				projectMemberDao.updateProjectMember(pm);
+			}
+			
+			transactionManager.commit(status);
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
 			transactionManager.rollback(status);
 			return false;
 		}

@@ -30,6 +30,9 @@ public interface ProjectMapper {
 	// 고객사 번호, 이름
 	public ArrayList<CustomerBean> getCustomerList(String customer);
 	
+	// 프로젝트가 존재하는지
+	public int hasProject(int projectNumber);
+	
 	// 프로젝트 번호, 시작일, 종료일, 유지보수 종료일을 검사
 	public int matchProjectInfo(ProjectBean projectBean);
 	

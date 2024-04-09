@@ -151,7 +151,7 @@ public class ProjectAddController {
 	public void initBinder(WebDataBinder binder) {
 		
 		if(binder.getObjectName().equals("addProjectBean")) {
-			ProjectValidator projectValidator = new ProjectValidator(projectService);
+			ProjectValidator projectValidator = new ProjectValidator(projectService, projectMemberService);
 			binder.addValidators(projectValidator);
 		}
 	}
