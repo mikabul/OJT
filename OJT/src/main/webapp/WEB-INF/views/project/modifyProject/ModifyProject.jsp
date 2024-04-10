@@ -277,7 +277,7 @@
 					</div>
 					<div class="text-right">
 						<button type="button" class="btn btn-red" id="delete_addProjectBtn">삭제</button>
-						<button type="button" class="btn btn-green" id="addPMModalBtn">추가</button>
+						<button type="button" class="btn btn-green" id="modifyProjectAddPMButton">추가</button>
 					</div>
 					<div class="text-center">
 						<button type="submit" class="btn btn-green">저장</button>
@@ -310,7 +310,8 @@
 	currModal.querySelectorAll('input[name$=".endDate"]').forEach(endDate => { // 멤버 철수일 포커스 아웃 이벤트
 		endDate.addEventListener('focusout', modifyPMEndDateFocusoutEvent);
 	});
-	currModal.querySelector('form#modifyProjectBean').addEventListener('submit', modifyProjetcSubmitEvent);
+	currModal.querySelector('form#modifyProjectBean').addEventListener('submit', modifyProjetcSubmitEvent);// submit 이벤트
+	currModal.querySelector('#modifyProjectAddPMButton').addEventListener('click', modifyProjectAddPMButtonEvent); // 멤버 추가 버튼 이벤트
 	
 	modifyProjectStartup();
 	addDropdownEvent();
@@ -526,10 +527,12 @@
 		}
 	}
 	
+	// submit 이벤트
 	function modifyProjetcSubmitEvent(event){
 		event.preventDefault();
 		
 		const formData = new FormData(this);
+		
 		$.ajax({
 			url: '/OJT/projectModify/modify',
 			method: 'POST',
@@ -541,6 +544,36 @@
 			},
 			error: function(error){
 				
+			}
+		});
+	}
+	
+	// 멤버 추가 버튼 이벤트
+	function modifyProjectAddPMButtonEvent(){
+		const projectNumber = currModal.querySelector('input[type="hidden"][name="projectNumber"]').value;
+		const startDate = currModal.querySelector('input[type="date"][name="projectStartDate"]').value;
+		const projectEnd = currModal.querySelector('input[type="date"][name="projectEndDate"]').value;
+		const maintEnd = currModal.querySelector('input[type="date"][name="maintEndDate"]').value;
+		let endDate;
+		if(maintEnd != ''){
+			endDate = maintEnd;
+		} else {
+			endDate = projectEnd;
+		}
+		
+		$.ajax({
+			url: '/OJT/projectModify/modalAddProjectMember',
+			method: 'POST',
+			data: {
+				'projectNumber' : projectNumber,
+				'startDate' : startDate,
+				'endDate' : endDate
+			},
+			success: function(result){
+				$('#modalAddProjectMember').html(result);
+			},
+			error: function(error){
+				console.error(error);
 			}
 		});
 	}

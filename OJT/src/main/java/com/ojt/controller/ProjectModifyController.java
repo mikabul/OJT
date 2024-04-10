@@ -10,11 +10,13 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.ojt.bean.CodeBean;
 import com.ojt.bean.CustomerBean;
+import com.ojt.bean.MemberBean;
 import com.ojt.bean.ProjectBean;
 import com.ojt.service.ProjectMemberService;
 import com.ojt.service.ProjectService;
@@ -52,7 +54,7 @@ public class ProjectModifyController {
 		}
 	}
 	
-	@RequestMapping("/modify")
+	@PostMapping("/modify")
 	public String modifyProject(@ModelAttribute("modifyProjectBean")ProjectBean modifyProjectBean, BindingResult result, Model model) {
 		
 		ProjectValidator projectValidator = new ProjectValidator(projectService, projectMemberService);
@@ -82,5 +84,35 @@ public class ProjectModifyController {
 		}
 		model.addAttribute("success", true);
 		return "/project/modifyProject/ModifyProject";
+	}
+	
+	@PostMapping("/modalAddProjectMember")
+	public String modalAddProjectMember(@RequestParam("projectNumber")int projectNumber,
+										@RequestParam("startDate")String startDate,
+										@RequestParam("endDate")String endDate,
+										Model model) {
+		model.addAttribute("projectNumber", projectNumber);
+		model.addAttribute("startDate", startDate);
+		model.addAttribute("endDate", endDate);
+		
+		return "/project/modifyProject/AddProjectMember";
+	}
+	
+	@PostMapping("/getNotAddProjectMember")
+	public String getNotAddProjectMember(@RequestParam("search")String search,
+										@RequestParam("projectNumber")int projectNumber,
+										@RequestParam("startDate")String startDate,
+										@RequestParam("endDate")String endDate,
+										Model model) {
+		
+		ArrayList<MemberBean> memberList = projectMemberService.searchNotProjectMember(projectNumber, search);
+		ArrayList<CodeBean> roleList = projectService.getRole();
+		
+		model.addAttribute("memberList", memberList);
+		model.addAttribute("roleList", roleList);
+		model.addAttribute("startDate", startDate);
+		model.addAttribute("endDate", endDate);
+		
+		return "/project/modifyProject/AddProjectMemberTable";
 	}
 }
