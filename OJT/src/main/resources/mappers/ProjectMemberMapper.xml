@@ -87,7 +87,7 @@
 	</update>
 	
 	<!-- 프로젝트에 멤버가 있는지 확인 -->
-	<select id="hasProjectMember">
+	<select id="hasProjectMember" resultType="int" parameterType="int">
 		select
 			count(mem_seq)
 		from project_member_table

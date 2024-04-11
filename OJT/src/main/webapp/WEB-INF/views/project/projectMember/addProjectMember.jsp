@@ -319,9 +319,13 @@
 				if(errors.length != 0){
 					errorMessage = '';
 					for(let error = 0; error < errors.length; error++){
-						errorMessage += errors[error] + '\n';
+						errorMessage += '<p>' + errors[error] + '</P>';
 					}
-					alert(errorMessage);
+					Swal.fire({
+						icon: 'info',
+						title: '실패',
+						html: errorMessage
+					});
 					return;
 				}
 				
@@ -338,7 +342,7 @@
 		
 		// 선택된 멤버가 없다면 alert후 메서드 종료
 		if(pmList.length == 0){
-			alert('추가할 인원이 없습니다.');
+			Swal.fire('추가할 인원이 없습니다.', '', 'info');
 			return;
 		}
 		
@@ -355,22 +359,25 @@
 			}),
 			success: function(result){
 				if(result.result == true){
-					alert('등록에 성공하였습니다.');
+					Swal.fire('성공', '등록에 성공하였습니다.', 'success');
 					reloadProjectMember(projectNumber);
 					$(modalStack.pop()).html('');
 					currModal = getCurrModalDom();
 				} else {
 					let errorMessage = '';
 					for(let i = 0; i < result.errorMessage.length; i++){
-						errorMessage += result.errorMessage[i] + "\n";
+						errorMessage += '<p>' + result.errorMessage[i] + "</P>";
 					}
-					
-					alert(errorMessage);
+					Swal.fire({
+						icon: 'error',
+						title: '실패',
+						html: errorMessage
+					});
 				}
 			},
 			error: function(xhr, status, error){
 				if(status == 515){
-					alert(error);
+					Swal.fire('실패', error, 'error');
 				} else {
 					console.error(error);
 				}

@@ -20,6 +20,7 @@ import com.ojt.bean.CodeBean;
 import com.ojt.bean.CustomerBean;
 import com.ojt.bean.MemberBean;
 import com.ojt.bean.ProjectBean;
+import com.ojt.bean.ProjectMemberBean;
 import com.ojt.service.ProjectMemberService;
 import com.ojt.service.ProjectService;
 import com.ojt.validator.ProjectValidator;
@@ -34,6 +35,7 @@ public class ProjectModifyController {
 	@Autowired
 	private ProjectMemberService projectMemberService;
 
+	// 프로젝트 수정 모달 생성
 	@GetMapping("/")
 	public String modifyMain(@RequestParam("projectNumber")int projectNumber, Model model) {
 		
@@ -45,7 +47,7 @@ public class ProjectModifyController {
 		
 		if(projectBean != null) {
 			
-			if(!projectBean.getMaintStartDate().isEmpty()) {
+			if(projectBean.getMaintStartDate() != null && !projectBean.getMaintStartDate().isEmpty()) {
 				model.addAttribute("endDate", projectBean.getMaintEndDate());
 			} else {
 				model.addAttribute("endDate", projectBean.getProjectEndDate());
@@ -64,21 +66,25 @@ public class ProjectModifyController {
 		}
 	}
 	
+	// 프로젝트 수정
 	@PostMapping("/modify")
 	public String modifyProject(
 			@ModelAttribute("modifyProjectBean")ProjectBean modifyProjectBean,
 			@RequestParam("deleteMemberNumbers")int[] deleteMemberNumbers,
 			BindingResult result, Model model) {
 		
+		// 유효성 검사
 		ProjectValidator projectValidator = new ProjectValidator(projectService, projectMemberService);
 		projectValidator.validate(modifyProjectBean, result);
 		
+		// 멤버 에러 메세지 추출
 		List<FieldError> fieldErrors = result.getFieldErrors();
 		for(FieldError error : fieldErrors) {
 			System.out.println(error.getField());
 			System.out.println(error.getCode());
 		}
-		System.out.println(modifyProjectBean.toString());
+		
+		// 삭제 될 멤버 정보 유지를 위해 리스트에 저장
 		ArrayList<Integer> deleteMemberList = new ArrayList<Integer>();
 		for(int i : deleteMemberNumbers) {
 			deleteMemberList.add(i);
@@ -89,6 +95,7 @@ public class ProjectModifyController {
 		ArrayList<CodeBean> skList = projectService.getSKList();
 		ArrayList<CodeBean> psList = projectService.getPsList();
 		
+		// date max를 지정하기 위한 if문
 		if(!modifyProjectBean.getMaintStartDate().isEmpty()) {
 			model.addAttribute("endDate", modifyProjectBean.getMaintEndDate());
 		} else {
@@ -102,7 +109,7 @@ public class ProjectModifyController {
 		model.addAttribute("skList", skList);
 		model.addAttribute("psList", psList);
 		
-		if(result.hasErrors()) {
+		if(result.hasErrors()) {// 유효성 검사 실패
 			
 			model.addAttribute("success", false);
 			model.addAttribute("code", 400);
@@ -110,16 +117,23 @@ public class ProjectModifyController {
 			return "/project/modifyProject/ModifyProject";
 		}
 		
-		if(projectService.modifyProject(modifyProjectBean)) {
-			model.addAttribute("success", true);
-		} else {
+		if(!projectService.modifyProject(modifyProjectBean)) { // 프로젝트 수정 실패
 			model.addAttribute("success", false);
 			model.addAttribute("code", 500);
+		} else if(!projectMemberService.updateProjectMember(modifyProjectBean)){ // 프로젝트 멤버 수정 혹은 추가 실패
+			model.addAttribute("success", false);
+			model.addAttribute("code", 501);
+		} else if(!projectMemberService.deleteProjectMember(deleteMemberNumbers, modifyProjectBean.getProjectNumber())){ // 프로젝트 멤버 삭제 실패
+			model.addAttribute("success", false);
+			model.addAttribute("code", 502);
+		} else { // 성공
+			model.addAttribute("success", true);
 		}
 		
 		return "/project/modifyProject/ModifyProject";
 	}
 	
+	// 프로젝트 멤버추가 모달 생성
 	@PostMapping("/modalAddProjectMember")
 	public String modalAddProjectMember(@RequestParam("startDate")String startDate,
 										@RequestParam("endDate")String endDate,
@@ -131,6 +145,7 @@ public class ProjectModifyController {
 		return "/project/modifyProject/AddProjectMember";
 	}
 	
+	// 프로젝트 멤버 테이블에 없는 멤버 검색
 	@PostMapping("/getNotAddProjectMember")
 	public String getNotAddProjectMember(@RequestParam("search")String search,
 										@RequestParam(name = "memberNumbers[]", required = false)int[] memberNumbers,
@@ -149,6 +164,7 @@ public class ProjectModifyController {
 		return "/project/modifyProject/AddProjectMemberTable";
 	}
 	
+	// 프로젝트 수정 멤버 테이블에 멤버 추가
 	@PostMapping("/modifyProjectMember")
 	public String modifyProjectMember(@RequestBody Map<String, Object> requestMap,
 									Model model) {
@@ -164,21 +180,23 @@ public class ProjectModifyController {
 		return "project/modifyProject/ModifyProjectMemberTable";
 	}
 	
+	// 프로젝트 수정 멤버 테이블에서 멤버 제거
 	@PostMapping("/deleteMember")
 	public String deleteMember(
 			@ModelAttribute("modifyProjectBean") ProjectBean modifyProjectBean,
 			@RequestParam("deleteIndex") int[] deleteIndex,
 			Model model) {
 		
-		ArrayList<ProjectMemberBean> pmList
-		System.out.println(modifyProjectBean.toString());
-		for(int i : deleteIndex) {
-			modifyProjectBean.getPmList().remove(i);
+		ArrayList<ProjectMemberBean> pmList = modifyProjectBean.getPmList();
+		System.out.println(pmList.toString());
+		for(int i = deleteIndex.length - 1; i >= 0; i--) {
+			System.out.println("deleteIndex : " + deleteIndex[i] );
+			pmList.remove(deleteIndex[i]);
 		}
-		System.out.println(modifyProjectBean.toString());
+		System.out.println(pmList.toString());
 		ArrayList<CodeBean> roleList = projectService.getRole();
 		
-		model.addAttribute("pmList", modifyProjectBean.getPmList());
+		model.addAttribute("pmList", pmList);
 		model.addAttribute("startDate", modifyProjectBean.getProjectStartDate());
 		if(!modifyProjectBean.getMaintStartDate().isEmpty()) {
 			model.addAttribute("endDate", modifyProjectBean.getMaintEndDate());

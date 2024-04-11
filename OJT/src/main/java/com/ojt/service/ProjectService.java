@@ -241,7 +241,6 @@ public class ProjectService {
 		try {
 			int projectNumber = projectBean.getProjectNumber();
 			String[] skillCodeList = projectBean.getSkillCodeList();
-			ArrayList<ProjectMemberBean> pmList = projectBean.getPmList();
 			
 			projectDao.updateProject(projectBean);
 			// 프로젝트 필요기술 삭제후 등록
@@ -250,20 +249,10 @@ public class ProjectService {
 				projectDao.insertProjectSK(projectNumber, skillCode);
 			}
 			
-			// 프로젝트 멤버 업데이트 또는 추가
-			for(ProjectMemberBean pm : pmList) {
-					pm.setProjectNumber(projectNumber);
-				if(projectMemberDao.hasProjectMember(projectNumber, projectNumber) == 0) {
-					projectMemberDao.insertProjectMember(pm); // 프로젝트 멤버 추가
-				} else {
-					projectMemberDao.updateProjectMember(pm); // 프로젝트 멤버 수정
-				}
-			}
-			
 			transactionManager.commit(status);
 			return true;
 		} catch (Exception e) {
-//			e.printStackTrace();
+			e.printStackTrace();
 			transactionManager.rollback(status);
 			return false;
 		}

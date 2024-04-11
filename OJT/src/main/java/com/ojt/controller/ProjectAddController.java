@@ -54,7 +54,13 @@ public class ProjectAddController {
 	}
 	
 	@GetMapping("showAddPMModal")
-	public String showAddPMModal() {
+	public String showAddPMModal(@RequestParam("startDate") String startDate,
+								@RequestParam("endDate") String endDate,
+								Model model) {
+		
+		model.addAttribute("startDate", startDate);
+		model.addAttribute("endDate", endDate);
+		
 		return "/project/addProject/AddProjectMember";
 	}
 	
@@ -126,6 +132,32 @@ public class ProjectAddController {
 		return "/project/addProject/AddProjectTable";
 	}
 	
+	@PostMapping("/deleteProjectMember")
+	public String deleteProjectMember(ProjectBean projectBean,
+									@RequestParam("deleteIndex")int[] deleteIndex,
+									Model model) {
+		
+		ArrayList<ProjectMemberBean> pmList = projectBean.getPmList();
+		for(int i = deleteIndex.length - 1; i >= 0; i--) {
+			pmList.remove(deleteIndex[i]);
+		}
+		System.out.println(pmList);
+		
+		ArrayList<CodeBean> roleList = projectService.getRole();
+		
+		model.addAttribute("addPMList", pmList);
+		model.addAttribute("rowsLength", 0);
+		model.addAttribute("roleList", roleList);
+		model.addAttribute("startDate", projectBean.getProjectStartDate());
+		if(projectBean.getMaintStartDate() != null && !projectBean.getMaintStartDate().isEmpty()) {
+			model.addAttribute("endDate", projectBean.getMaintEndDate());
+		} else {
+			model.addAttribute("endDate", projectBean.getProjectEndDate());
+		}
+		
+		return "project/addProject/AddProjectTable";
+	}
+	
 	@PostMapping("/addProject")
 	public String addProject(@Valid @ModelAttribute("addProjectBean") ProjectBean addProjectBean,
 							BindingResult result, Model model) {
@@ -139,6 +171,12 @@ public class ProjectAddController {
 			model.addAttribute("roleList", roleList);
 			model.addAttribute("skList", skList);
 			model.addAttribute("success", false);
+			model.addAttribute("startDate", addProjectBean.getProjectStartDate());
+			if(addProjectBean.getMaintStartDate() != null && !addProjectBean.getMaintStartDate().isEmpty()) {
+				model.addAttribute("endDate", addProjectBean.getMaintEndDate());
+			} else {
+				model.addAttribute("endDate", addProjectBean.getProjectEndDate());
+			}
 			return "/project/addProject/AddProject";
 		}
 		model.addAttribute("success", true);

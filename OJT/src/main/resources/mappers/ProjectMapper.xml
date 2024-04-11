@@ -136,7 +136,7 @@
 			ps_cd = #{projectStateCode},
 			maint_st_dt = #{maintStartDate},
 			maint_ed_dt = #{maintEndDate}
-		where prj_seq = #{prjectNumber}
+		where prj_seq = #{projectNumber}
 	</update>
 	
 	<!-- 프로젝트 삭제 -->

@@ -60,6 +60,10 @@ public class ProjectMemberService {
 		DefaultTransactionDefinition def = new DefaultTransactionDefinition();
 		TransactionStatus status = transactionManager.getTransaction(def);
 		
+		if(memberNumbers.length == 0) {
+			return true;
+		}
+		
 		try {
 			projectMemberDao.deleteProjectMember(memberNumbers, projectNumber);
 			
@@ -69,6 +73,34 @@ public class ProjectMemberService {
 			transactionManager.rollback(status);
 			return false;
 		}
+	}
+	
+	// 프로젝트 수정 멤버 수정 혹은 등록
+	public Boolean insertProjectMemberList(ProjectBean modifyProjectBean) {
+		
+		DefaultTransactionDefinition def = new DefaultTransactionDefinition();
+		TransactionStatus status = transactionManager.getTransaction(def);
+		
+		try {
+			int projectNumber = modifyProjectBean.getProjectNumber();
+			ArrayList<ProjectMemberBean> pmList = modifyProjectBean.getPmList();
+			
+			for(ProjectMemberBean pm : pmList) {
+				pm.setProjectNumber(projectNumber);
+				if(projectMemberDao.hasProjectMember(projectNumber, pm.getMemberNumber()) == 0) { // 프로젝트에 멤버가 없는지
+					projectMemberDao.insertProjectMember(pm);// 추가
+				} else {
+					projectMemberDao.updateProjectMember(pm);// 수정
+				}
+			}
+			
+			transactionManager.commit(status);
+			return false;
+		} catch (Exception e) {
+			transactionManager.rollback(status);
+			return false;
+		}
+		
 	}
 	
 	// 프로젝트 멤버 등록

@@ -7,13 +7,13 @@
 <html>
 <c:forEach var="item" items="${memberList}">
 	<tr>
-		<td><input type="checkbox" class="checkPM"/></td>
+		<td><input type="checkbox" class="check"/></td>
 		<td>${item.memberNumber}</td>
 		<td>${item.memberName }</td>
 		<td>${item.department }</td>
 		<td>${item.position }</td>
-		<td><input type="date" min="${startDate}" max="${endDate}"/></td>
-		<td><input type="date" min="${startDate}" max="${endDate}"/></td>
+		<td><input type="date" class="startDate" min="${startDate}" max="${endDate}"/></td>
+		<td><input type="date" class="endDate" min="${startDate}" max="${endDate}"/></td>
 		<td>
 			<select name="role">
 				<c:forEach var="item" items="${roleList}">

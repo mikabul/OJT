@@ -331,10 +331,38 @@
 	
 	function modifyProjectStartup(){
 		const success = `${success}`;
+		const code = `${code}`;
+		const projectNumber = `${modifyProjectBean.projectNumber}`;
 		if(success == 'true'){
-			alert('성공');
+			Swal.fire({
+				icon: 'success',
+				title: '성공',
+				text: '프로젝트 수정에 성공하였습니다.'
+			}).then(() => {
+				const form = document.querySelector('form');
+				form.action = '/OJT/project/Main?&success=' + success + '&projectNumber=' + projectNumber;
+				form.submit();
+			})
 		} else if(success == 'false') {
-			alert('실패');
+			if(code == '400'){
+				const errorMessages = currModal.querySelectorAll('#errorMessages span[id$=".errors"]');
+				let message = '';
+				errorMessages.forEach( error => {
+					message += '<p>' + error.innerText + '</P>';
+				});
+				
+				Swal.fire({
+					icon: 'error',
+					title: '프로젝트 인원',
+					html: message
+				});
+			} else if(code == '500'){
+				Swal.fire('실패', '프로젝트 수정에 실패하였습니다.', 'error');
+			} else if(code == '501'){
+				Swal.fire('실패', '프로젝트 인원 수정에 실패하였습니다.', 'error');
+			} else if(code == '502'){
+				Swal.fire('실패', '프로젝트 인원 삭제에 실패하였습니다.', 'error');
+			}
 		}
 	}
 	
@@ -586,7 +614,7 @@
 				$(modalStack.pop()).html(result);
 			},
 			error: function(error){
-				
+				console.error(error);
 			}
 		});
 	}
@@ -638,7 +666,7 @@
 			if(checkbox.checked){
 				const row = rows[i];
 				deleteMember.innerHTML += '<div data-membernumber="' + row.cells[1].querySelector('input').value + '" />';
-				deleteIndex.push[i];
+				deleteIndex.push(i);
 			}
 		}
 		
