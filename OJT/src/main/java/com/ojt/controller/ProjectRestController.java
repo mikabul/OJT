@@ -102,7 +102,7 @@ public class ProjectRestController {
 	}
 	
 	// 프로젝트 멤버 추가
-	@RequestMapping(value = "/addProjectMember", produces = "application/json")
+	@PostMapping(value = "/addProjectMember", produces = "application/json")
 	public ResponseEntity<String> addProjectMember(@RequestBody ProjectBean projectBean, BindingResult result){
 		
 		ProjectMemberValidator projectMemberValidator = new ProjectMemberValidator(projectService, projectMemberService);

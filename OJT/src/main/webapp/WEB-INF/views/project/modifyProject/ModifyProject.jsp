@@ -248,17 +248,15 @@
 													<form:input path="pmList[${status.index }].position" class="read-input" readonly="true"/>
 												</td>
 												<td>
-													<form:input type="date" path="pmList[${status.index}].startDate" class="startDate" index="${status.index }"
-														min="${modifyProjectBean.projectStartDate}" max="${modifyProjectBean.maintEndDate != '' ? modifyProjectBean.maintEndDate : modifyProjectBean.projectEndDate}"/>
+													<form:input type="date" path="pmList[${status.index}].startDate" class="startDate" min="${startDate}" max="${endDate}"/>
 												</td>
 												<td>
-													<form:input type="date" path="pmList[${status.index}].endDate" class="endDate" index="${status.index }"
-														min="${modifyProjectBean.projectStartDate}" max="${modifyProjectBean.maintEndDate != '' ? modifyProjectBean.maintEndDate : modifyProjectBean.projectEndDate}"/>
+													<form:input type="date" path="pmList[${status.index}].endDate" class="endDate" min="${startDate}" max="${endDate}"/>
 												</td>
 												<td>
 													<form:select path="pmList[${status.index}].roleCode" class="role text-left">
 														<c:forEach var="role" items="${roleList}">
-															<form:option value="${role.detailCode}">${role.codeName}</form:option>
+															<form:option class="text-left" value="${role.detailCode}">${role.codeName}</form:option>
 														</c:forEach>
 													</form:select>
 												</td>
@@ -275,8 +273,13 @@
 						<form:errors path="endDateError"></form:errors>
 						<form:errors path="roleCodeError"></form:errors>
 					</div>
+					<div class="none" id="deleteMember">
+						<c:forEach var="item" items="${ deleteMemberList }">
+							<div data-membernumber="${ item }"></div>
+						</c:forEach>
+					</div>
 					<div class="text-right">
-						<button type="button" class="btn btn-red" id="delete_addProjectBtn">삭제</button>
+						<button type="button" class="btn btn-red" id="modifyProjectDeleteButton">삭제</button>
 						<button type="button" class="btn btn-green" id="modifyProjectAddPMButton">추가</button>
 					</div>
 					<div class="text-center">
@@ -304,14 +307,10 @@
 	currModal.querySelector('input[name="projectEndDate"]').addEventListener('focusout', modifyProjectEndDateFocusoutEvent); // 프로젝트 종료일 포커스 아웃 이벤트
 	currModal.querySelector('input[name="maintStartDate"]').addEventListener('focusout', modifyMaintStartDateFocusoutEvent); // 유지보수 시작일 포커스 아웃 이벤트
 	currModal.querySelector('input[name="maintEndDate"]').addEventListener('focusout', modifyMaintEndDateFocusoutEvent); // 유지보수 종료일 포커스 아웃 이벤트
-	currModal.querySelectorAll('input[name$=".startDate"]').forEach(startDate => { // 멤버 투입일 포커스 아웃 이벤트
-		startDate.addEventListener('focusout', modifyPMStartDateFocusoutEvent);
-	});
-	currModal.querySelectorAll('input[name$=".endDate"]').forEach(endDate => { // 멤버 철수일 포커스 아웃 이벤트
-		endDate.addEventListener('focusout', modifyPMEndDateFocusoutEvent);
-	});
+	
 	currModal.querySelector('form#modifyProjectBean').addEventListener('submit', modifyProjetcSubmitEvent);// submit 이벤트
 	currModal.querySelector('#modifyProjectAddPMButton').addEventListener('click', modifyProjectAddPMButtonEvent); // 멤버 추가 버튼 이벤트
+	currModal.querySelector('#modifyProjectDeleteButton').addEventListener('click', modifyProjectDeleteButtonEvent); // 멤버 삭제 버튼 이벤트
 	
 	modifyProjectStartup();
 	addDropdownEvent();
@@ -319,6 +318,7 @@
 	checkEvent();
 	dropdownLabelDraw();
 	lengthLimitEvent();
+	addModifyPMFocusEvent();
 	
 	/*            */
 	/* 이벤트 펑션 들 */
@@ -478,6 +478,17 @@
 		});
 	}
 	
+	function addModifyPMFocusEvent(){
+		currModal.querySelectorAll('input[name$=".startDate"]').forEach(startDate => { // 멤버 투입일 포커스 아웃 이벤트
+			startDate.addEventListener('focus', modifyProjectDateFocusEvent);
+			startDate.addEventListener('focusout', modifyPMStartDateFocusoutEvent);
+		});
+		currModal.querySelectorAll('input[name$=".endDate"]').forEach(endDate => { // 멤버 철수일 포커스 아웃 이벤트
+			endDate.addEventListener('focus', modifyProjectDateFocusEvent);
+			endDate.addEventListener('focusout', modifyPMEndDateFocusoutEvent);
+		});
+	}
+	
 	// 멤버 투입일 포커스 아웃 이벤트
 	function modifyPMStartDateFocusoutEvent(){
 		const projectStartDate = new Date(projectStart.value);
@@ -485,20 +496,34 @@
 		const maintStartDate = new Date(maintStart.value);
 		const maintEndDate = new Date(maintEnd.value);
 		const memberStartDate = new Date(this.value);
+		
 		if(memberStartDate < projectStartDate){
 			projectMemberDateAlert({text : '투입일은 프로젝트 시작일보다 이전일수 없습니다.'});
-			this.value = preDate;
+			
+			if(preDate == ''){
+				this.value = projectStart.value;
+			} else {
+				this.value = preDate;
+			}
 		}
 		if(maintStartDate != 'Invalid Date' && maintEndDate == 'Invalid Date'){
 			return;
 		} else if(maintEndDate != 'Invalid Date'){
 			if(maintEndDate < memberStartDate){
 				projectMemberDateAlert({text : '투입일은 유지보수 종료일보다 이후일수 없습니다.'});
-				this.value = preDate;
+				if(preDate == ''){
+					this.value = maintEnd.value;
+				} else {
+					this.value = preDate;
+				}
 			}
 		} else if(projectEndDate < memberStartDate){
 			projectMemberDateAlert({text : '투입일은 프로젝트 종료일보다 이후일수 없습니다.'});
-			this.value = preDate;
+			if(preDate == ''){
+				this.value = projectEnd.value;
+			} else {
+				this.value = preDate;
+			}
 		}
 	}
 	
@@ -512,18 +537,30 @@
 		
 		if(memberEndDate < projectStartDate){
 			projectMemberDateAlert({text : '철수일은 프로젝트 시작일보다 이전일수 없습니다.'});
-			this.value = preDate;
+			if(preDate == ''){
+				this.value = projectStart.value;
+			} else {
+				this.value = preDate;
+			}
 		}
 		if(maintStartDate != 'Invalid Date' && maintEndDate == 'Invalid Date'){
 			return;
 		} else if(maintEndDate != 'Invalid Date'){
 			if(maintEndDate < memberEndDate){
 				projectMemberDateAlert({text : '철수일은 유지보수 종료일보다 이후일수 없습니다.'});
-				this.value = preDate;
+				if(preDate == ''){
+					this.value = maintEnd.value;
+				} else {
+					this.value = preDate;
+				}
 			}
 		} else if(projectEndDate < memberEndDate){
 			projectMemberDateAlert({text : '철수일은 프로젝트 종료일보다 이후일수 없습니다.'});
-			this.value = preDate;
+			if(preDate == ''){
+				this.value = projectEnd.value;
+			} else {
+				this.value = preDate;
+			}
 		}
 	}
 	
@@ -532,6 +569,12 @@
 		event.preventDefault();
 		
 		const formData = new FormData(this);
+		let deleteMemberNumbers = [];
+		currModal.querySelectorAll('#deleteMember div').forEach( number => {
+			deleteMemberNumbers.push(number.dataset.membernumber);
+		});
+		
+		formData.append('deleteMemberNumbers', deleteMemberNumbers);
 		
 		$.ajax({
 			url: '/OJT/projectModify/modify',
@@ -550,12 +593,14 @@
 	
 	// 멤버 추가 버튼 이벤트
 	function modifyProjectAddPMButtonEvent(){
-		const projectNumber = currModal.querySelector('input[type="hidden"][name="projectNumber"]').value;
+		
 		const startDate = currModal.querySelector('input[type="date"][name="projectStartDate"]').value;
 		const projectEnd = currModal.querySelector('input[type="date"][name="projectEndDate"]').value;
+		const maintStart = currModal.querySelector('input[type="date"][name="maintStartDate"]').value;
 		const maintEnd = currModal.querySelector('input[type="date"][name="maintEndDate"]').value;
 		let endDate;
-		if(maintEnd != ''){
+		
+		if(maintEnd != '' || maintStart != ''){
 			endDate = maintEnd;
 		} else {
 			endDate = projectEnd;
@@ -565,7 +610,6 @@
 			url: '/OJT/projectModify/modalAddProjectMember',
 			method: 'POST',
 			data: {
-				'projectNumber' : projectNumber,
 				'startDate' : startDate,
 				'endDate' : endDate
 			},
@@ -575,6 +619,44 @@
 			error: function(error){
 				console.error(error);
 			}
+		});
+	}
+	
+	// 삭제 버튼 이벤트
+	function modifyProjectDeleteButtonEvent(){
+		
+		const deleteMember = currModal.querySelector('#deleteMember');
+		const tbody = currModal.querySelector('tbody');
+		const rows = tbody.rows;
+		const formData = new FormData(currModal.querySelector('form'));
+		
+		let deleteMemberNumbers = [];
+		let deleteIndex = [];
+		
+		for(let i = 0; i < rows.length; i++){
+			const checkbox = rows[i].cells[0].querySelector('input');
+			if(checkbox.checked){
+				const row = rows[i];
+				deleteMember.innerHTML += '<div data-membernumber="' + row.cells[1].querySelector('input').value + '" />';
+				deleteIndex.push[i];
+			}
+		}
+		
+		formData.append('deleteIndex', deleteIndex);
+
+		$.ajax({
+			url: '/OJT/projectModify/deleteMember',
+			method: 'POST',
+			contentType: false,
+			processData: false,
+			data: formData,
+			success: function(result){
+				tbody.innerHTML = result;
+			},
+			error: function(error){
+				console.error(error);
+			}
+			
 		});
 	}
 	

@@ -29,6 +29,10 @@
 .modal #search {
 	width: 300px;
 }
+
+.valid-error {
+	background-color: #ffcccc;
+}
 </style>
 </head>
 <body>
@@ -114,6 +118,7 @@
 	currModal.querySelector('#addProjectMemberClose').addEventListener('click', addProjectMemberCloseEvent); // 닫기 버튼 이벤트
 	currModal.querySelector('#cancelAddPMBtn').addEventListener('click', addProjectMemberCloseEvent); // 취소 버튼 이벤트
 	currModal.querySelector('#searchBtn').addEventListener('click', searchMember); // 조회 버튼 이벤트
+	currModal.querySelector('#addProjectMemberButton').addEventListener('click', addProjectMemberButtonEvent); // 추가 버튼 이벤트
 	
 	searchMember(); // 진입 직후 검색
 	
@@ -126,16 +131,20 @@
 	// 미참여 멤버 조회
 	function searchMember(){
 		const search = currModal.querySelector('input[name="search"]').value;
-		const projectNumber = `${projectNumber}`;
+		let memberNumbers = [];
 		const startDate = `${startDate}`;
 		const endDate = `${endDate}`;
+		
+		document.querySelectorAll('#pmListBody input[name$="memberNumber"]').forEach( number => {
+			memberNumbers.push(number.value);
+		});
 		
 		$.ajax({
 			url: '/OJT/projectModify/getNotAddProjectMember',
 			method: 'POST',
 			data: {
 				'search' : search,
-				'projectNumber' : projectNumber,
+				'memberNumbers' : memberNumbers,
 				'startDate' : startDate,
 				'endDate' : endDate
 			},
@@ -184,6 +193,7 @@
 	// 날짜 포커스 이벤트
 	function pmDateFocusEvent(){
 		preDate = this.value;
+		this.classList.remove('valid-error');
 	}
 	
 	// 투입일 포커스 아웃 이벤트
@@ -240,7 +250,117 @@
 	
 	// 추가 버튼 이벤트
 	function addProjectMemberButtonEvent(){
+		const tbody = currModal.querySelector('table > tbody');
+		const rows = tbody.rows;
+		let memberList = [];
+		let hasError = false;
 		
+		Array.from(rows).forEach(row => {
+			const checkbox = row.cells[0].querySelector('input[type="checkbox"]');
+			if(checkbox.checked){
+				const memberNumber = row.cells[1].innerText;
+				const memberName = row.cells[2].innerText;
+				const department = row.cells[3].innerText;
+				const position = row.cells[4].innerText;
+				const startDate = row.querySelector('input[name="startDate"]');
+				const endDate = row.querySelector('input[name="endDate"]');
+				const roleCode = row.cells[7].querySelector('select').value;
+				
+				const startDateLocal = new Date(startDate.value);
+				const endDateLocal = new Date(endDate.value);
+				
+				if(startDateLocal > endDateLocal){
+					startDate.classList.add('valid-error');
+					hasError = true;
+				}
+				
+				memberList.push({
+					'memberNumber' : memberNumber,
+					'memberName' : memberName,
+					'department' : department,
+					'position' : position,
+					'startDate' : startDate.value,
+					'endDate' : endDate.value,
+					'roleCode' : roleCode
+				});
+			}
+		});
+		
+		// 에러가 있는지
+		if(hasError){
+			Swal.fire({
+				icon: 'warning',
+				text : '투입일이 철수일보다 이후일수 없습니다.'
+			});
+			return;
+		}
+		
+		// 선택된 인원이 없는지
+		if(memberList.length == 0){
+			Swal.fire({
+				icon: 'info',
+				text : '선택된 인원이 없습니다.'
+			});
+			return;
+		}
+		
+		// 테이블 추가에 필요한 것들
+		const startDate = `${startDate}`;
+		const endDate = `${endDate}`;
+		const pmListBody = document.querySelector('#pmListBody');
+		const pmListBodyRows = pmListBody.rows;
+		let rowsLength;
+		
+		if(pmListBodyRows[0].cells.length == 1){
+			rowsLength = 0;
+		} else {
+			rowsLength = pmListBodyRows.length;
+		}
+		
+		// 멤버를 테이블에 추가
+		$.ajax({
+			url: '/OJT/projectModify/modifyProjectMember',
+			method: 'POST',
+			contentType: 'application/json',
+			dataType: 'HTML',
+			data: JSON.stringify({
+				'pmList' : memberList,
+				'startDate' :startDate,
+				'endDate' : endDate,
+				'rowsLength' : rowsLength
+			}),
+			success: function(result){
+				Swal.fire({
+					icon: 'success',
+					title: '성공',
+					text: '추가에 성공하였습니다.'
+				}).then(() => {
+					
+					$(modalStack.pop()).html(''); //인원 추가 모달 닫기
+					currModal = getCurrModalDom();
+					
+					if(pmListBodyRows[0].cells.length == 1){ // 행이 한개라면
+						pmListBody.innerHTML = result; // 기존내용을 지우고 HTML추가
+					} else {
+						let pmListBodyHtml = pmListBody.innerHTML + result; // 기존내용을 포함해서 HTML작성
+						pmListBody.innerHTML = pmListBodyHtml; // HTML추가
+					}
+					isScroll();
+					checkEvent();
+					addModifyPMFocusEvent();
+					
+					memberList.forEach(member => {
+						const deleteMember = currModal.querySelector('div[data-memberNumber="' + member.memberNumber + '"]');
+						if(deleteMember !== null){
+							deleteMember.remove();
+						}
+					});
+				});
+			},
+			error: function(error){
+				console.error(error);
+			}
+		});
 	}
 </script>
 </html>

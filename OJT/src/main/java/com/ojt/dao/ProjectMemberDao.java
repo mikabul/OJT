@@ -2,6 +2,7 @@ package com.ojt.dao;
 
 import java.util.ArrayList;
 
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -45,6 +46,10 @@ public class ProjectMemberDao {
 	// 프로젝트 멤버 수정
 	public void updateProjectMember(ProjectMemberBean updateProjectMemberBean) {
 		projectMemberMapper.updateProjectMember(updateProjectMemberBean);
+	}
+	
+	public int hasProjectMember(int projectNumber, int memberNumber) {
+		return projectMemberMapper.hasProjectMember(projectNumber, memberNumber);
 	}
 	
 	public int hasProjectMemberCount(int[] memberNumbers, int projectNumber) {

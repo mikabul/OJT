@@ -406,6 +406,10 @@ span.required {
 	color: red;
 }
 
+.input-warning {
+	background-color: red;
+}
+
 /* 스크롤 크기 */
 
 #modalAddProject #scrollDiv{
@@ -426,4 +430,9 @@ span.required {
 #modalAddProjectMember #scrollDiv {
 	min-height: 440px;
 	max-height: 440px;
+}
+
+#modalModifyProject #scrollDiv {
+	min-height: 200px;
+	max-height: 200px;
 }

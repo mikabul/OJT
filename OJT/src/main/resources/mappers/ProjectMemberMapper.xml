@@ -86,6 +86,16 @@
 		where prj_seq = #{projectNumber} and mem_seq = #{memberNumber}
 	</update>
 	
+	<!-- 프로젝트에 멤버가 있는지 확인 -->
+	<select id="hasProjectMember">
+		select
+			count(mem_seq)
+		from project_member_table
+		where
+			prj_seq = #{projectNumber}
+			and mem_seq = #{memberNumber}
+	</select>
+	
 	<!-- 프로젝트에 멤버가 모두 있는지 확인 -->
 	<select id="hasProjectMemberCount" resultType="int">
 		select

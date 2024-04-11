@@ -20,7 +20,7 @@
 		<td>
 			<select>
 				<c:forEach var="role" items="${ roleList }">
-					<option value="${ role.detailCode }">${ role.codeName }</option>
+					<option class="text-left" value="${ role.detailCode }">${ role.codeName }</option>
 				</c:forEach>
 			</select>
 		</td>
