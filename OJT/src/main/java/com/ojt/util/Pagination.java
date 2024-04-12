@@ -45,6 +45,16 @@ public class Pagination {
 		if(page >= buttonCount) preBtn = page - buttonCount;
 		if(maxPage - (page) > buttonCount) nextBtn = page + buttonCount;
 		
+//		System.out.println("maxpage : " + maxPage);
+//		System.out.println("page : " + page);
+//		System.out.println("maxCount : " + maxCount);
+//		System.out.println("view : " + view);
+//		
+//		for(int btn : pageBtns) {
+//			System.out.println("pageBtns : " + btn);
+//		}
+		
+		
 		map.put("pageBtns", pageBtns);
 		map.put("preBtn", preBtn);
 		map.put("nextBtn", nextBtn);

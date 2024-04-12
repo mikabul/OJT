@@ -5,9 +5,11 @@ import java.util.Arrays;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
+@ToString
 public class ProjectBean {
 
 	private int projectNumber;							// 프로젝트 번호
@@ -31,17 +33,5 @@ public class ProjectBean {
 	private String startDateError;
 	private String endDateError;
 	private String roleCodeError;
-	
-	@Override
-	public String toString() {
-		return "ProjectBean [projectNumber=" + projectNumber + ", projectName=" + projectName + ", customerNumber="
-				+ customerNumber + ", projectStartDate=" + projectStartDate + ", projectEndDate=" + projectEndDate
-				+ ", projectDetail=" + projectDetail + ", projectStateCode=" + projectStateCode + ", maintStartDate="
-				+ maintStartDate + ", maintEndDate=" + maintEndDate + ", customerName=" + customerName
-				+ ", skillCodeList=" + Arrays.toString(skillCodeList) + ", projectSkillList=" + projectSkillList
-				+ ", projectStateName=" + projectStateName + ", pmList=" + pmList + ", memberNumberError="
-				+ memberNumberError + ", startDateError=" + startDateError + ", endDateError=" + endDateError
-				+ ", roleCodeError=" + roleCodeError + "]";
-	}
 	
 }

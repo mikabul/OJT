@@ -3,32 +3,21 @@ package com.ojt.controller;
 import java.util.ArrayList;
 import java.util.Map;
 
-import javax.validation.Valid;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ojt.bean.CodeBean;
 import com.ojt.bean.CustomerBean;
-import com.ojt.bean.MemberBean;
 import com.ojt.bean.ProjectBean;
-import com.ojt.bean.ProjectMemberBean;
 import com.ojt.bean.ProjectSearchBean;
-import com.ojt.service.ProjectMemberService;
 import com.ojt.service.ProjectService;
-import com.ojt.validator.ProjectValidator;
 
 @Controller
 @RequestMapping(value = "/project")
@@ -36,9 +25,6 @@ public class ProjectController {
 	
 	@Autowired
 	private ProjectService projectService;
-	
-	@Autowired
-	private ProjectMemberService projectMemberService;
 	
 	@RequestMapping("/Main")
 	public String main(@ModelAttribute("projectSearchBean") ProjectSearchBean projectSearchBean,

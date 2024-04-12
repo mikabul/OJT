@@ -2,9 +2,11 @@ package com.ojt.bean;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
+@ToString
 public class ProjectSearchBean {
 
 	private String name;				// 프로젝트 명

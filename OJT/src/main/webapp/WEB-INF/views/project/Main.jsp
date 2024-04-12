@@ -6,9 +6,6 @@
 <!DOCTYPE html>
 <html>
 <head>
-<script>
-	let modalStack = []; // 모달창을 하나씩 닫기위해 저장하는 변수
-</script>
 <meta charset="UTF-8">
 <title>INNOBL - 프로젝트</title>
 <script src="${root}resources/lib/javascript/jquery-3.7.1.min.js"></script>
@@ -238,6 +235,7 @@ table tr {
 <script src="${root}resources/javascript/AddProject.js"></script>
 <script src="${root}resources/javascript/AddProjectMember.js"></script>
 <script>
+	modalStack = [];
 	addDropdownEvent(); // 처음 진입시 드롭다운 이벤트 설정
 	const psList = JSON.parse(`${psListJSON}`);
 </script>

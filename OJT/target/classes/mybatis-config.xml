@@ -6,5 +6,7 @@
     <mappers>
        	<mapper resource="mappers/ProjectMapper.xml"/>
        	<mapper resource="mappers/ProjectMemberMapper.xml"/>
+       	<mapper resource="mappers/MemberMapper.xml"/>
+       	<mapper resource="mappers/CodeMapper.xml"/>
     </mappers>
 </configuration>

@@ -1,3 +1,4 @@
+let modalStack = []; // 모달창을 하나씩 닫기위해 저장하는 변수
 let currModal;
 let preDate;
 

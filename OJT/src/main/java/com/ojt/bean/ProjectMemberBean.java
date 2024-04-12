@@ -2,12 +2,16 @@ package com.ojt.bean;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
+@ToString
 public class ProjectMemberBean {
 	
 	private int projectNumber;		// 프로젝트 번호
+	private String projectName;		// 프로젝트 이름
+	private String customerName;	// 고객사 이름
 	private int memberNumber; 		// 사원 번호
 	private String memberName; 		// 사원 이름
 	private String startDate; 		// 투입일
@@ -21,13 +25,4 @@ public class ProjectMemberBean {
 	public ProjectMemberBean() {
 		// TODO Auto-generated constructor stub
 	}
-	
-	@Override
-	public String toString() {
-		return "ProjectMemberBean [projectNumber=" + projectNumber + ", memberNumber=" + memberNumber + ", memberName="
-				+ memberName + ", startDate=" + startDate + ", endDate=" + endDate + ", roleCode=" + roleCode
-				+ ", department=" + department + ", position=" + position + ", roleName=" + roleName + "]";
-	}
-	
-	
 }
