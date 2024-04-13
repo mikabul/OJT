@@ -35,4 +35,30 @@ public class MemberDao {
 	public ArrayList<ProjectMemberBean> getMemberProject(int memberNumber){
 		return memberMapper.getMemberProject(memberNumber);
 	}
+	
+	// 사원 아이디 중복 체크
+	public int checkMemberId(String memberId) {
+		return memberMapper.checkMemberId(memberId);
+	}
+	
+	// 사원의 다음 시퀀스 번호를 가져옴
+	public int getNextMemberSequence() {
+		return memberMapper.getNextMemberSequence();
+	}
+	
+	/*
+	 * 멤버 등록
+	 * 멤버
+	 * 주소
+	 * 회사 관련 정보
+	 */
+	public void addMember(MemberBean addMemberBean) {
+		memberMapper.addMember(addMemberBean);
+	}
+	public void addMemberAddress(MemberBean addMemberBean) {
+		memberMapper.addMemberAddress(addMemberBean);
+	}
+	public void addMemberCompany(MemberBean addMemberBean) {
+		memberMapper.addMemberCompany(addMemberBean);
+	}
 }

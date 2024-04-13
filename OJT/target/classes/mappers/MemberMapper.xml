@@ -7,8 +7,8 @@
 		<result property="memberName" column="mem_nm"/>
 		<result property="memberId" column="mem_id"/>
 		<result property="memberPw" column="mem_pw"/>
-		<result property="memberRnnPrefix" column="mem_rnn_prefix"/>
-		<result property="memberRnnsuffix" column="mem_rnn_suffix"/>
+		<result property="memberRrnPrefix" column="mem_rrn_prefix"/>
+		<result property="memberRrnSuffix" column="mem_rrn_suffix"/>
 		<result property="tel" column="mem_tel"/>
 		<result property="phone" column="mem_phone"/>
 		<result property="email" column="mem_email"/>
@@ -164,4 +164,81 @@
 		left join code_detail ro on ro.mst_cd = 'RO01' and ro.dtl_cd = mem.ro_cd
 		where mem_seq = #{memberNumber}
 	</select>
+	
+	<!-- 사원 아이디 중복확인 -->
+	<select id="checkMemberId" parameterType="String" resultType="int">
+		select
+			count(mem_seq)
+		from member_info
+		where mem_id = #{memberId}
+	</select>
+	
+	<!-- 시퀀스 값을 가져옴 -->
+	<select id="getNextMemberSequence" resultType="int">
+		select MEMBER_SEQUENCE.nextval from dual
+	</select>
+	
+	<!-- 멤버 등록 -->
+	<insert id="addMember" parameterType="com.ojt.bean.MemberBean">
+		insert into member_info(
+			mem_seq,
+			mem_nm,
+			mem_id,
+			mem_pw,
+			mem_rrn_prefix,
+			mem_rrn_suffix,
+			mem_tel,
+			mem_phone,
+			mem_email,
+			gd_cd
+		)
+		values(
+			#{memberNumber},
+			#{memberName},
+			#{memberId},
+			#{memberPW},
+			#{memberRrnPrefix},
+			#{memberRrnSuffix},
+			#{tel},
+			#{phone},
+			#{email},
+			#{genderCode}
+		)
+	</insert>
+	<insert id="addMemberAddress" parameterType="com.ojt.bean.MemberBean">
+		insert into member_address(
+			mem_seq,
+			mem_zonecode,
+			mem_addr,
+			mem_detailaddr,
+			mem_extraaddr
+		)
+		values(
+			#{memberNumber},
+			#{zoneCode},
+			#{address},
+			#{detailAddress},
+			#{extraAddress}
+		)
+	</insert>
+	<insert id="addMemberCompany" parameterType="com.ojt.bean.MemberBean">
+		insert into member_company(
+			mem_seq,
+			dp_cd,
+			ra_cd,
+			mem_pic,
+			st_cd,
+			mem_hire_date,
+			mem_resignation_date
+		)
+		values(
+			#{memberNumber},
+			#{departmentCode},
+			#{positionCode},
+			#{pictureDir},
+			#{statusCode},
+			#{hireDate},
+			#{resignationDate}
+		)
+	</insert>
 </mapper>

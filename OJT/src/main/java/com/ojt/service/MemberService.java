@@ -5,7 +5,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionManager;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import com.ojt.bean.CodeBean;
 import com.ojt.bean.MemberBean;
@@ -26,6 +30,9 @@ public class MemberService {
 	
 	@Autowired
 	Pagination pagination;
+	
+	@Autowired
+	private DataSourceTransactionManager transactionManager;
 	
 	// 사원 검색
 	public Map<String, Object> searchMember(SearchMemberBean searchMemberBean, int page){
@@ -77,5 +84,66 @@ public class MemberService {
 		map.put("projectList", projectList);
 		
 		return map;
+	}
+	
+	// 멤버 추가 코드들(부서 직급 재직상태 기술)
+	public Map<String, Object> getAddMemberCode(){
+		
+		Map<String, Object> map = new HashMap<String, Object>();
+		
+		ArrayList<CodeBean> departmentList = codeDao.getCodeList("DP01");
+		ArrayList<CodeBean> positionList = codeDao.getCodeList("RA01");
+		ArrayList<CodeBean> statusList = codeDao.getCodeList("ST01");
+		ArrayList<CodeBean> skillList = codeDao.getCodeList("SK01");
+		
+		map.put("departmentList", departmentList);
+		map.put("positionList", positionList);
+		map.put("statusList", statusList);
+		map.put("skillList", skillList);
+		
+		return map;
+	}
+	
+	// 사원 아이디 중복 체크
+	public Boolean checkMemberId(String memberId) {
+		int result = memberDao.checkMemberId(memberId);
+		
+		if(result == 0) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	// 사원 등록
+	public Map<String, Object> addMember(MemberBean addMemberBean) {
+		
+		DefaultTransactionDefinition def = new DefaultTransactionDefinition();
+		TransactionStatus status = transactionManager.getTransaction(def);
+		
+		Map<String, Object> map = new HashMap<String, Object>();
+		
+		try {
+			
+			int memberNumber = memberDao.getNextMemberSequence();
+			addMemberBean.setMemberNumber(memberNumber);
+			addMemberBean.setGenderCode("1");
+			
+			memberDao.addMember(addMemberBean);
+			memberDao.addMemberAddress(addMemberBean);
+			memberDao.addMemberCompany(addMemberBean);
+			
+			map.put("success", true);
+			map.put("memberNumber", memberNumber);
+			
+			transactionManager.commit(status);
+			return map;
+		} catch (Exception e) {
+			e.printStackTrace();
+			transactionManager.rollback(status);
+			map.put("success", false);
+			return map;
+		}
+		
 	}
 }

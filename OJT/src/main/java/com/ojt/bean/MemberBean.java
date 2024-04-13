@@ -1,12 +1,17 @@
 package com.ojt.bean;
 
+import org.springframework.web.multipart.MultipartFile;
+
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
 @Getter
 @Setter
 @ToString
+@NoArgsConstructor
 public class MemberBean {
 
 	private int memberNumber;					// 사원 번호mem_seq, mmemberNumber
@@ -14,8 +19,8 @@ public class MemberBean {
 	private String memberId;					// 아이디
 	private String memberPW;					// 비밀번호
 	private String memberPW2;					// 확인용 비밀번호
-	private String memberRnnPrefix;				// 주민등록번호 앞자리
-	private String memberRnnsuffix;				// 주민등록번호 뒷자리
+	private String memberRrnPrefix;				// 주민등록번호 앞자리
+	private String memberRrnSuffix;				// 주민등록번호 뒷자리
 	private String tel;							// 연락처
 	private String phone;						// 휴대전화
 	private String email;						// 이메일
@@ -35,7 +40,9 @@ public class MemberBean {
 	private String department; 					// 부서
 	private String position; 					// 직급
 	private String status;						// 재직 상태
-	private String[] skillList; 				// 보유 기술 목록
+	private String[] skills; 					// 보유 기술 배열
+	private String[] skillCodes;				// 보유 기술 코드 배열
+	private MultipartFile memberImage;			// 사진
 	
 	private boolean loginState;					// 로그인 상태
 	

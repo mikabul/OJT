@@ -20,4 +20,20 @@ public interface MemberMapper {
 	// 사원이 참여중이 프로젝트
 	public ArrayList<ProjectMemberBean> getMemberProject(int memberNumber);
 	
+	// 사원 아이디 중복체크
+	public int checkMemberId(String memberId);
+	
+	// 사원의 다음 시퀀스 번호를 가져옴
+	public int getNextMemberSequence();
+	
+	/*
+	 * 멤버 등록
+	 * 멤버
+	 * 주소
+	 * 회사 관련 정보
+	 */
+	public void addMember(MemberBean addMemberBean);
+	public void addMemberAddress(MemberBean addMemberBean);
+	public void addMemberCompany(MemberBean addMemberBean);
+	
 }

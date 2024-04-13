@@ -8,6 +8,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ojt.bean.MemberBean;
 import com.ojt.bean.SearchMemberBean;
 import com.ojt.service.MemberService;
 
@@ -31,7 +33,7 @@ public class MemberController {
 	private String viewList;
 	
 	@GetMapping("/Main")
-	public String main(Model model) {
+	public String main(@RequestParam(value = "memberNumber", required = false) Integer memberNumber, Model model) {
 		
 		SearchMemberBean searchMemberBean = new SearchMemberBean();
 		Map<String, Object> searchMap = memberService.searchMember(searchMemberBean, 0);
@@ -47,6 +49,7 @@ public class MemberController {
 		model.addAttribute("statusList", codeMap.get("statusList"));
 		model.addAttribute("viewList", viewList);
 		model.addAttribute("page", 0);
+		model.addAttribute("memberNumber", memberNumber);
 		
 		return "/member/Main";
 	}
@@ -82,5 +85,47 @@ public class MemberController {
 		model.addAttribute("projectList", memberInfoMap.get("projectList"));
 		
 		return "/member/MemberInfo";
+	}
+	
+	@GetMapping(value="/addMember/")
+	public String showAddMember(Model model) {
+		
+		MemberBean memberBean = new MemberBean(); // 초기 사용을 위한 값이 비어있는 bean
+		Map<String, Object> codeMap = memberService.getAddMemberCode(); // CodeList
+		
+		model.addAttribute("addMemberBean", memberBean);
+		model.addAttribute("departmentList", codeMap.get("departmentList"));
+		model.addAttribute("positionList", codeMap.get("positionList"));
+		model.addAttribute("statusList", codeMap.get("statusList"));
+		model.addAttribute("skillList", codeMap.get("skillList"));
+		
+		return "/member/AddMember";
+	}
+	
+	@PostMapping(value="/addMember/add")
+	public String addMember(@ModelAttribute("addMemberBean") MemberBean addMemberBean,
+							BindingResult result, Model model) {
+		
+		Map<String, Object> codeMap = memberService.getAddMemberCode(); // CodeList
+		model.addAttribute("departmentList", codeMap.get("departmentList"));
+		model.addAttribute("positionList", codeMap.get("positionList"));
+		model.addAttribute("statusList", codeMap.get("statusList"));
+		model.addAttribute("skillList", codeMap.get("skillList"));
+		
+		if(result.hasErrors()) {
+			
+			
+			return "/member/AddMember";
+		}
+		
+		Map<String, Object> map = memberService.addMember(addMemberBean);
+		if((Boolean)map.get("success") == true) {
+			model.addAttribute("memberNumber", map.get("memberNumber"));
+			return "/member/AddSuccess";
+		} else {
+			model.addAttribute("success", false);
+			return "/member/AddMember";
+		}
+		
 	}
 }

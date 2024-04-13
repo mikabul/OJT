@@ -103,10 +103,10 @@ table tr {
 		</form>
 	</header>
 	
-	<section class="constainer-center" style="width: 1025px;">
+	<section>
 		<!-- 검색 결과 테이블 -->
 		<section>
-			<table>
+			<table class="container-center">
 				<colgroup>
 					<!-- checkbox -->
 					<col style="width: 55px" />
@@ -164,7 +164,7 @@ table tr {
 				</tbody>
 			</table>
 		</section>
-		<section>
+		<section class="container-center" style="width: 1025px;">
 			<div class="flex">
 				<div class="w-30"></div>
 				<div class="w-40 text-center" id="pageButton">
@@ -186,7 +186,8 @@ table tr {
 					</c:if>
 				</div>
 				<div class="w-30 text-right">
-					<button class="btn btn-green">등록</button>
+					<button class="btn btn-green" onclick="location.href='${root}member/addMember/'">등록</button>
+					<button class="btn btn-red">삭제</button>
 				</div>
 			</div>
 		</section>
