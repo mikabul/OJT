@@ -82,11 +82,12 @@ public class MemberController {
 		
 		Map<String, Object> memberInfoMap = memberService.getDetailMemberInfo(memberNumber);
 		model.addAttribute("memberBean", memberInfoMap.get("memberBean"));
-		model.addAttribute("projectList", memberInfoMap.get("projectList"));
+		model.addAttribute("projectMemberList", memberInfoMap.get("projectMemberList"));
 		
 		return "/member/MemberInfo";
 	}
 	
+	// 사원 등록 페이지
 	@GetMapping(value="/addMember/")
 	public String showAddMember(Model model) {
 		
@@ -98,10 +99,21 @@ public class MemberController {
 		model.addAttribute("positionList", codeMap.get("positionList"));
 		model.addAttribute("statusList", codeMap.get("statusList"));
 		model.addAttribute("skillList", codeMap.get("skillList"));
+		model.addAttribute("genderList", codeMap.get("genderList"));
 		
 		return "/member/AddMember";
 	}
 	
+	// 아이디 중복 체크
+	@GetMapping(value = "/addMember/matchId")
+	@ResponseBody
+	public ResponseEntity<Boolean> matchId(String inputId){
+		Boolean checkId = memberService.checkMemberId(inputId);
+		System.out.println(checkId);
+		return ResponseEntity.ok(checkId);
+	}
+	
+	// 사원 등록
 	@PostMapping(value="/addMember/add")
 	public String addMember(@ModelAttribute("addMemberBean") MemberBean addMemberBean,
 							BindingResult result, Model model) {
@@ -111,21 +123,36 @@ public class MemberController {
 		model.addAttribute("positionList", codeMap.get("positionList"));
 		model.addAttribute("statusList", codeMap.get("statusList"));
 		model.addAttribute("skillList", codeMap.get("skillList"));
+		model.addAttribute("genderList", codeMap.get("genderList"));
+		
+		System.out.println(addMemberBean.toString());
 		
 		if(result.hasErrors()) {
-			
-			
 			return "/member/AddMember";
 		}
 		
 		Map<String, Object> map = memberService.addMember(addMemberBean);
+		
 		if((Boolean)map.get("success") == true) {
 			model.addAttribute("memberNumber", map.get("memberNumber"));
 			return "/member/AddSuccess";
-		} else {
+		} else { // 사원 등록 실패
 			model.addAttribute("success", false);
+			String code = (String)map.get("code");
+			System.out.println("code : " + code);
+			if(code.equals("401")) {
+				model.addAttribute("message", "부적절한 파일입니다.");
+			} else if(code.equals("500")){
+				model.addAttribute("message", "사원 등록에 실패하였습니다.");
+			} else if(code.equals("515")) {
+				model.addAttribute("message", "사진 저장에 실패하였습니다.");
+			}
 			return "/member/AddMember";
 		}
+	}
+	
+	@GetMapping(value = "/modifyMember/")
+	public String modifyMemberMain(@RequestParam("memberNumber")int memberNumber) {
 		
 	}
 }

@@ -7,7 +7,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>사원 추가</title>
+<title>INNOBL - 사원 수정</title>
 <script src="${root}resources/lib/javascript/jquery-3.7.1.min.js"></script>
 <!-- select2 -->
 <link href="${root}resources/lib/style/select2.min.css" rel="stylesheet" />
@@ -17,57 +17,6 @@
 <script src="${root}resources/lib/javascript/sweetalert2.min.js"></script>
 <!-- 외부 css -->
 <link rel="stylesheet" href="${root}resources/style/Main.css" />
-<style>
-	* { 
-/* 		border: 1px solid black; */
- 	}
-	
-	section {
-		margin-left: 200px;
-		margin-right: 200px;
-	}
-	
-	.content {
-		display: flex;
-		align-content: center;
-	}
-	
-	.content > div {
-		display: flex;
-		align-content: center;
-		width: 50%;
-		padding: 3px;
-	}
-	
-	.content > div > *:nth-child(1) {
-		display: flex;
-		width: 20%;
-	}
-	
-	.content > div > *:nth-child(2){
-		display: flex;
-		width: 80%;
-	}
-	
-	#preview[data-show="false"] {
-		display: none;
-	}
-	
-	#preview[data-show="true"] {
-		display: block;
-		max-width: 198px;
-		max-height: 198px;
-	}
-	
-	#resignationDateDiv[data-show="true"] {
-		display: flex;
-	}
-	
-	#resignationDateDiv[data-show="false"] {
-		display: none;
-	}
-	
-</style>
 </head>
 <body>
 	<c:import url="/WEB-INF/views/include/TopMenu.jsp"></c:import>
@@ -75,7 +24,7 @@
 		<h1>사원 등록</h1>
 	</header>
 	<section>
-		<form action="${ root }member/addMember/add" id="addMemberBean" method="post" enctype="multipart/form-data">
+		<form action="${ root }member/modifyMember/modify" id="modifyMemberBean" method="post" enctype="multipart/form-data">
 			<div style="display: flex">
 				<div class="w-30">
 					<div class="container-center" style="width: 200px; height: 242px; border: 1px solid black;">
@@ -84,7 +33,6 @@
 						</div>
 						<div style="width: 200px; height: 42px; border-top: 1px solid black;">
 							<input type="file" name="memberImage" accept="image/*"/>
-							<p style="font-size: 10px;"><span class="required">*</span>5MB 이하까지 업로드 가능합니다.</p>
 						</div>
 					</div>
 				</div>
@@ -92,12 +40,12 @@
 					<div class="content">
 						<div>
 							<div>이름<span class="required">*</span></div>
-							<input type="text" name="memberName" value="${ addMemberBean.memberName }" required="required"/>
+							<input type="text" name="memberName" value="${ modifyMemberBean.memberName }" required="required"/>
 						</div>
 						<div>
 							<div>아이디<span class="required">*</span></div>
 							<div class="justify-content-center">
-								<input class="w-60" type="text" name="memberId" value="${ addMemberBean.memberId }" required="required" onkeydown="checkId=false"/>
+								<input class="w-60" type="text" name="memberId" value="${ modifyMemberBean.memberId }" required="required"/>
 								<p class="w-10"></p>
 								<button class="w-30 btn" type="button" id="checkIdButton">중복확인</button>
 							</div>
@@ -107,36 +55,36 @@
 						<div>
 							<div>주민번호<span class="required">*</span></div>
 							<div>
-								<input class="w-40" type="text" name="memberRrnPrefix" value="${ addMemberBean.memberRrnPrefix }" maxlength="6" required="required"/>
+								<input class="w-40" type="text" name="memberRrnPrefix" value="${ modifyMemberBean.memberRrnPrefix }" maxlength="6" required="required"/>
 								<input type="text" class="read-input w-20 text-center" readonly value="-"/>
-								<input class="w-40" type="password" name="memberRrnSuffix" value="${ addMemberBean.memberRrnSuffix }" maxlength="7" required="required"/>
+								<input class="w-40" type="password" name="memberRrnSuffix" value="${ modifyMemberBean.memberRrnSuffix }" maxlength="7" required="required"/>
 							</div>
 						</div>
 						<div>
 							<div>패스워드<span class="required">*</span></div>
-							<input type="password" name="memberPW" value="${ addMemberBean.memberPW }" required="required"/>
+							<input type="password" name="memberPW" value="${ modifyMemberBean.memberPW }" required="required"/>
 						</div>
 					</div>
 					<div class="content">
 						<div>
 							<div>연락처<span class="required">*</span></div>
-							<input type="text" name="tel" value="${ addMemberBean.tel }" required="required" required="required"/>
+							<input type="text" name="tel" value="${ modifyMemberBean.tel }" required="required" required="required"/>
 						</div>
 						<div>
 							<div>패스워드 확인<span class="required">*</span></div>
-							<input type="password" name="memberPW2" value="${ addMemberBean.memberPW2 }"/>
+							<input type="password" name="memberPW2" value="${ modifyMemberBean.memberPW2 }"/>
 						</div>
 					</div>
 					<div class="content">
 						<div>
 							<div>비상연락처</div>
-							<input type="text" name="emTel" value="${ addMemberBean.emTel }"/>
+							<input type="text" name="emTel" value="${ modifyMemberBean.emTel }"/>
 						</div>
 						<div>
 							<div>부서</div>
 							<select name="departmentCode">
 								<c:forEach var="item" items="${ departmentList }">
-									<option value="${ item.detailCode }" ${ item.detailCode == addMemberBean.departmentCode ? 'selected' : '' }>${ item.codeName }</option>
+									<option value="${ item.detailCode }" ${ item.detailCode == modifyMemberBean.departmentCode ? 'selected' : '' }>${ item.codeName }</option>
 								</c:forEach>						
 							</select>
 						</div>
@@ -144,14 +92,14 @@
 					<div class="content">
 						<div>
 							<div>이메일</div>
-							<input type="email" name="email" value="${ addMemberBean.email }"/>
+							<input type="email" name="email" value="${ modifyMemberBean.email }"/>
 						</div>
 						<div>
 							<div>직책<span class="required">*</span></div>
 							<select name="positionCode" required="required">
 								<option value="">-선택-</option>
 								<c:forEach var="item" items="${ positionList }">
-									<option value="${ item.detailCode }" ${ item.detailCode == addMemberBean.positionCode ? 'selected' : '' }>${ item.codeName }</option>
+									<option value="${ item.detailCode }" ${ item.detailCode == modifyMemberBean.positionCode ? 'selected' : '' }>${ item.codeName }</option>
 								</c:forEach>
 							</select>
 						</div>
@@ -162,7 +110,7 @@
 							<select name="genderCode" required="required">
 								<option value="">-선택-</option>
 								<c:forEach var="item" items="${ genderList }">
-									<option value="${ item.detailCode }" ${ item.detailCode == addMemberBean.genderCode ? 'selected' : '' }>${ item.codeName }</option>
+									<option value="${ item.detailCode }" ${ item.detailCode == modifyMemberBean.genderCode ? 'selected' : '' }>${ item.codeName }</option>
 								</c:forEach>
 							</select>
 						</div>
@@ -178,7 +126,7 @@
 										<c:forEach var="item" items="${ skillList }" varStatus="status">
 											<c:set var="checked" value="" />
 											<div>
-												<c:forEach var="code" items="${ addMemberBean.skillCodes }">
+												<c:forEach var="code" items="${ modifyMemberBean.skillCodes }">
 													<c:if test="${ item.detailCode == code }">
 														<c:set var="checked" value="checked" />
 													</c:if>
@@ -197,7 +145,7 @@
 							<div>재직상태<span class="required">*</span></div>
 							<select name="statusCode">
 								<c:forEach var="item" items="${ statusList }">
-									<option value="${ item.detailCode }" ${ item.detailCode == addMemberBean.statusCode ? 'selected' : '' }>${ item.codeName }</option>
+									<option value="${ item.detailCode }" ${ item.detailCode == modifyMemberBean.statusCode ? 'selected' : '' }>${ item.codeName }</option>
 								</c:forEach>
 							</select>
 						</div>
@@ -216,15 +164,15 @@
 						<div class="w-10">주소<span class="required">*</span></div>
 						<div class="w-70">
 							<div class="flex">
-								<input type="text" class="w-30" id="sample6_postcode" name="zoneCode" placeholder="우편번호" value="${ addMemberBean.zoneCode }" required="required" onfocus="this.focusout();">
+								<input type="text" class="w-30" id="sample6_postcode" name="zoneCode" placeholder="우편번호" value="${ modifyMemberBean.zoneCode }" required="required" onfocus="this.focusout();">
 								<button type="button" class="btn" onclick="postCodeEvent()">우편번호 찾기</button>
 							</div>
 							<div>
-								<input type="text" id="sample6_address" name="address" placeholder="주소" required="required" value="${ addMemberBean.address }" onfocus="this.focusout();"><br>
+								<input type="text" id="sample6_address" name="address" placeholder="주소" required="required" value="${ modifyMemberBean.address }" onfocus="this.focusout();"><br>
 							</div>
 							<div class="flex" style="margin: 0;">
-								<input type="text" id="sample6_detailAddress" name="detailAddress" value="${ addMemberBean.detailAddress }" placeholder="상세주소">
-								<input type="text" id="sample6_extraAddress" name="extraAddress" value="${ addMemberBean.extraAddress }" placeholder="참고항목">
+								<input type="text" id="sample6_detailAddress" name="detailAddress" value="${ modifyMemberBean.detailAddress }" placeholder="상세주소">
+								<input type="text" id="sample6_extraAddress" name="extraAddress" value="${ modifyMemberBean.extraAddress }" placeholder="참고항목">
 							</div>
 						</div>
 					</div>
@@ -242,30 +190,16 @@
 <script>
 modalStack = [];
 
-let checkId = false;
-let checkPassword = false;
-
-document.querySelector('input[name="memberImage"]').addEventListener('change', memberImageChangeEvent); // 이미지 변경 이벤트
-document.querySelectorAll('input[type="checkbox"][name="skillCodes"]').forEach(check => {// 드롭다운 메뉴 내부 체크박스 클릭 시 이벤트
-	check.addEventListener('change', dropdownCheckboxClickEvent);
-});
-document.querySelector('input[name="memberPW"]').addEventListener('change', passwordChangeEvent); // 비밀번호 변경 이벤트
-document.querySelector('input[name="memberPW2"]').addEventListener('change', passwordChangeEvent); // 비밀번호 확인 변경 이벤트
-document.querySelector('select[name="statusCode"]').addEventListener('change', resignationDateShowEvent); // 재직 상태 변경 이벤트
-document.getElementById('addMemberBean').addEventListener('submit', addMemberSubmitEvent); // submit 이벤트
-document.getElementById('checkIdButton').addEventListener('click', checkIdButtonEvent); // 중복 체크 버튼 이벤트
+let checkId = true;
+let checkPassword = true;
 
 addDropdownEvent();
 dropdownCheckboxClickEvent();
-addMemberStartup();
+modifuMemberStartup();
 memberImageChangeEvent();
 
-function addMemberStartup(){
-	const success = `${success}`;
-	if(success == "false"){
-		const message = `${message}`;
-		Swal.fire('실패', message, 'error');
-	}
+function modifuMemberStartup(){
+	
 }
 
 //이미지 변경 이벤트
@@ -303,7 +237,7 @@ function memberImageChangeEvent(){
 
 //드롭다운 내부 체크박스 클릭 이벤트
 function dropdownCheckboxClickEvent() {
-	const dropdown = document.querySelector('#addMemberBean .dropdown');
+	const dropdown = document.querySelector('#modifyMemberBean .dropdown');
 	let dropdownLabel = dropdown.querySelector('.dropdown-label');
 	let checkboxs = document.querySelectorAll('input[type="checkbox"][name="skillCodes"]');
 	let message = '';
@@ -324,19 +258,21 @@ function dropdownCheckboxClickEvent() {
 	dropdownLabel.setAttribute('title', message);
 }
 
-// 패스워드 비교 펑션
+//패스워드 비교 펑션
 function passwordChangeEvent(){
 	const pw = document.querySelector('input[name="memberPW"]').value;
 	const pw2 = document.querySelector('input[name="memberPW2"]').value;
 	
-	if(pw == pw2){
+	if(pw == '' && pw2 == ''){
+		checkPassword = true;
+	} else if(pw == pw2){
 		checkPassword = true;
 	} else {
 		checkPassword = false;
 	}
 }
 
-// 재직상태가 퇴직일 경우 퇴직일input을 보여주는 함수
+//재직상태가 퇴직일 경우 퇴직일input을 보여주는 함수
 function resignationDateShowEvent(){
 	const statusCode = document.querySelector('select[name="statusCode"]').value;
 	const resignationDateDiv = document.getElementById('resignationDateDiv');
@@ -346,52 +282,6 @@ function resignationDateShowEvent(){
 	} else {
 		resignationDateDiv.dataset.show = false;
 	}
-}
-
-// 아이디 중복 체크 이벤트
-function checkIdButtonEvent(){
-	const inputId = document.querySelector('input[name="memberId"]').value;
-	$.ajax({
-		url: '${root}member/addMember/matchId',
-		data: {
-			'inputId' : inputId
-		},
-		success: function(result){
-			console.log(result);
-			if(result){
-				Swal.fire('사용가능한 아이디 입니다.', '' ,'success');
-				checkId = true;
-			} else {
-				Swal.fire('사용할수 없는 아이디 입니다.', '' ,'error');
-				checkId = false;
-			}
-		},
-		error: function(error){
-			console.error(error);
-		}
-	});
-}
-
-// submit 이벤트
-function addMemberSubmitEvent(event){
-	let message = '';
-	if(checkId == false){
-		message += '<p>아이디 중복체크가 필요합니다.</p>';
-	}
-	if(checkPassword == false){
-		message += '<p>비밀번호가 일치하지 않습니다.</p>';
-	}
-	
-	if(message != ''){
-		Swal.fire({
-			icon: 'info',
-			html: message
-		});
-		event.preventDefault();
-		return;
-	}
-	
-	this.submit;
 }
 </script>
 </html>

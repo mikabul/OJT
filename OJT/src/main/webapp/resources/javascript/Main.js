@@ -12,7 +12,7 @@ $(document).keydown(function(event) {
 	if (event.keyCode == 27 || event.which == 27) {
 		$(modalStack.pop()).html('');
 		currModal = getCurrModalDom();
-		window.history.pushState({}, '', '/OJT/project/Main');
+		window.history.pushState({}, '', window.location.pathname);
 	}
 });
 

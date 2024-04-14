@@ -212,8 +212,16 @@ let searchData = {
 document.getElementById('searchMember').addEventListener('submit', searchMemberSubmitEvent);	// 조회버튼 클릭 이벤트
 document.querySelector('select[name="view"]').addEventListener('change', viewChangeEvent);		// view 변경 이벤트
 
+memberMainStartup();
 checkEvent();
 addPageButtonEvnet();
+
+function memberMainStartup(){
+	const memberNumber = `${memberNumber}`;
+	if(memberNumber != ''){
+		showMemberInfoModal(memberNumber);
+	}
+}
 
 // 조회 버튼 클릭 이벤트
 function searchMemberSubmitEvent(){
@@ -281,7 +289,7 @@ function searchAjax(){
 					searchMemberResultHTML += 	'<tr>' + 
 												'<td><input type="checkbox" class="check"/></td>' +
 												'<td>' + member.memberNumber + '</td>' + 
-												'<td>' + member.memberName + '</td>' + 
+												'<td><a href="javascript:showMemberInfoModal(' + member.memberNumber + ');">' + member.memberName + '</a></td>' + 
 												'<td>' + member.hireDate + '</td>' +
 												'<td>' + member.department + '</td>' +
 												'<td>' + member.position + '</td>' + 
@@ -330,9 +338,10 @@ function showMemberInfoModal(memberNumber){
 			$('#modalMemberInfo').html(result);
 		},
 		error: function(error){
-			console.log(error);
+			Swal.fire('존재하지 않는 사원입니다.', '', 'error');
 		}
 	});
 }
+
 </script>
 </html>

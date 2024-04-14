@@ -1,8 +1,10 @@
 package com.ojt.bean;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 import org.springframework.web.multipart.MultipartFile;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -13,7 +15,7 @@ import lombok.ToString;
 @ToString
 @NoArgsConstructor
 public class MemberBean {
-
+	
 	private int memberNumber;					// 사원 번호mem_seq, mmemberNumber
 	private String memberName;					// 사원 이름
 	private String memberId;					// 아이디
@@ -22,7 +24,7 @@ public class MemberBean {
 	private String memberRrnPrefix;				// 주민등록번호 앞자리
 	private String memberRrnSuffix;				// 주민등록번호 뒷자리
 	private String tel;							// 연락처
-	private String phone;						// 휴대전화
+	private String emTel;						// 비상연락처
 	private String email;						// 이메일
 	private String genderCode;					// 성별 코드
 	private String departmentCode;				// 부서 코드
@@ -40,10 +42,22 @@ public class MemberBean {
 	private String department; 					// 부서
 	private String position; 					// 직급
 	private String status;						// 재직 상태
-	private String[] skills; 					// 보유 기술 배열
-	private String[] skillCodes;				// 보유 기술 코드 배열
+	private String skillString;					// 보유 기술 나열
+	private ArrayList<String> skills; 			// 보유 기술 리스트
+	private String skillCodeString;				// 보유 기술 코드 나열
+	private ArrayList<String> skillCodes;		// 보유 기술 코드 리스트
 	private MultipartFile memberImage;			// 사진
 	
 	private boolean loginState;					// 로그인 상태
+	
+	public void setSkillString(String skillString) {
+		this.skillString = skillString;
+		skills = new ArrayList<String>(Arrays.asList(skillString.split(",")));
+	}
+	
+	public void setSkillCodeString(String skillCodeString) {
+		this.skillCodeString = skillCodeString;
+		skillCodes = new ArrayList<String>(Arrays.asList(skillCodeString.split(",")));
+	}
 	
 }

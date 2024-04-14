@@ -116,7 +116,7 @@ public class ServletAppContext implements WebMvcConfigurer{
 	public CommonsMultipartResolver multipartResolver() {
 		CommonsMultipartResolver resolver = new CommonsMultipartResolver();
 		resolver.setMaxUploadSize(20971520);
-		resolver.setMaxUploadSizePerFile(4096);
+		resolver.setMaxUploadSizePerFile(5242880);
 		return resolver;
 	}
 }

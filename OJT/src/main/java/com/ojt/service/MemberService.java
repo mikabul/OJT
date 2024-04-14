@@ -7,7 +7,6 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
@@ -17,7 +16,9 @@ import com.ojt.bean.ProjectMemberBean;
 import com.ojt.bean.SearchMemberBean;
 import com.ojt.dao.CodeDao;
 import com.ojt.dao.MemberDao;
+import com.ojt.util.DevMultiPartFile;
 import com.ojt.util.Pagination;
+import com.ojt.util.Sha256;
 
 @Service
 public class MemberService {
@@ -30,6 +31,12 @@ public class MemberService {
 	
 	@Autowired
 	Pagination pagination;
+	
+	@Autowired
+	DevMultiPartFile devMultiPartFile;
+	
+	@Autowired
+	Sha256 encoder;
 	
 	@Autowired
 	private DataSourceTransactionManager transactionManager;
@@ -77,11 +84,11 @@ public class MemberService {
 	public Map<String, Object> getDetailMemberInfo(int memberNumber){
 		
 		MemberBean memberBean = memberDao.getDetailMemberInfo(memberNumber);
-		ArrayList<ProjectMemberBean> projectList = memberDao.getMemberProject(memberNumber);
+		ArrayList<ProjectMemberBean> projectMemberList = memberDao.getMemberProject(memberNumber);
 		
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("memberBean", memberBean);
-		map.put("projectList", projectList);
+		map.put("projectMemberList", projectMemberList);
 		
 		return map;
 	}
@@ -95,11 +102,13 @@ public class MemberService {
 		ArrayList<CodeBean> positionList = codeDao.getCodeList("RA01");
 		ArrayList<CodeBean> statusList = codeDao.getCodeList("ST01");
 		ArrayList<CodeBean> skillList = codeDao.getCodeList("SK01");
+		ArrayList<CodeBean> genderList = codeDao.getCodeList("GD01");
 		
 		map.put("departmentList", departmentList);
 		map.put("positionList", positionList);
 		map.put("statusList", statusList);
 		map.put("skillList", skillList);
+		map.put("genderList", genderList);
 		
 		return map;
 	}
@@ -107,7 +116,8 @@ public class MemberService {
 	// 사원 아이디 중복 체크
 	public Boolean checkMemberId(String memberId) {
 		int result = memberDao.checkMemberId(memberId);
-		
+		System.out.println("memberId : " + memberId);
+		System.out.println("result : " + result);
 		if(result == 0) {
 			return true;
 		} else {
@@ -127,11 +137,32 @@ public class MemberService {
 			
 			int memberNumber = memberDao.getNextMemberSequence();
 			addMemberBean.setMemberNumber(memberNumber);
-			addMemberBean.setGenderCode("1");
 			
-			memberDao.addMember(addMemberBean);
-			memberDao.addMemberAddress(addMemberBean);
-			memberDao.addMemberCompany(addMemberBean);
+			// 비밀번호와 주민번호 뒷자리 해싱
+			String hashPassword = encoder.encrypt(addMemberBean.getMemberPW());
+			String hashRrnSuffix = encoder.encrypt(addMemberBean.getMemberRrnSuffix());
+			addMemberBean.setMemberPW(hashPassword);
+			addMemberBean.setMemberRrnSuffix(hashRrnSuffix);
+			
+			// 업로드 된 이미지 파일을 서버에 저장 후 파일의 이름을 addMemberBean에 저장
+			Map<String, Object> resultMap = devMultiPartFile.saveFile(addMemberBean.getMemberImage(), "/images/member/", String.valueOf(memberNumber));
+			if((Boolean)resultMap.get("success")) {
+				String fileName = (String)resultMap.get("fileName");
+				addMemberBean.setPictureDir(fileName);
+			} else {
+				map.put("success", false);
+				map.put("code", resultMap.get("code"));
+				return map;
+			}
+			
+			memberDao.addMember(addMemberBean); // member_info 테이블에 추가
+			memberDao.addMemberAddress(addMemberBean); // member_address테이블에 추가
+			memberDao.addMemberCompany(addMemberBean); // member_company 테이블에 추가
+			
+			ArrayList<String> skillCodes = addMemberBean.getSkillCodes();
+			for(String skillCode : skillCodes) {
+				memberDao.addMemberSkill(memberNumber, skillCode);
+			}
 			
 			map.put("success", true);
 			map.put("memberNumber", memberNumber);
@@ -142,6 +173,7 @@ public class MemberService {
 			e.printStackTrace();
 			transactionManager.rollback(status);
 			map.put("success", false);
+			map.put("code", 500);
 			return map;
 		}
 		

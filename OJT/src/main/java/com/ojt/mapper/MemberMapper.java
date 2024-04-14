@@ -2,6 +2,8 @@ package com.ojt.mapper;
 
 import java.util.ArrayList;
 
+import org.apache.ibatis.annotations.Param;
+
 import com.ojt.bean.MemberBean;
 import com.ojt.bean.ProjectMemberBean;
 import com.ojt.bean.SearchMemberBean;
@@ -17,7 +19,7 @@ public interface MemberMapper {
 	// 사원 상세정보
 	public MemberBean getDetailMemberInfo(int memberNumber);
 	
-	// 사원이 참여중이 프로젝트
+	// 사원이 참여중인 프로젝트
 	public ArrayList<ProjectMemberBean> getMemberProject(int memberNumber);
 	
 	// 사원 아이디 중복체크
@@ -31,9 +33,11 @@ public interface MemberMapper {
 	 * 멤버
 	 * 주소
 	 * 회사 관련 정보
+	 * 보유 기술
 	 */
 	public void addMember(MemberBean addMemberBean);
 	public void addMemberAddress(MemberBean addMemberBean);
 	public void addMemberCompany(MemberBean addMemberBean);
+	public void addMemberSkill(@Param("memberNumber")int memberNumber, @Param("skillCode")String skillCode);
 	
 }

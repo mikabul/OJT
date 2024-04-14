@@ -1,18 +1,15 @@
 package test;
 
-import java.time.LocalDate;
+import com.ojt.util.Sha256;
 
 public class TestMain {
 
 	public static void main(String[] args) {
-		String dateStr = "2000-02-29";
-		try {
-			LocalDate date = LocalDate.parse(dateStr);
-			System.out.println(date);
-			System.out.println("올바른 날짜입니다.");
-		} catch (Exception e) {
-			System.out.println("잘못된 날짜입니다.");
-		}
+		Sha256 encoder = new Sha256();
+		String str = "1234asdf";
+		String hashString = encoder.encrypt(str);
+		System.out.println(hashString);
+		
 	}
 
 }

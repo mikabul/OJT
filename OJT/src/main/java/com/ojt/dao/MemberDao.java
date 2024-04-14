@@ -2,6 +2,7 @@ package com.ojt.dao;
 
 import java.util.ArrayList;
 
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -51,6 +52,7 @@ public class MemberDao {
 	 * 멤버
 	 * 주소
 	 * 회사 관련 정보
+	 * 보유 기술
 	 */
 	public void addMember(MemberBean addMemberBean) {
 		memberMapper.addMember(addMemberBean);
@@ -60,5 +62,8 @@ public class MemberDao {
 	}
 	public void addMemberCompany(MemberBean addMemberBean) {
 		memberMapper.addMemberCompany(addMemberBean);
+	}
+	public void addMemberSkill(int memberNumber, String skillCode) {
+		memberMapper.addMemberSkill(memberNumber, skillCode);
 	}
 }

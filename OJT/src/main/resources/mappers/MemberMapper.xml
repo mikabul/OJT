@@ -10,7 +10,7 @@
 		<result property="memberRrnPrefix" column="mem_rrn_prefix"/>
 		<result property="memberRrnSuffix" column="mem_rrn_suffix"/>
 		<result property="tel" column="mem_tel"/>
-		<result property="phone" column="mem_phone"/>
+		<result property="emTel" column="mem_emtel"/>
 		<result property="email" column="mem_email"/>
 		<result property="genderCode" column="gd_cd"/>
 		<result property="departmentCode" column="dp_cd"/>
@@ -22,9 +22,12 @@
 		<result property="pictureDir" column="mem_pic"/>
 		<result property="statusCode" column="st_cd"/>
 		<result property="hireDate" column="mem_hire_date"/>
+		<result property="resignationDate" column="mem_resignation_date"/>
 		<result property="gender" column="gender"/>
 		<result property="department" column="department"/>
 		<result property="position" column="position"/>
+		<result property="skillString" column="skillString"/>
+		<result property="skillCodeString" column="skillCodeString"/>
 	</resultMap>
 	
 	<resultMap type="com.ojt.bean.ProjectMemberBean" id="projectMemberDefaultMap">
@@ -128,7 +131,7 @@
 		    mi.mem_id,
 		    mi.mem_rrn_prefix,
 		    mi.mem_tel,
-		    mi.mem_phone,
+		    mi.mem_emTel,
 		    mi.mem_email,
 		    mc.mem_pic,
 		    mc.mem_hire_date,
@@ -139,14 +142,23 @@
 		    ma.mem_extraaddr,
 		    dept.dtl_cd_nm as department,
 		    posi.dtl_cd_nm as position,
-		    st.dtl_cd_nm as status
+		    st.dtl_cd_nm as status,
+		    listagg(sk.dtl_cd_nm , ',') as skillString,
+		    listagg(sk.dtl_cd , ',') as skillCodeString
 		from member_info mi
 		inner join member_company mc on mc.mem_seq = mi.mem_seq
 		inner join member_address ma on ma.mem_seq = mi.mem_seq
 		left join code_detail dept on dept.mst_cd = 'DP01' and dept.dtl_cd = mc.dp_cd
 		left join code_detail posi on posi.mst_cd = 'RA01' and posi.dtl_cd = mc.ra_cd
 		left join code_detail st on st.mst_cd = 'ST01' and st.dtl_cd = mc.st_cd
+		left join member_sk ms on ms.mem_seq = mi.mem_seq
+		left join code_detail sk on sk.mst_cd = 'SK01' and sk.dtl_cd = ms.sk_cd
 		where mi.mem_seq = #{memberNumber}
+		group by 
+			mi.mem_nm, mi.mem_seq, mi.mem_id, mi.mem_rrn_prefix, mi.mem_tel,
+			mi.mem_emTel, mi.mem_email, mc.mem_pic, mc.mem_hire_date, mc.mem_resignation_date,
+			ma.mem_zonecode, ma.mem_addr, ma.mem_detailaddr, ma.mem_extraaddr,
+			dept.dtl_cd_nm, posi.dtl_cd_nm, st.dtl_cd_nm
 	</select>
 	
 	<!-- 사원이 참여중이 프로젝트 리스트 -->
@@ -157,13 +169,15 @@
 		    cust.cust_nm,
 		    mem.st_dt,
 		    mem.ed_dt,
-		    ro.dtl_cd as role
+		    ro.dtl_cd_nm as roleName
 		from project_member_table mem
 		inner join project_info prj on mem.prj_seq = prj.prj_seq
 		inner join customer cust on prj.cust_seq = cust.cust_seq
 		left join code_detail ro on ro.mst_cd = 'RO01' and ro.dtl_cd = mem.ro_cd
 		where mem_seq = #{memberNumber}
 	</select>
+	
+	<!-- 사원 보유기술 -->
 	
 	<!-- 사원 아이디 중복확인 -->
 	<select id="checkMemberId" parameterType="String" resultType="int">
@@ -188,7 +202,7 @@
 			mem_rrn_prefix,
 			mem_rrn_suffix,
 			mem_tel,
-			mem_phone,
+			mem_emtel,
 			mem_email,
 			gd_cd
 		)
@@ -200,7 +214,7 @@
 			#{memberRrnPrefix},
 			#{memberRrnSuffix},
 			#{tel},
-			#{phone},
+			#{emTel},
 			#{email},
 			#{genderCode}
 		)
@@ -239,6 +253,16 @@
 			#{statusCode},
 			#{hireDate},
 			#{resignationDate}
+		)
+	</insert>
+	<insert id="addMemberSkill">
+		insert into member_sk(
+			mem_seq,
+			sk_cd
+		)
+		values(
+			#{memberNumber},
+			#{skillCode}
 		)
 	</insert>
 </mapper>
