@@ -18,9 +18,6 @@
 <!-- 외부 css -->
 <link rel="stylesheet" href="${root}resources/style/Main.css" />
 <style>
-	* { 
-/* 		border: 1px solid black; */
- 	}
 	
 	section {
 		margin-left: 200px;
@@ -75,10 +72,10 @@
 </head>
 <body>
 	<c:import url="/WEB-INF/views/include/TopMenu.jsp"></c:import>
-	<header class="text-center">
+	<header class="text-center" style="margin-top: 35px;">
 		<h1>사원 등록</h1>
 	</header>
-	<section>
+	<section style="margin-top: 35px;">
 		<form action="${ root }member/addMember/add" id="addMemberBean" method="post" enctype="multipart/form-data">
 			<div style="display: flex">
 				<div class="w-30">
@@ -256,7 +253,7 @@ modalStack = [];
 
 let checkId = false;
 let checkPassword = false;
-const memberImage = `${addMemberBean.memberImage}`;
+let errorMessage = '';
 
 document.querySelector('input[name="memberImage"]').addEventListener('change', memberImageChangeEvent); // 이미지 변경 이벤트
 document.querySelectorAll('input[type="checkbox"][name="skillCodes"]').forEach(check => {// 드롭다운 메뉴 내부 체크박스 클릭 시 이벤트
@@ -272,7 +269,20 @@ document.getElementById('emailCode').addEventListener('change', suffixChange); /
 /*
  * 유효성 검사
  */
-document.querySelector('input[name="memberName"]').addEventListener('focusout', memberNameFocusoutEvent); // 멤버 이름
+document.querySelector('input[name="memberName"]').addEventListener('focusout', memberNameFocusoutEvent); 			// 멤버 이름
+document.querySelector('input[name="memberId"]').addEventListener('focusout', memberIdFocusoutEvent); 				// 아이디
+document.querySelector('input[name="memberRrnPrefix"]').addEventListener('focusout', memberRrnPrefixFocusoutEvent); // 주민등록번호 앞
+document.querySelector('input[name="memberRrnSuffix"]').addEventListener('focusout', memberRrnSuffixFocusoutEvent); // 주민등록번호 뒤
+document.querySelector('input[name="memberPW"]').addEventListener('focusout', memberPWFocusoutEvent); 				// 패스워드
+document.querySelector('input[name="tel"]').addEventListener('focusout', telFocusoutEvent); 						// 연락처
+document.querySelector('input[name="emTel"]').addEventListener('focusout', emTelFocusoutEvent); 					// 비상 연락처
+document.querySelector('input[name="emailPrefix"]').addEventListener('focusout', emailFocusoutEvent); 				// 이메일 앞
+document.querySelector('input[name="emailSuffix"]').addEventListener('focusout', emailFocusoutEvent); 				// 이메일 뒤
+
+document.querySelectorAll('input').forEach(input => { // 인풋 포커스, 포커스아웃 이벤트
+	input.addEventListener('focus', inputFocusEvent);
+	input.addEventListener('focusout', showErrorMessage);
+});
 
 addDropdownEvent();
 dropdownCheckboxClickEvent();
@@ -441,23 +451,20 @@ function memberNameFocusoutEvent(){
 	if(memberNameValue != ''){
 		if(koreanPattern.test(memberNameValue)){
 			if(memberNameValue.length > 6){
-				inputValdationAlert({text: '한글은 6글자까지 입력 가능합니다.'});
-				memberName.value = memberNameValue.slice(0, 6);
+				errorMessage = '<p>사원명 : 한글은 6글자까지 입력 가능합니다.</p>';
 				memberName.classList.add('valid-error');
 				return false;
 			}
 			return true;
 		} else if(englishPattern.test(memberNameValue)){
 			if(memberNameValue.length > 20){
-				inputValdationAlert({text: '영어는 20글자까지 입력 가능합니다.'});
-				memberName.value = memberNameValue.slice(0, 20);
+				errorMessage += '<p>사원명 : 영어는 20글자까지 입력 가능합니다.</p>';
 				memberName.classList.add('valid-error');
 				return false;
 			}
 			return true;
 		} else {
-			inputValdationAlert({html: '<p>한글 또는 영어만 입력가능합니다.</p><p>한글은 공백이 없어야 합니다.</p>'});
-			memberName.value = '';
+			errorMessage += '<p>사원명 : 한글 또는 영어만 입력가능합니다.</p><p>한글은 공백이 없어야 합니다.</p>';
 			memberName.classList.add('valid-error');
 			return false;
 		}
@@ -470,12 +477,133 @@ function memberIdFocusoutEvent(){
 	const value = memberId.value;
 	const pattern = /^[a-zA-Z0-9]+$/;
 	
-	
+	if(value.length > 0){
+		if(pattern.test(value)){
+			if(value.length > 20){
+				errorMessage += '<p>아이디 : 20글자까지 입력 가능합니다.</p>';
+				memberId.classList.add('valid-error');
+				return false;
+			}
+			return true;
+		} else {
+			errorMessage += '<p>아이디 : 영어와 숫자만 입력 가능합니다.</p>';
+			memberId.classList.add('valid-error');
+			return false;
+		}
+	}
 }
 // 주민등록번호 앞자리 포커스 아웃 이벤트
+function memberRrnPrefixFocusoutEvent(){
+	const memberRrnPrefix = document.querySelector('input[name="memberRrnPrefix"]');
+	const value = memberRrnPrefix.value;
+	const pattern = /^(\d{2})(0[1-9]|1[0-2])(0[1-9]|[12][0-9]|3[0-1])$/;
+	if(value.length == 6){
+		if(pattern.test(value)){
+			return true;
+		} else {
+			errorMessage += '<p>주민등록번호 앞자리 : 날짜 형식에 맞지 않습니다.</p>';
+			memberRrnPrefix.classList.add('valid-error');
+			return false;
+		}
+	}
+}
+
 // 주민등록번호 뒷자리 포커스 아웃 이벤트
+function memberRrnSuffixFocusoutEvent(){
+	const memberRrnSuffix = document.querySelector('input[name="memberRrnSuffix"]');
+	const value = memberRrnSuffix.value;
+	const pattern = /^[1-4]\d{6}$/;
+	if(value.length == 7){
+		if(pattern.test(value)){
+			return true;
+		} else {
+			errorMessage += '<p>주민등록번호 뒷자리 : 날짜 형식에 맞지 않습니다.</p>';
+			memberRrnSuffix.classList.add('valid-error');
+			return false;
+		}
+	}
+}
+
 // 패스워드 포커스 아웃 이벤트
+function memberPWFocusoutEvent(){
+	const memberPW = document.querySelector('input[name="memberPW"]');
+	const value = memberPW.value;
+	const pattern = /^[a-zA-Z0-9\!\@\^]+$/;
+	if(value.length > 0){
+		if(pattern.test(value)){
+			if(value.length > 20){
+				errorMessage += '<p>비밀번호 : 20글자까지 입력가능합니다.</p>';
+				memberPW.classList.add('valid-error');
+				return false;
+			}
+			return true;
+		} else {
+			errorMessage += '<p>비밀번호 : 영어와 숫자, 특수문자(! @ ^)만 입력가능합니다.</p>';
+			memberPW.classList.add('valid-error');
+			return false;
+		}
+	}
+}
+
+// 연락처 포커스 아웃 이벤트
+function telFocusoutEvent(){
+	const tel = document.querySelector('input[name="tel"]');
+	const value = tel.value;
+	const pattern = /^(01[016789])-(\d{3,4})-(\d{4})|(\d{2,3})-(\d{3,4})-(\d{4})$/;
+	if(value.length > 0){
+		if(pattern.test(value)){
+			return true;
+		} else {
+			errorMessage += '<p>연락처 : 올바른 형식이 아닙니다.</p>';
+			tel.classList.add('valid-error');
+			return false;
+		}
+	}
+}
+
 // 비상연락처 포커스 아웃 이벤트
+function emTelFocusoutEvent(){
+	const emTel = document.querySelector('input[name="emTel"]');
+	const value = emTel.value;
+	const pattern = /^(01[016789])-(\d{3,4})-(\d{4})|(\d{2,3})-(\d{3,4})-(\d{4})$|^$/;
+	if(pattern.test(value)){
+		return true;
+	} else {
+		errorMessage += '<p>비상연락처 : 올바른 형식이 아닙니다.</p>';
+		emTel.classList.add('valid-error');
+		return false;
+	}
+}
+
 // 이메일 포커스 아웃 이벤트
+function emailFocusoutEvent(){
+	const emailPrefix = document.querySelector('input[name="emailPrefix"]');
+	const emailSuffix = document.querySelector('input[name="emailSuffix"]');
+	const email = emailPrefix.value + '@' + emailSuffix.value;
+	const patter = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+	if(emailPrefix.value != '' && emailSuffix.value != ''){
+		if(pattern.test(email)){
+			if(email.lngth > 31){
+				errorMessage += '<p>이메일 : 30글자까지 입력 가능합니다.</p>';
+				emailPrefix.classList.add('valid-error');
+				return false;
+			}
+			return true
+		}else {
+			errorMessage += '<p>이메일 : 올바른 이메일형식이 아닙니다.</p>';
+			emailPrefix.classList.add('valid-error');
+			return false;
+		}
+	}
+}
+
+// 에러 메세지 펑션(focusout이벤트 후순위 또는 호출하여 사용)
+function showErrorMessage(){
+	// 에러메세지 표시후 에러메세지 변수 초기화
+	if(errorMessage.length > 0){
+		inputValdationAlert({html : errorMessage});
+		errorMessage = '';
+	}
+}
 </script>
 </html>

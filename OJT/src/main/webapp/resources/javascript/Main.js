@@ -216,7 +216,7 @@ function inputValdationAlert(option){
 		toast: true,
 		position: 'top',
 		showConfirmButton: false,
-		timer: 2500,
+		timer: 4000,
 		timerProgressBar: true,
 		icon: 'info'
 	};
