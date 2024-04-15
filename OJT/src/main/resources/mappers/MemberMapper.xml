@@ -133,9 +133,13 @@
 		    mi.mem_tel,
 		    mi.mem_emTel,
 		    mi.mem_email,
+		    mi.gd_cd,
 		    mc.mem_pic,
 		    mc.mem_hire_date,
 		    mc.mem_resignation_date,
+		    mc.dp_cd,
+		    mc.ra_cd,
+		    mc.st_cd,
 	 	   	ma.mem_zonecode,
 		    ma.mem_addr,
 		    ma.mem_detailaddr,
@@ -156,7 +160,7 @@
 		where mi.mem_seq = #{memberNumber}
 		group by 
 			mi.mem_nm, mi.mem_seq, mi.mem_id, mi.mem_rrn_prefix, mi.mem_tel,
-			mi.mem_emTel, mi.mem_email, mc.mem_pic, mc.mem_hire_date, mc.mem_resignation_date,
+			mi.mem_emTel, mi.mem_email, mi.gd_cd, mc.mem_pic, mc.mem_hire_date, mc.mem_resignation_date, mc.dp_cd, mc.ra_cd, mc.st_cd,
 			ma.mem_zonecode, ma.mem_addr, ma.mem_detailaddr, ma.mem_extraaddr,
 			dept.dtl_cd_nm, posi.dtl_cd_nm, st.dtl_cd_nm
 	</select>

@@ -18,10 +18,60 @@
 <!-- 외부 css -->
 <link rel="stylesheet" href="${root}resources/style/Main.css" />
 </head>
+<style>
+	* { 
+/* 		border: 1px solid black; */
+ 	}
+	
+	section {
+		margin-left: 200px;
+		margin-right: 200px;
+	}
+	
+	.content {
+		display: flex;
+		align-content: center;
+	}
+	
+	.content > div {
+		display: flex;
+		align-content: center;
+		width: 50%;
+		padding: 3px;
+	}
+	
+	.content > div > *:nth-child(1) {
+		display: flex;
+		width: 20%;
+	}
+	
+	.content > div > *:nth-child(2){
+		display: flex;
+		width: 80%;
+	}
+	
+	#preview[data-show="false"] {
+		display: none;
+	}
+	
+	#preview[data-show="true"] {
+		display: block;
+		max-width: 198px;
+		max-height: 198px;
+	}
+	
+	#resignationDateDiv[data-show="true"] {
+		display: flex;
+	}
+	
+	#resignationDateDiv[data-show="false"] {
+		display: none;
+	}
+</style>
 <body>
 	<c:import url="/WEB-INF/views/include/TopMenu.jsp"></c:import>
 	<header class="text-center">
-		<h1>사원 등록</h1>
+		<h1>사원 수정</h1>
 	</header>
 	<section>
 		<form action="${ root }member/modifyMember/modify" id="modifyMemberBean" method="post" enctype="multipart/form-data">
@@ -29,10 +79,10 @@
 				<div class="w-30">
 					<div class="container-center" style="width: 200px; height: 242px; border: 1px solid black;">
 						<div style="width: 200px; height: 200px; display: flex; align-items: center">
-							<img id="preview" src="#" alt="Uploaded Image" data-show="false"/>
+							<img id="preview" src="${ root }resources/images/member/${modifyMemberBean.pictureDir}" alt="Uploaded Image" data-show="true"/>
 						</div>
 						<div style="width: 200px; height: 42px; border-top: 1px solid black;">
-							<input type="file" name="memberImage" accept="image/*"/>
+							<input type="file" name="memberImage" accept="image/*" value="${ modifyMemberBean.memberImage }"/>
 						</div>
 					</div>
 				</div>
@@ -45,7 +95,7 @@
 						<div>
 							<div>아이디<span class="required">*</span></div>
 							<div class="justify-content-center">
-								<input class="w-60" type="text" name="memberId" value="${ modifyMemberBean.memberId }" required="required"/>
+								<input class="w-60" type="text" name="memberId" data-value="${ modifyMemberBean.memberId }" value="${ modifyMemberBean.memberId }" required="required"/>
 								<p class="w-10"></p>
 								<button class="w-30 btn" type="button" id="checkIdButton">중복확인</button>
 							</div>
@@ -92,7 +142,15 @@
 					<div class="content">
 						<div>
 							<div>이메일</div>
-							<input type="email" name="email" value="${ modifyMemberBean.email }"/>
+							<div class="flex" style="margin-top: 0;">
+								<input type="text" name="emailPrefix" value="${ addMemberBean.emailPrefix }"/>@
+								<input type="text" name="emailSuffix" value="${ addMemberBean.emailSuffix }"/>
+								<select id="emailCode" style="margin-left: 5px;">
+									<c:forEach var="item" items="${ emailList }">
+										<option value="${ item.codeName }" ${ item.codeName == addMemberBean.emailSuffix ? 'selected' : '' }>${ item.codeName }</option>
+									</c:forEach>
+								</select>
+							</div>
 						</div>
 						<div>
 							<div>직책<span class="required">*</span></div>
@@ -153,11 +211,11 @@
 					<div class="content">
 						<div>
 							<div>입사일<span class="required">*</span></div>
-							<input type="date" name="hireDate" required="required"/>
+							<input type="date" name="hireDate" required="required" value="${ modifyMemberBean.hireDate }"/>
 						</div>
 						<div id="resignationDateDiv" data-show="false">
 							<div>퇴사일</div>
-							<input type="date" name="resignationDate"/>
+							<input type="date" name="resignationDate" value="${ modifyMemberBean.resignationDate }"/>
 						</div>
 					</div>
 					<div class="flex">
@@ -190,49 +248,52 @@
 <script>
 modalStack = [];
 
+document.querySelector('input[name="memberImage"]').addEventListener('change', memberImageChangeEvent); // 이미지 변경 이벤트
+
 let checkId = true;
 let checkPassword = true;
 
 addDropdownEvent();
 dropdownCheckboxClickEvent();
 modifuMemberStartup();
-memberImageChangeEvent();
 
 function modifuMemberStartup(){
-	
+	const preview = document.getElementById('preview');
+	if(preview.naturalWidth !== 0){
+		preview.src = '${root}resources/images/member/default.jpg';
+	}
 }
 
 //이미지 변경 이벤트
 function memberImageChangeEvent(){
 	const file = document.querySelector('input[name="memberImage"]').files[0];
 	const preview = document.getElementById('preview');
-	
+	const reader = new FileReader();
+	console.log(file);
 	if(file){
 		
 		if(file.size > 5242880){
 			Swal.fire('5MB이하까지 업로드 가능합니다.', '', 'error');
 			this.value = '';
-			preview.dataset.show = 'false';
+			preview.src = '${root}resources/images/member/default.jpg';
 			return;
 		} else if(!file.type.startsWith('image/')){
 			Swal.fire('이미지 파일만 업로드 가능힙니다.', '', 'error');
 			this.value = '';
-			preview.dataset.show = 'false';
+			preview.src = '${root}resources/images/member/default.jpg';
 			return;
 		}
-		
-		const reader = new FileReader();
 		
 		reader.onload = function(){
 			preview.src = this.result;
 			preview.dataset.show = 'true';
 		}
-		
+		console.log(preview.src);
 		reader.readAsDataURL(file);
 		
 	} else {
-		preview.dataset.show = 'false';
-	}
+		preview.src = '${root}resources/images/member/default.jpg';
+	} 
 }
 
 //드롭다운 내부 체크박스 클릭 이벤트

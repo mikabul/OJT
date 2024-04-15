@@ -38,6 +38,8 @@ public class MemberBean {
 	private String hireDate;					// 입사일
 	private String resignationDate;				// 퇴사일
 	
+	private String emailPrefix;					// 첫번째 이메일
+	private String emailSuffix;					// 두번째 이메일
 	private String gender;						// 성별
 	private String department; 					// 부서
 	private String position; 					// 직급
@@ -58,6 +60,18 @@ public class MemberBean {
 	public void setSkillCodeString(String skillCodeString) {
 		this.skillCodeString = skillCodeString;
 		skillCodes = new ArrayList<String>(Arrays.asList(skillCodeString.split(",")));
+	}
+	
+	public void setEmail(String email) {
+		this.email = email;
+		String[] splitEmail = email.split("@");
+		if(splitEmail.length == 2) {
+			emailPrefix = splitEmail[0];
+			emailSuffix = splitEmail[1];
+		} else {
+			emailPrefix = email;
+			emailSuffix = "";
+		}
 	}
 	
 }

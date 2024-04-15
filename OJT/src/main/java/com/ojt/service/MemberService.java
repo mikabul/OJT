@@ -80,7 +80,7 @@ public class MemberService {
 		return map;
 	}
 	
-	// 멤버 상세정보
+	// 멤버 상세정보(프로젝트 포함)
 	public Map<String, Object> getDetailMemberInfo(int memberNumber){
 		
 		MemberBean memberBean = memberDao.getDetailMemberInfo(memberNumber);
@@ -93,6 +93,13 @@ public class MemberService {
 		return map;
 	}
 	
+	// 멤버 상세정보
+	public MemberBean getMemberInfo(int memberNumber) {
+		
+		MemberBean memberBean = memberDao.getDetailMemberInfo(memberNumber);
+		return memberBean;
+	}
+	
 	// 멤버 추가 코드들(부서 직급 재직상태 기술)
 	public Map<String, Object> getAddMemberCode(){
 		
@@ -103,12 +110,14 @@ public class MemberService {
 		ArrayList<CodeBean> statusList = codeDao.getCodeList("ST01");
 		ArrayList<CodeBean> skillList = codeDao.getCodeList("SK01");
 		ArrayList<CodeBean> genderList = codeDao.getCodeList("GD01");
+		ArrayList<CodeBean> emailList = codeDao.getCodeList("EM01");
 		
 		map.put("departmentList", departmentList);
 		map.put("positionList", positionList);
 		map.put("statusList", statusList);
 		map.put("skillList", skillList);
 		map.put("genderList", genderList);
+		map.put("emailList", emailList);
 		
 		return map;
 	}

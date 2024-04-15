@@ -32,6 +32,8 @@ public class MemberController {
 	@Value("${viewList}")
 	private String viewList;
 	
+	private static Map<String, Object> codeMap;
+	
 	@GetMapping("/Main")
 	public String main(@RequestParam(value = "memberNumber", required = false) Integer memberNumber, Model model) {
 		
@@ -92,7 +94,7 @@ public class MemberController {
 	public String showAddMember(Model model) {
 		
 		MemberBean memberBean = new MemberBean(); // 초기 사용을 위한 값이 비어있는 bean
-		Map<String, Object> codeMap = memberService.getAddMemberCode(); // CodeList
+		codeMap = memberService.getAddMemberCode(); // CodeList
 		
 		model.addAttribute("addMemberBean", memberBean);
 		model.addAttribute("departmentList", codeMap.get("departmentList"));
@@ -100,6 +102,7 @@ public class MemberController {
 		model.addAttribute("statusList", codeMap.get("statusList"));
 		model.addAttribute("skillList", codeMap.get("skillList"));
 		model.addAttribute("genderList", codeMap.get("genderList"));
+		model.addAttribute("emailList", codeMap.get("emailList"));
 		
 		return "/member/AddMember";
 	}
@@ -118,12 +121,12 @@ public class MemberController {
 	public String addMember(@ModelAttribute("addMemberBean") MemberBean addMemberBean,
 							BindingResult result, Model model) {
 		
-		Map<String, Object> codeMap = memberService.getAddMemberCode(); // CodeList
 		model.addAttribute("departmentList", codeMap.get("departmentList"));
 		model.addAttribute("positionList", codeMap.get("positionList"));
 		model.addAttribute("statusList", codeMap.get("statusList"));
 		model.addAttribute("skillList", codeMap.get("skillList"));
 		model.addAttribute("genderList", codeMap.get("genderList"));
+		model.addAttribute("emailList", codeMap.get("emailList"));
 		
 		System.out.println(addMemberBean.toString());
 		
@@ -135,6 +138,7 @@ public class MemberController {
 		
 		if((Boolean)map.get("success") == true) {
 			model.addAttribute("memberNumber", map.get("memberNumber"));
+			codeMap.clear(); // codeMap비워주기
 			return "/member/AddSuccess";
 		} else { // 사원 등록 실패
 			model.addAttribute("success", false);
@@ -152,7 +156,19 @@ public class MemberController {
 	}
 	
 	@GetMapping(value = "/modifyMember/")
-	public String modifyMemberMain(@RequestParam("memberNumber")int memberNumber) {
+	public String modifyMemberMain(@RequestParam("memberNumber")int memberNumber, Model model) {
 		
+		MemberBean modifyMemberBean = memberService.getMemberInfo(memberNumber);
+		codeMap = memberService.getAddMemberCode();
+		System.out.println(modifyMemberBean.toString());
+		model.addAttribute("modifyMemberBean", modifyMemberBean);
+		model.addAttribute("departmentList", codeMap.get("departmentList"));
+		model.addAttribute("positionList", codeMap.get("positionList"));
+		model.addAttribute("statusList", codeMap.get("statusList"));
+		model.addAttribute("skillList", codeMap.get("skillList"));
+		model.addAttribute("genderList", codeMap.get("genderList"));
+		model.addAttribute("emailList", codeMap.get("emailList"));
+		
+		return "/member/ModifyMember";
 	}
 }

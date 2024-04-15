@@ -165,7 +165,7 @@
 						</div>
 					</div>
 					<div class="text-right">
-						<button type="button" class="btn btn-green" onclick="location.href='${root}member/modify/?memberNumber=${ memberBean.memberNumber }'">수정</button>
+						<button type="button" class="btn btn-green" onclick="location.href='${root}member/modifyMember/?memberNumber=${ memberBean.memberNumber }'">수정</button>
 					</div>
 				</section>
 				<section>
