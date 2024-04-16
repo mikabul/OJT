@@ -66,4 +66,9 @@ public class MemberDao {
 	public void addMemberSkill(int memberNumber, String skillCode) {
 		memberMapper.addMemberSkill(memberNumber, skillCode);
 	}
+	
+	// 해당 기술이 전부 있는지
+	public int hasSkills(ArrayList<String> skills) {
+		return memberMapper.hasSkills(skills);
+	}
 }

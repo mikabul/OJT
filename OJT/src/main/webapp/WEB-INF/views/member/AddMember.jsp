@@ -78,7 +78,7 @@
 	<section style="margin-top: 35px;">
 		<form action="${ root }member/addMember/add" id="addMemberBean" method="post" enctype="multipart/form-data">
 			<div style="display: flex">
-				<div class="w-30">
+				<div class="w-20">
 					<div class="container-center" style="width: 200px; height: 242px; border: 1px solid black;">
 						<div style="width: 200px; height: 200px; display: flex; align-items: center">
 							<img id="preview" src="${ root }resources/images/member/default.jpg" alt="Uploaded Image"/>
@@ -89,7 +89,7 @@
 						</div>
 					</div>
 				</div>
-				<div class="w-70">
+				<div class="w-80">
 					<div class="content">
 						<div>
 							<div>이름<span class="required">*</span></div>
@@ -106,7 +106,17 @@
 					</div>
 					<div class="content">
 						<div>
-							<div>주민번호<span class="required">*</span></div>
+							<div></div>
+							<div id="memberName.errors"></div>
+						</div>
+						<div>
+							<div></div>
+							<div id="memberId.errors"></div>
+						</div>
+					</div>
+					<div class="content">
+						<div>
+							<div>주민등록번호<span class="required">*</span></div>
 							<div>
 								<input class="w-40" type="text" name="memberRrnPrefix" value="${ addMemberBean.memberRrnPrefix }" maxlength="6" required="required"/>
 								<input type="text" class="read-input w-20 text-center" readonly style="background-color: unset;" value="-"/>
@@ -120,12 +130,32 @@
 					</div>
 					<div class="content">
 						<div>
+							<div></div>
+							<div id="memberRrn.errors"></div>
+						</div>
+						<div>
+							<div></div>
+							<div id="memberPW.errors"></div>
+						</div>
+					</div>
+					<div class="content">
+						<div>
 							<div>연락처<span class="required">*</span></div>
-							<input type="text" name="tel" value="${ addMemberBean.tel }" required="required" required="required"/>
+							<input type="text" name="tel" value="${ addMemberBean.tel }" required="required"/>
 						</div>
 						<div>
 							<div>패스워드 확인<span class="required">*</span></div>
 							<input type="password" name="memberPW2" value="${ addMemberBean.memberPW2 }"/>
+						</div>
+					</div>
+					<div class="content">
+						<div>
+							<div></div>
+							<div id="tel.errors"></div>
+						</div>
+						<div>
+							<div></div>
+							<div id="memberPW2.errors"></div>
 						</div>
 					</div>
 					<div class="content">
@@ -140,6 +170,16 @@
 									<option value="${ item.detailCode }" ${ item.detailCode == addMemberBean.departmentCode ? 'selected' : '' }>${ item.codeName }</option>
 								</c:forEach>						
 							</select>
+						</div>
+					</div>
+					<div class="content">
+						<div>
+							<div></div>
+							<div id="emTel.errors"></div>
+						</div>
+						<div>
+							<div></div>
+							<div id="departmentCode.erros"></div>
 						</div>
 					</div>
 					<div class="content">
@@ -163,6 +203,16 @@
 									<option value="${ item.detailCode }" ${ item.detailCode == addMemberBean.positionCode ? 'selected' : '' }>${ item.codeName }</option>
 								</c:forEach>
 							</select>
+						</div>
+					</div>
+					<div class="content">
+						<div>
+							<div></div>
+							<div id="email.errors"></div>
+						</div>
+						<div>
+							<div></div>
+							<div id="positionCode.erros"></div>
 						</div>
 					</div>
 					<div class="content">
@@ -203,6 +253,16 @@
 					</div>
 					<div class="content">
 						<div>
+							<div></div>
+							<div id="genderCode.errors"></div>
+						</div>
+						<div>
+							<div></div>
+							<div id="skillCodes.erros"></div>
+						</div>
+					</div>
+					<div class="content">
+						<div>
 							<div>재직상태<span class="required">*</span></div>
 							<select name="statusCode">
 								<c:forEach var="item" items="${ statusList }">
@@ -213,12 +273,28 @@
 					</div>
 					<div class="content">
 						<div>
+							<div></div>
+							<div id="statusCode.errors"></div>
+						</div>
+					</div>
+					<div class="content">
+						<div>
 							<div>입사일<span class="required">*</span></div>
 							<input type="date" name="hireDate" required="required" value="${ addMemberBean.hireDate }"/>
 						</div>
 						<div id="resignationDateDiv" data-show="false">
 							<div>퇴사일</div>
 							<input type="date" name="resignationDate" value="${ addMemberBean.resignationDate }"/>
+						</div>
+					</div>
+					<div class="content">
+						<div>
+							<div></div>
+							<div id="hireDate.errors"></div>
+						</div>
+						<div>
+							<div></div>
+							<div id="resignationDate.erros"></div>
 						</div>
 					</div>
 					<div class="flex">
@@ -235,6 +311,12 @@
 								<input type="text" id="detailAddress" name="detailAddress" value="${ addMemberBean.detailAddress }" placeholder="상세주소">
 								<input type="text" id="extraAddress" name="extraAddress" value="${ addMemberBean.extraAddress }" placeholder="참고항목" readonly>
 							</div>
+						</div>
+					</div>
+					<div>
+						<div>
+							<div></div>
+							<div id="address.errors"></div>
 						</div>
 					</div>
 				</div>
@@ -259,8 +341,8 @@ document.querySelector('input[name="memberImage"]').addEventListener('change', m
 document.querySelectorAll('input[type="checkbox"][name="skillCodes"]').forEach(check => {// 드롭다운 메뉴 내부 체크박스 클릭 시 이벤트
 	check.addEventListener('change', dropdownCheckboxClickEvent);
 });
-document.querySelector('input[name="memberPW"]').addEventListener('change', passwordChangeEvent); // 비밀번호 변경 이벤트
-document.querySelector('input[name="memberPW2"]').addEventListener('change', passwordChangeEvent); // 비밀번호 확인 변경 이벤트
+document.querySelector('input[name="memberPW"]').addEventListener('keyup', passwordChangeEvent); // 비밀번호 변경 이벤트
+document.querySelector('input[name="memberPW2"]').addEventListener('keyup', passwordChangeEvent); // 비밀번호 확인 변경 이벤트
 document.querySelector('select[name="statusCode"]').addEventListener('change', resignationDateShowEvent); // 재직 상태 변경 이벤트
 document.getElementById('addMemberBean').addEventListener('submit', addMemberSubmitEvent); // submit 이벤트
 document.getElementById('checkIdButton').addEventListener('click', checkIdButtonEvent); // 중복 체크 버튼 이벤트
@@ -269,19 +351,18 @@ document.getElementById('emailCode').addEventListener('change', suffixChange); /
 /*
  * 유효성 검사
  */
-document.querySelector('input[name="memberName"]').addEventListener('focusout', memberNameFocusoutEvent); 			// 멤버 이름
-document.querySelector('input[name="memberId"]').addEventListener('focusout', memberIdFocusoutEvent); 				// 아이디
-document.querySelector('input[name="memberRrnPrefix"]').addEventListener('focusout', memberRrnPrefixFocusoutEvent); // 주민등록번호 앞
-document.querySelector('input[name="memberRrnSuffix"]').addEventListener('focusout', memberRrnSuffixFocusoutEvent); // 주민등록번호 뒤
-document.querySelector('input[name="memberPW"]').addEventListener('focusout', memberPWFocusoutEvent); 				// 패스워드
-document.querySelector('input[name="tel"]').addEventListener('focusout', telFocusoutEvent); 						// 연락처
-document.querySelector('input[name="emTel"]').addEventListener('focusout', emTelFocusoutEvent); 					// 비상 연락처
-document.querySelector('input[name="emailPrefix"]').addEventListener('focusout', emailFocusoutEvent); 				// 이메일 앞
-document.querySelector('input[name="emailSuffix"]').addEventListener('focusout', emailFocusoutEvent); 				// 이메일 뒤
+// document.querySelector('input[name="memberName"]').addEventListener('focusout', memberNameFocusoutEvent); 			// 멤버 이름
+// document.querySelector('input[name="memberId"]').addEventListener('focusout', memberIdFocusoutEvent); 				// 아이디
+// document.querySelector('input[name="memberRrnPrefix"]').addEventListener('focusout', memberRrnPrefixFocusoutEvent); // 주민등록번호 앞
+// document.querySelector('input[name="memberRrnSuffix"]').addEventListener('focusout', memberRrnSuffixFocusoutEvent); // 주민등록번호 뒤
+// document.querySelector('input[name="memberPW"]').addEventListener('focusout', memberPWFocusoutEvent); 				// 패스워드
+// document.querySelector('input[name="tel"]').addEventListener('focusout', telFocusoutEvent); 						// 연락처
+// document.querySelector('input[name="emTel"]').addEventListener('focusout', emTelFocusoutEvent); 					// 비상 연락처
+// document.querySelector('input[name="emailPrefix"]').addEventListener('focusout', emailFocusoutEvent); 				// 이메일 앞
+// document.querySelector('input[name="emailSuffix"]').addEventListener('focusout', emailFocusoutEvent); 				// 이메일 뒤
 
-document.querySelectorAll('input').forEach(input => { // 인풋 포커스, 포커스아웃 이벤트
+document.querySelectorAll('input').forEach(input => { // 인풋 포커스 이벤트
 	input.addEventListener('focus', inputFocusEvent);
-	input.addEventListener('focusout', showErrorMessage);
 });
 
 addDropdownEvent();
@@ -356,11 +437,14 @@ function dropdownCheckboxClickEvent() {
 function passwordChangeEvent(){
 	const pw = document.querySelector('input[name="memberPW"]').value;
 	const pw2 = document.querySelector('input[name="memberPW2"]').value;
+	const memberPW2Errors = document.querySelector('[id="memberPW2.errors"]'); 
 	
 	if(pw == pw2){
 		checkPassword = true;
+		memberPW2Errors.innerHTML = '<span style="color: green; font-size: 10px;">비밀번호가 일치합니다.</span>';
 	} else {
 		checkPassword = false;
+		memberPW2Errors.innerHTML = '<span style="color: red; font-size: 10px;">비밀번호가 일치하지않습니다.</span>';
 	}
 }
 
@@ -402,24 +486,45 @@ function checkIdButtonEvent(){
 
 // submit 이벤트
 function addMemberSubmitEvent(event){
-	let message = '';
-	if(checkId == false){
-		message += '<p>아이디 중복체크가 필요합니다.</p>';
-	}
-	if(checkPassword == false){
-		message += '<p>비밀번호가 일치하지 않습니다.</p>';
-	}
+// 	event.preventDefault();
 	
-	if(message != ''){
-		Swal.fire({
-			icon: 'info',
-			html: message
-		});
-		event.preventDefault();
-		return;
-	}
+// 	let message = '';
+// 	if(checkId == false){
+// 		message += '<p>아이디 중복체크가 필요합니다.</p>';
+// 	}
+// 	if(checkPassword == false){
+// 		message += '<p>비밀번호가 일치하지 않습니다.</p>';
+// 	}
 	
-	this.submit;
+// 	/*
+// 	* 모든 유효성 검사를 호출
+// 	*/
+// 	if(memberNameFocusoutEvent() &&
+// 		memberIdFocusoutEvent() &&
+// 		memberRrnPrefixFocusoutEvent() &&
+// 		memberRrnSuffixFocusoutEvent() &&
+// 		memberPWFocusoutEvent &&
+// 		telFocusoutEvent() &&
+// 		emTelFocusoutEvent() &&
+// 		emailFocusoutEvent() ) {
+		
+// 		this.submit;
+		
+// 	} else {
+// 		Swal.fire({
+// 			icon: 'error',
+// 			text: '유효성 검사에 실패하였습니다.'
+// 		});
+// 		return;
+// 	}
+		
+// 	if(message != ''){
+// 		Swal.fire({
+// 			icon: 'info',
+// 			html: message
+// 		});
+// 		return;
+// 	}
 }
 
 // 이메일 도메인 선택시
@@ -444,6 +549,7 @@ function inputFocusEvent(){
 // 사원이름 포커스 아웃 이벤트
 function memberNameFocusoutEvent(){
 	const memberName = document.querySelector('input[name="memberName"]');
+	const memberNameErrors = document.querySelector('[id="memberName.errors"]');
 	const memberNameValue = memberName.value;
 	const koreanPattern = /^[가-힣]+$/;
 	const englishPattern = /^[a-zA-Z ]+$/;
@@ -451,125 +557,146 @@ function memberNameFocusoutEvent(){
 	if(memberNameValue != ''){
 		if(koreanPattern.test(memberNameValue)){
 			if(memberNameValue.length > 6){
-				errorMessage = '<p>사원명 : 한글은 6글자까지 입력 가능합니다.</p>';
+				memberNameErrors.innerHTML = '<span class="errors">한글은 6글자까지 입력 가능합니다.</span>';
 				memberName.classList.add('valid-error');
 				return false;
 			}
+			memberNameErrors.innerHTML = '';
 			return true;
 		} else if(englishPattern.test(memberNameValue)){
 			if(memberNameValue.length > 20){
-				errorMessage += '<p>사원명 : 영어는 20글자까지 입력 가능합니다.</p>';
+				memberNameErrors.innerHTML = '<span class="errors">영어는 20글자까지 입력 가능합니다.</span>';
 				memberName.classList.add('valid-error');
 				return false;
 			}
+			memberNameErrors.innerHTML = '';
 			return true;
 		} else {
-			errorMessage += '<p>사원명 : 한글 또는 영어만 입력가능합니다.</p><p>한글은 공백이 없어야 합니다.</p>';
+			memberNameErrors.innerHTML = '<span class="errors">한글 또는 영어만 입력가능합니다.</p><p>한글은 공백이 없어야 합니다.</p>';
 			memberName.classList.add('valid-error');
 			return false;
 		}
+	} else {
+		memberNameErrors.innerHTML = '';
 	}
 }
 
 // 아이디 포커스 아웃 이벤트
 function memberIdFocusoutEvent(){
 	const memberId = document.querySelector('input[name="memberId"]');
+	const memberIdErrors = document.querySelector('[id="memberId.errors"]');
 	const value = memberId.value;
 	const pattern = /^[a-zA-Z0-9]+$/;
 	
 	if(value.length > 0){
 		if(pattern.test(value)){
-			if(value.length > 20){
-				errorMessage += '<p>아이디 : 20글자까지 입력 가능합니다.</p>';
-				memberId.classList.add('valid-error');
-				return false;
-			}
+			memberIdErrors.innerHTML = '';
 			return true;
 		} else {
-			errorMessage += '<p>아이디 : 영어와 숫자만 입력 가능합니다.</p>';
+			memberIdErrors.innerHTML = '<span class="errors">영어와 숫자만 입력 가능합니다.</span>';
 			memberId.classList.add('valid-error');
 			return false;
 		}
+	} else {
+		memberIdErrors.innerHTML = '';
 	}
 }
 // 주민등록번호 앞자리 포커스 아웃 이벤트
 function memberRrnPrefixFocusoutEvent(){
 	const memberRrnPrefix = document.querySelector('input[name="memberRrnPrefix"]');
+	const memberRrnErrors = document.querySelector('[id="memberRrn.errors"]');
 	const value = memberRrnPrefix.value;
 	const pattern = /^(\d{2})(0[1-9]|1[0-2])(0[1-9]|[12][0-9]|3[0-1])$/;
 	if(value.length == 6){
 		if(pattern.test(value)){
+			memberRrnErrors.innerHTML = '';
 			return true;
 		} else {
-			errorMessage += '<p>주민등록번호 앞자리 : 날짜 형식에 맞지 않습니다.</p>';
+			memberRrnErrors.innerHTML = '<span class="errors">주민등록번호 형식에 맞지 않습니다.</span>';
 			memberRrnPrefix.classList.add('valid-error');
 			return false;
 		}
+	} else {
+		memberRrnErrors.innerHTML = '';
 	}
 }
 
 // 주민등록번호 뒷자리 포커스 아웃 이벤트
 function memberRrnSuffixFocusoutEvent(){
 	const memberRrnSuffix = document.querySelector('input[name="memberRrnSuffix"]');
+	const memberRrnErrors = document.querySelector('[id="memberRrn.errors"]');
 	const value = memberRrnSuffix.value;
 	const pattern = /^[1-4]\d{6}$/;
 	if(value.length == 7){
 		if(pattern.test(value)){
+			memberRrnErrors.innerHTML = '';
 			return true;
 		} else {
-			errorMessage += '<p>주민등록번호 뒷자리 : 날짜 형식에 맞지 않습니다.</p>';
+			memberRrnErrors.innerHTML = '<span class="errors">주민등록번호 형식에 맞지 않습니다.</span>';
 			memberRrnSuffix.classList.add('valid-error');
 			return false;
 		}
+	} else {
+		memberRrnErrors.innerHTML = '';
 	}
 }
 
 // 패스워드 포커스 아웃 이벤트
 function memberPWFocusoutEvent(){
 	const memberPW = document.querySelector('input[name="memberPW"]');
+	const memberPWErrors = document.querySelector('[id="memberPW.errors"]');
 	const value = memberPW.value;
 	const pattern = /^[a-zA-Z0-9\!\@\^]+$/;
 	if(value.length > 0){
 		if(pattern.test(value)){
 			if(value.length > 20){
-				errorMessage += '<p>비밀번호 : 20글자까지 입력가능합니다.</p>';
+				memberPWErrors.innerHTML = '<span class="errors">20글자까지 입력가능합니다.</span>';
 				memberPW.classList.add('valid-error');
 				return false;
 			}
+			memberPWErrors.innerHTML = '';
 			return true;
 		} else {
-			errorMessage += '<p>비밀번호 : 영어와 숫자, 특수문자(! @ ^)만 입력가능합니다.</p>';
+			memberPWErrors.innerHTML = '<span class="errors">영어와 숫자, 특수문자(! @ ^)만 입력가능합니다.</span>';
 			memberPW.classList.add('valid-error');
 			return false;
 		}
+	} else {
+		memberPWErrors.innerHTML = '';
 	}
 }
 
 // 연락처 포커스 아웃 이벤트
 function telFocusoutEvent(){
 	const tel = document.querySelector('input[name="tel"]');
+	const telErrors = document.querySelector('[id="tel.errors"]');
 	const value = tel.value;
 	const pattern = /^(01[016789])-(\d{3,4})-(\d{4})|(\d{2,3})-(\d{3,4})-(\d{4})$/;
 	if(value.length > 0){
 		if(pattern.test(value)){
+			telErrors.innerHTML = '';
 			return true;
 		} else {
-			errorMessage += '<p>연락처 : 올바른 형식이 아닙니다.</p>';
+			telErrors.innerHTML = '<span class="errors">올바른 형식이 아닙니다.</span>';
 			tel.classList.add('valid-error');
 			return false;
 		}
+	} else {
+		telErrors.innerHTML = '';
 	}
 }
 
 // 비상연락처 포커스 아웃 이벤트
 function emTelFocusoutEvent(){
 	const emTel = document.querySelector('input[name="emTel"]');
+	const emTelErrors = document.querySelector('[id="emTel.errors"]');
 	const value = emTel.value;
 	const pattern = /^(01[016789])-(\d{3,4})-(\d{4})|(\d{2,3})-(\d{3,4})-(\d{4})$|^$/;
 	if(pattern.test(value)){
+		emTelErrors.innerHTML = '';
 		return true;
 	} else {
-		errorMessage += '<p>비상연락처 : 올바른 형식이 아닙니다.</p>';
+		emTelErrors.innerHTML = '<span class="errors">올바른 형식이 아닙니다.</span>';
 		emTel.classList.add('valid-error');
 		return false;
 	}
@@ -579,31 +706,27 @@ function emTelFocusoutEvent(){
 function emailFocusoutEvent(){
 	const emailPrefix = document.querySelector('input[name="emailPrefix"]');
 	const emailSuffix = document.querySelector('input[name="emailSuffix"]');
+	const emailErrors = document.querySelector('[id="email.errors"]');
 	const email = emailPrefix.value + '@' + emailSuffix.value;
 	const patter = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 	if(emailPrefix.value != '' && emailSuffix.value != ''){
 		if(pattern.test(email)){
 			if(email.lngth > 31){
-				errorMessage += '<p>이메일 : 30글자까지 입력 가능합니다.</p>';
+				meailErrors.innerHTML = '<span class="errors">30글자까지 입력 가능합니다.</span>';
 				emailPrefix.classList.add('valid-error');
 				return false;
 			}
+			meailErrors.innerHTML = '';
 			return true
 		}else {
-			errorMessage += '<p>이메일 : 올바른 이메일형식이 아닙니다.</p>';
+			meailErrors.innerHTML = '<span class="errors">올바른 이메일형식이 아닙니다.</span>';
 			emailPrefix.classList.add('valid-error');
 			return false;
 		}
+	} else {
+		emailErrors.innerHTML = '';
 	}
 }
 
-// 에러 메세지 펑션(focusout이벤트 후순위 또는 호출하여 사용)
-function showErrorMessage(){
-	// 에러메세지 표시후 에러메세지 변수 초기화
-	if(errorMessage.length > 0){
-		inputValdationAlert({html : errorMessage});
-		errorMessage = '';
-	}
-}
 </script>
 </html>

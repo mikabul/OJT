@@ -269,4 +269,16 @@
 			#{skillCode}
 		)
 	</insert>
+	
+	<!-- 해당기술이 전부 존재하는지 -->
+	<select id="hasSkills" parameterType="java.util.ArrayList" resultType="int">
+		select count(dtl_cd)
+		from code_detail
+		where mst_cd = 'SK01'
+			and dtl_cd in(
+			<foreach item="skill" collection="skills" separator=",">
+				#{skill}
+			</foreach>
+			)
+	</select>
 </mapper>

@@ -40,4 +40,7 @@ public interface MemberMapper {
 	public void addMemberCompany(MemberBean addMemberBean);
 	public void addMemberSkill(@Param("memberNumber")int memberNumber, @Param("skillCode")String skillCode);
 	
+	// 해당 기술이 전부 있는지
+	public int hasSkills(ArrayList<String> skills);
+	
 }

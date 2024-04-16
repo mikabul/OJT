@@ -1,6 +1,9 @@
 package com.ojt.controller;
 
+import java.util.List;
 import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -9,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,6 +24,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ojt.bean.MemberBean;
 import com.ojt.bean.SearchMemberBean;
 import com.ojt.service.MemberService;
+import com.ojt.validator.MemberValidator;
 
 @Controller
 @RequestMapping(value = "/member")
@@ -32,23 +37,19 @@ public class MemberController {
 	@Value("${viewList}")
 	private String viewList;
 	
-	private static Map<String, Object> codeMap;
+	public Map<String, Object> codeMap;
 	
 	@GetMapping("/Main")
 	public String main(@RequestParam(value = "memberNumber", required = false) Integer memberNumber, Model model) {
 		
 		SearchMemberBean searchMemberBean = new SearchMemberBean();
 		Map<String, Object> searchMap = memberService.searchMember(searchMemberBean, 0);
-		Map<String, Object> codeMap = memberService.getSearchCode();
 		
 		model.addAttribute("searchMemberBean", searchMemberBean);
 		model.addAttribute("memberList", searchMap.get("memberList"));
 		model.addAttribute("pageBtns", searchMap.get("pageBtns"));
 		model.addAttribute("preBtn", searchMap.get("preBtn"));
 		model.addAttribute("nextBtn", searchMap.get("nextBtn"));
-		model.addAttribute("departmentList", codeMap.get("departmentList"));
-		model.addAttribute("positionList", codeMap.get("positionList"));
-		model.addAttribute("statusList", codeMap.get("statusList"));
 		model.addAttribute("viewList", viewList);
 		model.addAttribute("page", 0);
 		model.addAttribute("memberNumber", memberNumber);
@@ -94,15 +95,7 @@ public class MemberController {
 	public String showAddMember(Model model) {
 		
 		MemberBean memberBean = new MemberBean(); // 초기 사용을 위한 값이 비어있는 bean
-		codeMap = memberService.getAddMemberCode(); // CodeList
-		
 		model.addAttribute("addMemberBean", memberBean);
-		model.addAttribute("departmentList", codeMap.get("departmentList"));
-		model.addAttribute("positionList", codeMap.get("positionList"));
-		model.addAttribute("statusList", codeMap.get("statusList"));
-		model.addAttribute("skillList", codeMap.get("skillList"));
-		model.addAttribute("genderList", codeMap.get("genderList"));
-		model.addAttribute("emailList", codeMap.get("emailList"));
 		
 		return "/member/AddMember";
 	}
@@ -121,54 +114,74 @@ public class MemberController {
 	public String addMember(@ModelAttribute("addMemberBean") MemberBean addMemberBean,
 							BindingResult result, Model model) {
 		
-		model.addAttribute("departmentList", codeMap.get("departmentList"));
-		model.addAttribute("positionList", codeMap.get("positionList"));
-		model.addAttribute("statusList", codeMap.get("statusList"));
-		model.addAttribute("skillList", codeMap.get("skillList"));
-		model.addAttribute("genderList", codeMap.get("genderList"));
-		model.addAttribute("emailList", codeMap.get("emailList"));
-		
 		System.out.println(addMemberBean.toString());
+		MemberValidator memberValidator = new MemberValidator(memberService);
+		memberValidator.validate(addMemberBean, result);
 		
-		if(result.hasErrors()) {
-			return "/member/AddMember";
+//		if(result.hasErrors()) {
+//			return "/member/AddMember";
+//		}
+		
+		List<FieldError> fieldError = result.getFieldErrors();
+		for(FieldError error : fieldError) {
+			System.out.println("field : " + error.getField());
+			System.out.println("error : " + error.getCode());
+			System.out.println("ObjectName : " + error.getObjectName());
 		}
-		
-		Map<String, Object> map = memberService.addMember(addMemberBean);
-		
-		if((Boolean)map.get("success") == true) {
-			model.addAttribute("memberNumber", map.get("memberNumber"));
-			codeMap.clear(); // codeMap비워주기
-			return "/member/AddSuccess";
-		} else { // 사원 등록 실패
-			model.addAttribute("success", false);
-			String code = (String)map.get("code");
-			System.out.println("code : " + code);
-			if(code.equals("401")) {
-				model.addAttribute("message", "부적절한 파일입니다.");
-			} else if(code.equals("500")){
-				model.addAttribute("message", "사원 등록에 실패하였습니다.");
-			} else if(code.equals("515")) {
-				model.addAttribute("message", "사진 저장에 실패하였습니다.");
-			}
-			return "/member/AddMember";
-		}
+//		Map<String, Object> map = memberService.addMember(addMemberBean);
+		return "/member/AddMember";
+//		if((Boolean)map.get("success") == true) {
+//			model.addAttribute("memberNumber", map.get("memberNumber"));
+//			
+//			return "/member/AddSuccess";
+//		} else { // 사원 등록 실패
+//			model.addAttribute("success", false);
+//			String code = (String)map.get("code");
+//			System.out.println("code : " + code);
+//			if(code.equals("401")) {
+//				model.addAttribute("message", "부적절한 파일입니다.");
+//			} else if(code.equals("500")){
+//				model.addAttribute("message", "사원 등록에 실패하였습니다.");
+//			} else if(code.equals("515")) {
+//				model.addAttribute("message", "사진 저장에 실패하였습니다.");
+//			}
+//			return "/member/AddMember";
+//		}
 	}
 	
 	@GetMapping(value = "/modifyMember/")
 	public String modifyMemberMain(@RequestParam("memberNumber")int memberNumber, Model model) {
 		
 		MemberBean modifyMemberBean = memberService.getMemberInfo(memberNumber);
-		codeMap = memberService.getAddMemberCode();
-		System.out.println(modifyMemberBean.toString());
+		
 		model.addAttribute("modifyMemberBean", modifyMemberBean);
-		model.addAttribute("departmentList", codeMap.get("departmentList"));
-		model.addAttribute("positionList", codeMap.get("positionList"));
-		model.addAttribute("statusList", codeMap.get("statusList"));
-		model.addAttribute("skillList", codeMap.get("skillList"));
-		model.addAttribute("genderList", codeMap.get("genderList"));
-		model.addAttribute("emailList", codeMap.get("emailList"));
 		
 		return "/member/ModifyMember";
+	}
+	
+	@ModelAttribute
+	private void initBinder(HttpServletRequest request, Model model) {
+		
+		String requestURI = request.getRequestURI();
+		
+		switch(requestURI) {
+		case "/OJT/member/Main":
+			codeMap = memberService.getSearchCode();
+			model.addAttribute("departmentList", codeMap.get("departmentList"));
+			model.addAttribute("positionList", codeMap.get("positionList"));
+			model.addAttribute("statusList", codeMap.get("statusList"));
+			break;
+			
+		case "/OJT/member/addMember/": case "/OJT/member/addMember/add":
+		case "/OJT/member/modifyMember/": case "/OJT/member/modifyMember/modify":
+			codeMap = memberService.getAddMemberCode();
+			model.addAttribute("departmentList", codeMap.get("departmentList"));
+			model.addAttribute("positionList", codeMap.get("positionList"));
+			model.addAttribute("statusList", codeMap.get("statusList"));
+			model.addAttribute("skillList", codeMap.get("skillList"));
+			model.addAttribute("genderList", codeMap.get("genderList"));
+			model.addAttribute("emailList", codeMap.get("emailList"));
+			break;
+		}
 	}
 }

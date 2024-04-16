@@ -22,5 +22,11 @@
 			where mst_cd = #{masterCode}
 		</if>
 	</select>
+	
+	<select id="getCodes" parameterType="String" resultType="String">
+		select dtl_cd
+		from code_detail
+		where mst_cd = #{masterCode}
+	</select>
 
 </mapper>

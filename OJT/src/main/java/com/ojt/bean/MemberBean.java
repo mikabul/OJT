@@ -49,6 +49,7 @@ public class MemberBean {
 	private String skillCodeString;				// 보유 기술 코드 나열
 	private ArrayList<String> skillCodes;		// 보유 기술 코드 리스트
 	private MultipartFile memberImage;			// 사진
+	private String memberRrn;
 	
 	private boolean loginState;					// 로그인 상태
 	

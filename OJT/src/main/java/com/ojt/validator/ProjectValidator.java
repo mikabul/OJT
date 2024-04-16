@@ -295,9 +295,6 @@ public class ProjectValidator implements Validator {
 								errors.rejectValue("endDateError", "EndAfterProjectEnd");
 							}
 						}
-						System.out.println("memberStartDateLocal : " + memberStartDateLocal);
-						System.out.println("memberEndDateLocal : " + memberEndDateLocal);
-						System.out.println(memberStartDateLocal != null && memberEndDateLocal != null);
 						if(memberStartDateLocal != null && memberEndDateLocal != null) { // 투입일, 철수일 모두 비어있지 않다면
 							if(memberStartDateLocal.isAfter(memberEndDateLocal)) { // 투입일이 철수일 이후라면
 								errors.rejectValue("startDateError", "StartAfterEnd");

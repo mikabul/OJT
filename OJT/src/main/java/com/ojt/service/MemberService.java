@@ -153,20 +153,27 @@ public class MemberService {
 			addMemberBean.setMemberPW(hashPassword);
 			addMemberBean.setMemberRrnSuffix(hashRrnSuffix);
 			
+			// 이메일 앞 뒤를 합친 후 addMemberBean에 저장
+			String emailPrefix = addMemberBean.getEmailPrefix();
+			String emailSuffix = addMemberBean.getEmailSuffix();
+			String email = emailPrefix + "@" + emailSuffix;
+			addMemberBean.setEmail(email);
+			
+			memberDao.addMember(addMemberBean); // member_info 테이블에 추가
+			memberDao.addMemberAddress(addMemberBean); // member_address테이블에 추가
+			memberDao.addMemberCompany(addMemberBean); // member_company 테이블에 추가
+
 			// 업로드 된 이미지 파일을 서버에 저장 후 파일의 이름을 addMemberBean에 저장
-			Map<String, Object> resultMap = devMultiPartFile.saveFile(addMemberBean.getMemberImage(), "/images/member/", String.valueOf(memberNumber));
-			if((Boolean)resultMap.get("success")) {
-				String fileName = (String)resultMap.get("fileName");
+			Map<String, Object> resultMap = devMultiPartFile.saveFile(addMemberBean.getMemberImage(), "/images/member/",
+					String.valueOf(memberNumber));
+			if ((Boolean) resultMap.get("success")) {
+				String fileName = (String) resultMap.get("fileName");
 				addMemberBean.setPictureDir(fileName);
 			} else {
 				map.put("success", false);
 				map.put("code", resultMap.get("code"));
 				return map;
 			}
-			
-			memberDao.addMember(addMemberBean); // member_info 테이블에 추가
-			memberDao.addMemberAddress(addMemberBean); // member_address테이블에 추가
-			memberDao.addMemberCompany(addMemberBean); // member_company 테이블에 추가
 			
 			ArrayList<String> skillCodes = addMemberBean.getSkillCodes();
 			for(String skillCode : skillCodes) {
@@ -185,6 +192,15 @@ public class MemberService {
 			map.put("code", 500);
 			return map;
 		}
-		
+	}
+	
+	// 마스터 코드에 대한 코드 리스트를 가져옴(코드만)
+	public ArrayList<String> getCodes(String masterCode){
+		return codeDao.getCodes(masterCode);
+	}
+	
+	// 해당 기술이 전부 있는지
+	public int hasSkills(ArrayList<String> skills) {
+		return memberDao.hasSkills(skills);
 	}
 }
