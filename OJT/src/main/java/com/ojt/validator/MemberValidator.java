@@ -18,11 +18,11 @@ public class MemberValidator implements Validator{
 	private final String REGXP_ENGNAME_PATTERN = "^[a-zA-Z ]+$";
 	private final String REGXP_ID_PATTERN = "^[a-zA-Z0-9]+$";
 	private final String REGXP_PW_PATTERN = "^[a-zA-Z0-9!@\\^]+$";
-	private final String REGXP_RNNPREFIX_PATTERN = "^\\d{2}(0[1-9]|1[0-2])(0[1-9]|1-2[0-9]|3[0-1])$";
+	private final String REGXP_RNNPREFIX_PATTERN = "^\\d{2}(0[1-9]|1[0-2])(0[1-9]|[1-2]\\d|3[0-1])$";
 	private final String REGXP_RNNSUFFIX_PATTERN = "^(1|2|3|4)\\d{6}$";
 	private final String REGXP_TEL_PATTERN = "^(01[016789])-(\\d{3,4})-(\\d{4})|(\\d{2,3})-(\\d{3,4})-(\\d{4})$";
 	private final String REGXP_EMAIL_PATTERN = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
-	private final String REGXP_DATE_PATTERN = "^\\d{4}(0[1-9]|1[0-2])(0[1-9]|1-2[0-9]|3[0-1])$";
+	private final String REGXP_DATE_PATTERN = "^\\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2]\\d|3[0-1])$";
 	private final String REGXP_ZONECODE_PATTERN = "^\\d{5}$";
 
 	public MemberValidator(MemberService memberService) {
@@ -110,13 +110,16 @@ public class MemberValidator implements Validator{
 		 * 비어있지 않은지
 		 * 패턴에 맞는지
 		 * 패스워드, 패스워드2가 일치하는지
+		 * 최소 8글자 최대 20글자의 조건에 일치하는지
 		 */
 		if((targetName.equals("modifyMemberBean") && memberPW != null && !memberPW.isEmpty()) || targetName.equals("addMemberBean")) {
 			if(memberPW != null && !memberPW.isEmpty()) {
 				if(!Pattern.matches(REGXP_PW_PATTERN, memberPW)) {
 					errors.rejectValue("memberPW", "Pattern");
-				} else if(memberPW != memberPW2) {
+				} else if(!memberPW.equals(memberPW2)) {
 					errors.rejectValue("memberPW2", "Match");
+				} else if(memberPW.length() < 8 && memberPW.length() > 20) {
+					errors.rejectValue("memberPW", "Length");
 				}
 			} else {
 				errors.rejectValue("memberPW", "Empty");
@@ -144,7 +147,7 @@ public class MemberValidator implements Validator{
 		 */
 		if(!errors.hasFieldErrors("memberRrn")) {
 			if(memberRrnSuffix != null && !memberRrnSuffix.isEmpty()) {
-				if(Pattern.matches(REGXP_RNNSUFFIX_PATTERN, memberRrnSuffix)) {
+				if(!Pattern.matches(REGXP_RNNSUFFIX_PATTERN, memberRrnSuffix)) {
 					errors.rejectValue("memberRrn", "Pattern");
 				}
 			} else {
@@ -281,8 +284,11 @@ public class MemberValidator implements Validator{
 			errors.rejectValue("address", "ExtraLength");
 		}
 		
-		System.out.println(memberImage.getContentType());
-		System.out.println(memberImage.getSize());
+		if(memberImage != null) {
+			System.out.println(memberImage.getContentType().substring(0, 6));
+			System.out.println(memberImage.getContentType());
+			System.out.println(memberImage.getSize());
+		}
 	}
 
 }
