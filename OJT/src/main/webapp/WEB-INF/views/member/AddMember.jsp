@@ -131,7 +131,13 @@
 					<div class="content">
 						<div>
 							<div></div>
-							<div id="memberRrn.errors"></div>
+							<div id="memberRrn.errors">
+								<c:if test="${ fn:length(errorMessage.emTel) > 0 }">
+									<c:forEach var="item" items="${ errorMessage.emTel }">
+										<div>${ item }</div>
+									</c:forEach>
+								</c:if>
+							</div>
 						</div>
 						<div>
 							<div></div>
@@ -490,42 +496,42 @@ function checkIdButtonEvent(){
 
 // submit 이벤트
 function addMemberSubmitEvent(event){
+	this.submit;
+// 	let message = '';
+// 	if(checkId == false){
+// 		message += '<p>아이디 중복체크가 필요합니다.</p>';
+// 	}
+// 	if(checkPassword == false){
+// 		message += '<p>비밀번호가 일치하지 않습니다.</p>';
+// 	}
 	
-	let message = '';
-	if(checkId == false){
-		message += '<p>아이디 중복체크가 필요합니다.</p>';
-	}
-	if(checkPassword == false){
-		message += '<p>비밀번호가 일치하지 않습니다.</p>';
-	}
+// 	if(message.length > 0){
+// 		Swal.fire('', message, 'error');
+// 		event.preventDefault();
+// 		return;
+// 	}
 	
-	if(message.length > 0){
-		Swal.fire('', message, 'error');
-		event.preventDefault();
-		return;
-	}
-	
-	/*
-	* 모든 유효성 검사를 호출
-	*/
-	if(memberNameFocusoutEvent() &&
-		memberIdFocusoutEvent() &&
-		memberRrnPrefixFocusoutEvent() &&
-		memberRrnSuffixFocusoutEvent() &&
-		memberPWFocusoutEvent() &&
-		telFocusoutEvent() &&
-		emTelFocusoutEvent() &&
-		emailFocusoutEvent() ) {
+// 	/*
+// 	* 모든 유효성 검사를 호출
+// 	*/
+// 	if(memberNameFocusoutEvent() &&
+// 		memberIdFocusoutEvent() &&
+// 		memberRrnPrefixFocusoutEvent() &&
+// 		memberRrnSuffixFocusoutEvent() &&
+// 		memberPWFocusoutEvent() &&
+// 		telFocusoutEvent() &&
+// 		emTelFocusoutEvent() &&
+// 		emailFocusoutEvent() ) {
 		
-		this.submit;
+// 		this.submit;
 		
-	} else {
-		Swal.fire({
-			icon: 'error',
-			text: '유효성 검사에 실패하였습니다.'
-		});
-		event.preventDefault();
-	}
+// 	} else {
+// 		Swal.fire({
+// 			icon: 'error',
+// 			text: '유효성 검사에 실패하였습니다.'
+// 		});
+// 		event.preventDefault();
+// 	}
 }
 
 // 이메일 도메인 선택시

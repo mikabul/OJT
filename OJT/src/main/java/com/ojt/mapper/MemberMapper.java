@@ -43,4 +43,7 @@ public interface MemberMapper {
 	// 해당 기술이 전부 있는지
 	public int hasSkills(ArrayList<String> skills);
 	
+	// 사원 아이디 중복체크(수정)
+	public int modifyMatchId(@Param("memberNumber")int memberNumber, @Param("memberId")String memberId);
+	
 }

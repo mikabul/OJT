@@ -1,5 +1,6 @@
 package com.ojt.controller;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -11,6 +12,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.MultiValueMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,6 +26,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ojt.bean.MemberBean;
 import com.ojt.bean.SearchMemberBean;
 import com.ojt.service.MemberService;
+import com.ojt.util.ErrorMessage;
 import com.ojt.validator.MemberValidator;
 
 @Controller
@@ -31,11 +34,14 @@ import com.ojt.validator.MemberValidator;
 @PropertySource("/WEB-INF/properties/setting.properties")
 public class MemberController {
 	
+	@Value("${viewList}")
+	private String viewList;
+	
 	@Autowired
 	MemberService memberService;
 	
-	@Value("${viewList}")
-	private String viewList;
+	@Autowired
+	ErrorMessage errorMessage;
 	
 	public Map<String, Object> codeMap;
 	
@@ -123,13 +129,13 @@ public class MemberController {
 //		}
 		
 		List<FieldError> fieldError = result.getFieldErrors();
-		for(FieldError error : fieldError) {
-			System.out.println("field : " + error.getField());
-			System.out.println("error : " + error.getCode());
-			System.out.println("ObjectName : " + error.getObjectName());
-		}
-//		Map<String, Object> map = memberService.addMember(addMemberBean);
+		MultiValueMap<String, String> errorMessageMap = errorMessage.getErrorMessage(fieldError);
+		System.out.println(errorMessageMap.toString());
+		
+		model.addAttribute("errorMessage", errorMessageMap);
 		return "/member/AddMember";
+		
+//		Map<String, Object> map = memberService.addMember(addMemberBean);
 //		if((Boolean)map.get("success") == true) {
 //			model.addAttribute("memberNumber", map.get("memberNumber"));
 //			
@@ -157,6 +163,22 @@ public class MemberController {
 		model.addAttribute("modifyMemberBean", modifyMemberBean);
 		
 		return "/member/ModifyMember";
+	}
+	
+	// 아이디 중복 체크(수정)
+	@GetMapping(value = "/modifyMember/matchId")
+	@ResponseBody
+	public ResponseEntity<Boolean> modifyMatchId(String inputId, int memberNumber){
+		Boolean matchResult = memberService.modifyMatchId(memberNumber, inputId);
+		
+		return ResponseEntity.ok(matchResult);
+	}
+	
+	// 멤버 수정
+	@PostMapping(value="/modifyMember/modify")
+	public String modifyMember(@ModelAttribute("modifyMemberBean") MemberBean modifyMemberBean,
+								Model model, BindingResult result) {
+		
 	}
 	
 	@ModelAttribute

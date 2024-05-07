@@ -203,4 +203,18 @@ public class MemberService {
 	public int hasSkills(ArrayList<String> skills) {
 		return memberDao.hasSkills(skills);
 	}
+	
+	// 사원 아이디 중복체크(수정)
+	public Boolean modifyMatchId(int memberNumber, String memberId) {
+		Boolean result;
+		int matchCount = memberDao.modifyMatchId(memberNumber, memberId);
+		
+		if(matchCount > 0) {
+			result = false;
+		} else {
+			result = true;
+		}
+		
+		return result;
+	}
 }

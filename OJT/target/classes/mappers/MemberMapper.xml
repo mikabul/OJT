@@ -281,4 +281,13 @@
 			</foreach>
 			)
 	</select>
+	
+	<select id="modifyMatchId" resultType="int">
+		select
+			count(mem_id)
+		from member_info
+		where
+    		mem_seq != #{memberNumber}
+    		and mem_id = #{memberId}
+	</select>
 </mapper>

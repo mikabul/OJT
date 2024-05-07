@@ -284,7 +284,7 @@ public class MemberValidator implements Validator{
 			errors.rejectValue("address", "ExtraLength");
 		}
 		
-		if(memberImage != null) {
+		if(memberImage.getSize() != 0) {
 			System.out.println(memberImage.getContentType().substring(0, 6));
 			System.out.println(memberImage.getContentType());
 			System.out.println(memberImage.getSize());

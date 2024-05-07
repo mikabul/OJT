@@ -71,4 +71,9 @@ public class MemberDao {
 	public int hasSkills(ArrayList<String> skills) {
 		return memberMapper.hasSkills(skills);
 	}
+	
+	// 사원 아이디 중복체크(수정)
+	public int modifyMatchId(int memberNumber, String memberId) {
+		return memberMapper.modifyMatchId(memberNumber, memberId);
+	}
 }
