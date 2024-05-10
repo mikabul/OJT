@@ -21,8 +21,10 @@ public class MemberBean {
 	private String memberId;					// 아이디
 	private String memberPW;					// 비밀번호
 	private String memberPW2;					// 확인용 비밀번호
+	private String hashedMemberPW;				// sha256
 	private String memberRrnPrefix;				// 주민등록번호 앞자리
 	private String memberRrnSuffix;				// 주민등록번호 뒷자리
+	private String hashedMemberRrnSuffix;		// sha256
 	private String tel;							// 연락처
 	private String emTel;						// 비상연락처
 	private String email;						// 이메일

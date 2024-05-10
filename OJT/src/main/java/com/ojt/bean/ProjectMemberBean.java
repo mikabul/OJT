@@ -22,6 +22,11 @@ public class ProjectMemberBean {
 	private String position; 		// 직급
 	private String roleName;		// 역할
 	
+	private String projectStartDate;
+	private String projectEndDate;
+	private String projectMaintStartDate;
+	private String projectMaintEndDate;
+	
 	public ProjectMemberBean() {
 		// TODO Auto-generated constructor stub
 	}

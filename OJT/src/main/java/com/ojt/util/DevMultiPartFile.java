@@ -64,8 +64,8 @@ public class DevMultiPartFile {
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 			System.out.println("파일 확장자 분리 실패 - " + originFileName);
-			map.put("success", "false");
-			map.put("code", "401");
+			map.put("success", false);
+			map.put("code", 401);
 		}
 		
 		/*
@@ -75,7 +75,7 @@ public class DevMultiPartFile {
 		 */
 		try {
 			// 실제로 저장될 파일의 이름
-			fileName = System.currentTimeMillis() + name + fileType;
+			fileName = System.currentTimeMillis() + "_" + name + fileType;
 			System.out.println(fileName);
 			
 			// 저장을 위해 경로와 파일이름을 가진 객체 객성
@@ -87,8 +87,8 @@ public class DevMultiPartFile {
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 			System.out.println("저장 실패");
-			map.put("success", "false");
-			map.put("code", "515");
+			map.put("success", false);
+			map.put("code", 515);
 			return map;
 		}
 		

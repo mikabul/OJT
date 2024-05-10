@@ -76,4 +76,36 @@ public class MemberDao {
 	public int modifyMatchId(int memberNumber, String memberId) {
 		return memberMapper.modifyMatchId(memberNumber, memberId);
 	}
+	
+	/** 사원 정보 수정 **/
+	// 사원 개인 정보 수정
+	public void memberInfoUpdate(MemberBean modifyMemberBean) {
+		memberMapper.memberInfoUpdate(modifyMemberBean);
+	}
+	// 사원 주소 수정
+	public void memberAddressUpdate(MemberBean modifyMemberBean) {
+		memberMapper.memberCompanyUpdate(modifyMemberBean);
+	}
+	// 사원 회사 정보 수정
+	public void memberCompanyUpdate(MemberBean modifyMemberBean) {
+		memberMapper.memberCompanyUpdate(modifyMemberBean);
+	}
+	// 사원 보유 기술 삭제
+	public void deleteMemberSkill(int memberNumber) {
+		memberMapper.deleteMemberSkill(memberNumber);
+	}
+	
+	// 사원 삭제
+	public void deleteMember(int[] memberNumbers) {
+		memberMapper.deleteMember(memberNumbers);
+	}
+	
+	// 사원 프로젝트 추가
+	
+	// 사원 프로젝트 수정
+	
+	// 사원 프로젝트 삭제
+	public void deleteMemberProject(int[] projectNumbers, int memberNumber) {
+		memberMapper.deleteMemberProject(projectNumbers, memberNumber);
+	}
 }

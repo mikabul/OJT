@@ -78,6 +78,7 @@
 	<section style="margin-top: 35px;">
 		<form action="${ root }member/addMember/add" id="addMemberBean" method="post" enctype="multipart/form-data">
 			<div style="display: flex">
+				<!-- 사진 -->
 				<div class="w-20">
 					<div class="container-center" style="width: 200px; height: 242px; border: 1px solid black;">
 						<div style="width: 200px; height: 200px; display: flex; align-items: center">
@@ -87,8 +88,16 @@
 							<input type="file" name="memberImage" accept="image/*" />
 							<p style="font-size: 10px;"><span class="required">*</span>5MB 이하까지 업로드 가능합니다.</p>
 						</div>
+						<div id="memberImage.errors" style="width: 200px; margin-top: 13px;">
+							<c:if test="${ fn:length(errorMessage.memberImage) > 0 }">
+								<c:forEach var="item" items="${ errorMessage.memberImage }">
+									<div>${ item }</div>
+								</c:forEach>
+							</c:if>
+						</div>
 					</div>
 				</div>
+				<!-- 멤버 정보 -->
 				<div class="w-80">
 					<div class="content">
 						<div>
@@ -107,11 +116,23 @@
 					<div class="content">
 						<div>
 							<div></div>
-							<div id="memberName.errors"></div>
+							<div id="memberName.errors">
+								<c:if test="${ fn:length(errorMessage.memberName) > 0 }">
+									<c:forEach var="item" items="${ errorMessage.memberName }">
+										<div>${ item }</div>
+									</c:forEach>
+								</c:if>
+							</div>
 						</div>
 						<div>
 							<div></div>
-							<div id="memberId.errors"></div>
+							<div id="memberId.errors">
+								<c:if test="${ fn:length(errorMessage.memberId) > 0 }">
+									<c:forEach var="item" items="${ errorMessage.memberId }">
+										<div>${ item }</div>
+									</c:forEach>
+								</c:if>
+							</div>
 						</div>
 					</div>
 					<div class="content">
@@ -132,8 +153,8 @@
 						<div>
 							<div></div>
 							<div id="memberRrn.errors">
-								<c:if test="${ fn:length(errorMessage.emTel) > 0 }">
-									<c:forEach var="item" items="${ errorMessage.emTel }">
+								<c:if test="${ fn:length(errorMessage.memberRrn) > 0 }">
+									<c:forEach var="item" items="${ errorMessage.memberRrn }">
 										<div>${ item }</div>
 									</c:forEach>
 								</c:if>
@@ -141,7 +162,13 @@
 						</div>
 						<div>
 							<div></div>
-							<div id="memberPW.errors"></div>
+							<div id="memberPW.errors">
+								<c:if test="${ fn:length(errorMessage.memberPW) > 0 }">
+									<c:forEach var="item" items="${ errorMessage.memberPW }">
+										<div>${ item }</div>
+									</c:forEach>
+								</c:if>
+							</div>
 						</div>
 					</div>
 					<div class="content">
@@ -157,11 +184,23 @@
 					<div class="content">
 						<div>
 							<div></div>
-							<div id="tel.errors"></div>
+							<div id="tel.errors">
+								<c:if test="${ fn:length(errorMessage.tel) > 0 }">
+									<c:forEach var="item" items="${ errorMessage.tel }">
+										<div>${ item }</div>
+									</c:forEach>
+								</c:if>
+							</div>
 						</div>
 						<div>
 							<div></div>
-							<div id="memberPW2.errors"></div>
+							<div id="memberPW2.errors">
+								<c:if test="${ fn:length(errorMessage.memberPW2) > 0 }">
+									<c:forEach var="item" items="${ errorMessage.memberPW2 }">
+										<div>${ item }</div>
+									</c:forEach>
+								</c:if>
+							</div>
 						</div>
 					</div>
 					<div class="content">
@@ -174,18 +213,30 @@
 							<select name="departmentCode">
 								<c:forEach var="item" items="${ departmentList }">
 									<option value="${ item.detailCode }" ${ item.detailCode == addMemberBean.departmentCode ? 'selected' : '' }>${ item.codeName }</option>
-								</c:forEach>						
+								</c:forEach>				
 							</select>
 						</div>
 					</div>
 					<div class="content">
 						<div>
 							<div></div>
-							<div id="emTel.errors"></div>
+							<div id="emTel.errors">
+								<c:if test="${ fn:length(errorMessage.emTel) > 0 }">
+									<c:forEach var="item" items="${ errorMessage.emTel }">
+										<div>${ item }</div>
+									</c:forEach>
+								</c:if>
+							</div>
 						</div>
 						<div>
 							<div></div>
-							<div id="departmentCode.erros"></div>
+							<div id="departmentCode.errors">
+								<c:if test="${ fn:length(errorMessage.departmentCode) > 0 }">
+									<c:forEach var="item" items="${ errorMessage.departmentCode }">
+										<div>${ item }</div>
+									</c:forEach>
+								</c:if>
+							</div>
 						</div>
 					</div>
 					<div class="content">
@@ -214,11 +265,23 @@
 					<div class="content">
 						<div>
 							<div></div>
-							<div id="email.errors"></div>
+							<div id="email.errors">
+								<c:if test="${ fn:length(errorMessage.email) > 0 }">
+									<c:forEach var="item" items="${ errorMessage.email }">
+										<div>${ item }</div>
+									</c:forEach>
+								</c:if>
+							</div>
 						</div>
 						<div>
 							<div></div>
-							<div id="positionCode.erros"></div>
+							<div id="positionCode.errors">
+								<c:if test="${ fn:length(errorMessage.positionCode) > 0 }">
+									<c:forEach var="item" items="${ errorMessage.positionCode }">
+										<div>${ item }</div>
+									</c:forEach>
+								</c:if>
+							</div>
 						</div>
 					</div>
 					<div class="content">
@@ -239,7 +302,7 @@
 										<div class="dropdown-label ellipsis" title=""></div>
 										<div class="dropdown-icon">▼</div>
 									</div>
-									<div class="dropdown-menu" data-show="false">
+									<div class="dropdown-menu" id="scrollDiv" data-show="false">
 										<c:forEach var="item" items="${ skillList }" varStatus="status">
 											<c:set var="checked" value="" />
 											<div>
@@ -260,11 +323,23 @@
 					<div class="content">
 						<div>
 							<div></div>
-							<div id="genderCode.errors"></div>
+							<div id="genderCode.errors">
+								<c:if test="${ fn:length(errorMessage.genderCode) > 0 }">
+									<c:forEach var="item" items="${ errorMessage.genderCode }">
+										<div>${ item }</div>
+									</c:forEach>
+								</c:if>
+							</div>
 						</div>
 						<div>
 							<div></div>
-							<div id="skillCodes.erros"></div>
+							<div id="skillCodes.errors">
+								<c:if test="${ fn:length(errorMessage.memberName) > 0 }">
+									<c:forEach var="item" items="${ skillCodes.skillCodes }">
+										<div>${ item }</div>
+									</c:forEach>
+								</c:if>
+							</div>
 						</div>
 					</div>
 					<div class="content">
@@ -280,7 +355,13 @@
 					<div class="content">
 						<div>
 							<div></div>
-							<div id="statusCode.errors"></div>
+							<div id="statusCode.errors">
+								<c:if test="${ fn:length(errorMessage.statusCode) > 0 }">
+									<c:forEach var="item" items="${ errorMessage.statusCode }">
+										<div>${ item }</div>
+									</c:forEach>
+								</c:if>
+							</div>
 						</div>
 					</div>
 					<div class="content">
@@ -289,18 +370,30 @@
 							<input type="date" name="hireDate" required="required" value="${ addMemberBean.hireDate }"/>
 						</div>
 						<div id="resignationDateDiv" data-show="false">
-							<div>퇴사일</div>
+							<div>퇴사일<span class="required">*</span></div>
 							<input type="date" name="resignationDate" value="${ addMemberBean.resignationDate }"/>
 						</div>
 					</div>
 					<div class="content">
 						<div>
 							<div></div>
-							<div id="hireDate.errors"></div>
+							<div id="hireDate.errors">
+								<c:if test="${ fn:length(errorMessage.hireDate) > 0 }">
+									<c:forEach var="item" items="${ errorMessage.hireDate }">
+										<div>${ item }</div>
+									</c:forEach>
+								</c:if>
+							</div>
 						</div>
 						<div>
 							<div></div>
-							<div id="resignationDate.erros"></div>
+							<div id="resignationDate.errors">
+								<c:if test="${ fn:length(errorMessage.resignationDate) > 0 }">
+									<c:forEach var="item" items="${ errorMessage.resignationDate }">
+										<div>${ item }</div>
+									</c:forEach>
+								</c:if>
+							</div>
 						</div>
 					</div>
 					<div class="flex">
@@ -319,10 +412,17 @@
 							</div>
 						</div>
 					</div>
-					<div>
-						<div>
+					<div class="flex" style="margin-top: 2px;">
+						<div class="w-10"></div>
+						<div class="w-70">
 							<div></div>
-							<div id="address.errors"></div>
+							<div id="address.errors">
+								<c:if test="${ fn:length(errorMessage.address) > 0 }">
+									<c:forEach var="item" items="${ errorMessage.address }">
+										<div>${ item }</div>
+									</c:forEach>
+								</c:if>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -354,6 +454,7 @@ document.getElementById('addMemberBean').addEventListener('submit', addMemberSub
 document.getElementById('checkIdButton').addEventListener('click', checkIdButtonEvent); // 중복 체크 버튼 이벤트
 document.getElementById('emailCode').addEventListener('change', suffixChange); // 이메일 도메인 변경 이벤트
 document.querySelector('input[name="tel"]').addEventListener('keyup', telKeyupEvent);
+document.querySelector('input[name="emTel"]').addEventListener('keyup', telKeyupEvent);
 
 /*
  * 유효성 검사
@@ -496,42 +597,41 @@ function checkIdButtonEvent(){
 
 // submit 이벤트
 function addMemberSubmitEvent(event){
-	this.submit;
-// 	let message = '';
-// 	if(checkId == false){
-// 		message += '<p>아이디 중복체크가 필요합니다.</p>';
-// 	}
-// 	if(checkPassword == false){
-// 		message += '<p>비밀번호가 일치하지 않습니다.</p>';
-// 	}
+	let message = '';
+	if(checkId == false){
+		message += '<p>아이디 중복체크가 필요합니다.</p>';
+	}
+	if(checkPassword == false){
+		message += '<p>비밀번호가 일치하지 않습니다.</p>';
+	}
 	
-// 	if(message.length > 0){
-// 		Swal.fire('', message, 'error');
-// 		event.preventDefault();
-// 		return;
-// 	}
+	if(message.length > 0){
+		Swal.fire('', message, 'error');
+		event.preventDefault();
+		return;
+	}
 	
-// 	/*
-// 	* 모든 유효성 검사를 호출
-// 	*/
-// 	if(memberNameFocusoutEvent() &&
-// 		memberIdFocusoutEvent() &&
-// 		memberRrnPrefixFocusoutEvent() &&
-// 		memberRrnSuffixFocusoutEvent() &&
-// 		memberPWFocusoutEvent() &&
-// 		telFocusoutEvent() &&
-// 		emTelFocusoutEvent() &&
-// 		emailFocusoutEvent() ) {
+	/*
+	* 모든 유효성 검사를 호출
+	*/
+	if(memberNameFocusoutEvent() &&
+		memberIdFocusoutEvent() &&
+		memberRrnPrefixFocusoutEvent() &&
+		memberRrnSuffixFocusoutEvent() &&
+		memberPWFocusoutEvent() &&
+		telFocusoutEvent() &&
+		emTelFocusoutEvent() &&
+		emailFocusoutEvent() ) {
 		
-// 		this.submit;
+		this.submit;
 		
-// 	} else {
-// 		Swal.fire({
-// 			icon: 'error',
-// 			text: '유효성 검사에 실패하였습니다.'
-// 		});
-// 		event.preventDefault();
-// 	}
+	} else {
+		Swal.fire({
+			icon: 'error',
+			text: '유효성 검사에 실패하였습니다.'
+		});
+		event.preventDefault();
+	}
 }
 
 // 이메일 도메인 선택시

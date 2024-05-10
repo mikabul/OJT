@@ -397,7 +397,7 @@ a {
 	display: none;
 }
 
-span[id$=".errors"], span.errors {
+*[id$=".errors"], span.errors {
 	color: red;
 	font-size: 10px;
 }

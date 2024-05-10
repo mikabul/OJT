@@ -92,6 +92,13 @@
 						<div style="width: 200px; height: 42px; border-top: 1px solid black;">
 							<input type="file" name="memberImage" accept="image/*" value="${ modifyMemberBean.memberImage }"/>
 						</div>
+						<div id="memberImage.errors" style="width: 200px; margin-top: 13px;">
+							<c:if test="${ fn:length(errorMessage.memberImage) > 0 }">
+								<c:forEach var="item" items="${ errorMessage.memberImage }">
+									<div>${ item }</div>
+								</c:forEach>
+							</c:if>
+						</div>
 					</div>
 				</div>
 				<div class="w-70">
@@ -118,11 +125,23 @@
 					<div class="content">
 						<div>
 							<div></div>
-							<div id="memberName.errors"></div>
+							<div id="memberName.errors">
+								<c:if test="${ fn:length(errorMessage.memberName) > 0 }">
+									<c:forEach var="item" items="${ errorMessage.memberName }">
+										<div>${ item }</div>
+									</c:forEach>
+								</c:if>
+							</div>
 						</div>
 						<div>
 							<div></div>
-							<div id="memberId.errors"></div>
+							<div id="memberId.errors">
+								<c:if test="${ fn:length(errorMessage.memberId) > 0 }">
+									<c:forEach var="item" items="${ errorMessage.memberId }">
+										<div>${ item }</div>
+									</c:forEach>
+								</c:if>
+							</div>
 						</div>
 					</div>
 					<div class="content">
@@ -142,11 +161,23 @@
 					<div class="content">
 						<div>
 							<div></div>
-							<div id="memberRrn.errors"></div>
+							<div id="memberRrn.errors">
+								<c:if test="${ fn:length(errorMessage.memberRrn) > 0 }">
+									<c:forEach var="item" items="${ errorMessage.memberRrn }">
+										<div>${ item }</div>
+									</c:forEach>
+								</c:if>
+							</div>
 						</div>
 						<div>
 							<div></div>
-							<div id="memberPW.errors"></div>
+							<div id="memberPW.errors">
+								<c:if test="${ fn:length(errorMessage.memberPW) > 0 }">
+									<c:forEach var="item" items="${ errorMessage.memberPW }">
+										<div>${ item }</div>
+									</c:forEach>
+								</c:if>
+							</div>
 						</div>
 					</div>
 					<div class="content">
@@ -162,11 +193,23 @@
 					<div class="content">
 						<div>
 							<div></div>
-							<div id="tel.errors"></div>
+							<div id="tel.errors">
+								<c:if test="${ fn:length(errorMessage.tel) > 0 }">
+									<c:forEach var="item" items="${ errorMessage.tel }">
+										<div>${ item }</div>
+									</c:forEach>
+								</c:if>
+							</div>
 						</div>
 						<div>
 							<div></div>
-							<div id="memberPW2.errors"></div>
+							<div id="memberPW2.errors">
+								<c:if test="${ fn:length(errorMessage.memberPW2) > 0 }">
+									<c:forEach var="item" items="${ errorMessage.memberPW2 }">
+										<div>${ item }</div>
+									</c:forEach>
+								</c:if>
+							</div>
 						</div>
 					</div>
 					<div class="content">
@@ -186,11 +229,23 @@
 					<div class="content">
 						<div>
 							<div></div>
-							<div id="emTel.errors"></div>
+							<div id="emTel.errors">
+								<c:if test="${ fn:length(errorMessage.emTel) > 0 }">
+									<c:forEach var="item" items="${ errorMessage.emTel }">
+										<div>${ item }</div>
+									</c:forEach>
+								</c:if>
+							</div>
 						</div>
 						<div>
 							<div></div>
-							<div id="departmentCode.erros"></div>
+							<div id="departmentCode.errors">
+								<c:if test="${ fn:length(errorMessage.departmentCode) > 0 }">
+									<c:forEach var="item" items="${ errorMessage.departmentCode }">
+										<div>${ item }</div>
+									</c:forEach>
+								</c:if>
+							</div>
 						</div>
 					</div>
 					<div class="content">
@@ -219,11 +274,23 @@
 					<div class="content">
 						<div>
 							<div></div>
-							<div id="email.errors"></div>
+							<div id="email.errors">
+								<c:if test="${ fn:length(errorMessage.email) > 0 }">
+									<c:forEach var="item" items="${ errorMessage.email }">
+										<div>${ item }</div>
+									</c:forEach>
+								</c:if>
+							</div>
 						</div>
 						<div>
 							<div></div>
-							<div id="positionCode.erros"></div>
+							<div id="positionCode.errors">
+								<c:if test="${ fn:length(errorMessage.positionCode) > 0 }">
+									<c:forEach var="item" items="${ errorMessage.positionCode }">
+										<div>${ item }</div>
+									</c:forEach>
+								</c:if>
+							</div>
 						</div>
 					</div>
 					<div class="content">
@@ -265,11 +332,23 @@
 					<div class="content">
 						<div>
 							<div></div>
-							<div id="genderCode.errors"></div>
+							<div id="genderCode.errors">
+								<c:if test="${ fn:length(errorMessage.genderCode) > 0 }">
+									<c:forEach var="item" items="${ errorMessage.genderCode }">
+										<div>${ item }</div>
+									</c:forEach>
+								</c:if>
+							</div>
 						</div>
 						<div>
 							<div></div>
-							<div id="skillCodes.erros"></div>
+							<div id="skillCodes.errors">
+								<c:if test="${ fn:length(errorMessage.skillCodes) > 0 }">
+									<c:forEach var="item" items="${ errorMessage.skillCodes }">
+										<div>${ item }</div>
+									</c:forEach>
+								</c:if>
+							</div>
 						</div>
 					</div>
 					<div class="content">
@@ -285,7 +364,13 @@
 					<div class="content">
 						<div>
 							<div></div>
-							<div id="statusCode.errors"></div>
+							<div id="statusCode.errors">
+								<c:if test="${ fn:length(errorMessage.statusCode) > 0 }">
+									<c:forEach var="item" items="${ errorMessage.statusCode }">
+										<div>${ item }</div>
+									</c:forEach>
+								</c:if>
+							</div>
 						</div>
 					</div>
 					<div class="content">
@@ -294,18 +379,30 @@
 							<input type="date" name="hireDate" required="required" value="${ modifyMemberBean.hireDate }"/>
 						</div>
 						<div id="resignationDateDiv" data-show="false">
-							<div>퇴사일</div>
-							<input type="date" name="resignationDate" value="${ modifyMemberBean.resignationDate }"/>
+							<div>퇴사일<span class="required">*</span></div>
+							<input type="date" name="resignationDate" value="${ addMemberBean.resignationDate }"/>
 						</div>
 					</div>
 					<div class="content">
 						<div>
 							<div></div>
-							<div id="hireDate.errors"></div>
+							<div id="hireDate.errors">
+								<c:if test="${ fn:length(errorMessage.hireDate) > 0 }">
+									<c:forEach var="item" items="${ errorMessage.hireDate }">
+										<div>${ item }</div>
+									</c:forEach>
+								</c:if>
+							</div>
 						</div>
 						<div>
 							<div></div>
-							<div id="resignationDate.erros"></div>
+							<div id="resignationDate.errors">
+								<c:if test="${ fn:length(errorMessage.resignationDate) > 0 }">
+									<c:forEach var="item" items="${ errorMessage.resignationDate }">
+										<div>${ item }</div>
+									</c:forEach>
+								</c:if>
+							</div>
 						</div>
 					</div>
 					<div class="flex">
@@ -324,10 +421,17 @@
 							</div>
 						</div>
 					</div>
-					<div>
-						<div>
+					<div class="flex" style="margin-top: 2px;">
+						<div class="w-10"></div>
+						<div class="w-70">
 							<div></div>
-							<div id="address.errors"></div>
+							<div id="address.errors">
+								<c:if test="${ fn:length(errorMessage.address) > 0 }">
+									<c:forEach var="item" items="${ errorMessage.address }">
+										<div>${ item }</div>
+									</c:forEach>
+								</c:if>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -359,6 +463,7 @@ document.getElementById('modifyMemberBean').addEventListener('submit', addMember
 document.getElementById('checkIdButton').addEventListener('click', checkIdButtonEvent); // 중복 체크 버튼 이벤트
 document.getElementById('emailCode').addEventListener('change', suffixChange); // 이메일 도메인 변경 이벤트
 document.querySelector('input[name="tel"]').addEventListener('keyup', telKeyupEvent);
+document.querySelector('input[name="emTel"]').addEventListener('keyup', telKeyupEvent);
 
 /*
  * 유효성 검사

@@ -55,7 +55,7 @@ public class MemberValidator implements Validator{
 		String tel = memberBean.getTel();
 		String emTel = memberBean.getEmTel();
 		String departmentCode = memberBean.getDepartmentCode();
-		String positionCode = memberBean.getDepartmentCode();
+		String positionCode = memberBean.getPositionCode();
 		String genderCode = memberBean.getGenderCode();
 		String statusCode = memberBean.getStatusCode();
 		ArrayList<String> skills = memberBean.getSkills();
@@ -150,7 +150,7 @@ public class MemberValidator implements Validator{
 				if(!Pattern.matches(REGXP_RNNSUFFIX_PATTERN, memberRrnSuffix)) {
 					errors.rejectValue("memberRrn", "Pattern");
 				}
-			} else {
+			} else if(targetName.equals("addMemberBean")){
 				errors.rejectValue("memberRrn", "Empty");
 			}
 		}
@@ -172,7 +172,7 @@ public class MemberValidator implements Validator{
 		 * 비상연락처
 		 * 비어있지않다면 패턴이 일치하는지
 		 */
-		if(emTel != null && !tel.isEmpty()) {
+		if(emTel != null && !emTel.isEmpty()) {
 			if(!Pattern.matches(REGXP_TEL_PATTERN, emTel)) {
 				errors.rejectValue("emTel", "Pattern");
 			}
@@ -285,9 +285,14 @@ public class MemberValidator implements Validator{
 		}
 		
 		if(memberImage.getSize() != 0) {
-			System.out.println(memberImage.getContentType().substring(0, 6));
-			System.out.println(memberImage.getContentType());
-			System.out.println(memberImage.getSize());
+			String imageType = memberImage.getContentType().substring(0, 6);
+			long imageSize = memberImage.getSize();
+			
+			if(!imageType.equals("image/")) {
+				errors.rejectValue("memberImage", "Type");
+			} else if(imageSize > 5242880) {
+				errors.rejectValue("memberImage", "Size");
+			}
 		}
 	}
 

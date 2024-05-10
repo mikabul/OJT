@@ -156,7 +156,7 @@ table tr {
 									<td>${ item.department }</td>
 									<td>${ item.position }</td>
 									<td>${ item.status }</td>
-									<td><button class="btn">관리</button></td>
+									<td><button class="btn manageProjectButton" data-membernumber="${ item.memberNumber }" data-membername="${ item.memberName }" onclick="modifyMemberProject(event)">관리</button></td>
 								</tr>
 							</c:forEach>
 						</c:otherwise>
@@ -187,7 +187,7 @@ table tr {
 				</div>
 				<div class="w-30 text-right">
 					<button class="btn btn-green" onclick="location.href='${root}member/addMember/'">등록</button>
-					<button class="btn btn-red">삭제</button>
+					<button class="btn btn-red" id="deleteMemberButton">삭제</button>
 				</div>
 			</div>
 		</section>
@@ -211,6 +211,7 @@ let searchData = {
 
 document.getElementById('searchMember').addEventListener('submit', searchMemberSubmitEvent);	// 조회버튼 클릭 이벤트
 document.querySelector('select[name="view"]').addEventListener('change', viewChangeEvent);		// view 변경 이벤트
+document.getElementById('deleteMemberButton').addEventListener('click', deleteMember);			// 삭제 버튼 이벤트
 
 memberMainStartup();
 checkEvent();
@@ -282,8 +283,15 @@ function searchAjax(){
 			const page = result.page;
 			
 			let searchMemberResultHTML = '';
-			if(memberList.length == 0){
-				searchMemberResultHTML = '<tr><td colspan="8">검색결과가 없습니다.</td></tr>';
+			if(memberList.length == 0){ // 멤버리스트의 길이가 0이라면
+				if(page == 0) { // page가 0이라면
+					searchMemberResultHTML = '<tr><td colspan="8">검색결과가 없습니다.</td></tr>';
+				} else { // page가 0이 아니라면 page - 1 후 재검색
+					searchData.page = page - 1;
+					searchAjax();
+					return;
+				}
+				
 			} else {
 				for(const member of memberList){
 					searchMemberResultHTML += 	'<tr>' + 
@@ -294,7 +302,8 @@ function searchAjax(){
 												'<td>' + member.department + '</td>' +
 												'<td>' + member.position + '</td>' + 
 												'<td>' + member.status + '</td>' +
-												'<td><button type="button" class="btn">관리</button></td>' +
+												'<td><button type="button" class="btn manageProjectButton" ' + 
+												'data-memberNumber="' + member.memberNumber + '" data-memberName="' + member.memberName + '" onclick="modifyMemberProject(event)">관리</button></td>' +
 												'</tr>';
 				}
 			}
@@ -343,5 +352,99 @@ function showMemberInfoModal(memberNumber){
 	});
 }
 
+// 사원 삭제
+function deleteMember(){
+	const memberTable = document.querySelector('#searchMemberResult');
+	const memberTableRows = memberTable.rows;
+	let checkedMembers = [];
+	let membersInfo = [];
+	
+	Array.from(memberTableRows).forEach(row => {
+		const check = row.querySelector('input[type="checkbox"]').checked;
+		if(check){
+			const memberNumber = row.cells[1].innerText;
+			const memberName = row.cells[2].innerText;
+			const memberDepartment = row.cells[4].innerText;
+			
+			checkedMembers.push(memberNumber);
+			membersInfo.push({
+				'memberNumber' : memberNumber,
+				'memberName' : memberName,
+				'memberDepartment' : memberDepartment
+			});
+		}
+	});
+	
+	if(checkedMembers.length == 0) {
+		Swal.fire('', '선택된 인원이 없습니다.', 'info');
+		return;
+	}
+	
+	let alertMessage = `
+						<table class="w-100">
+							<thead>
+								<tr>
+									<th class="w-20">사원 번호</th>
+									<th class="w-40">사원 이름</th>
+									<th class="w-40">부서</th>
+								</tr>
+							</thead>
+							<tbody>`;
+	
+	membersInfo.forEach(member => {
+		alertMessage += '<tr>' +
+						'<td>' + member.memberNumber + '</td>' +
+						'<td>' + member.memberName + '</td>' +
+						'<td>' + member.memberDepartment + '</td>' +
+						'</tr>';
+	});
+	
+	alertMessage += '</tbody></table>';
+	
+	Swal.fire({
+		title: '삭제',
+		icon: 'warning',
+		showCancelButton: true,
+		confirmButtonText: '삭제',
+		cancelButtonText: '취소',
+		html: alertMessage,
+	}).then((result) => {
+		if(result.isConfirmed){
+			deleteMemberAjax(checkedMembers);
+		} else {
+			console.log('취소');
+			return;
+		}
+	});
+}
+
+// 멤버 삭제 ajax
+function deleteMemberAjax(checkedMembers) {
+	
+	$.ajax({
+		url: '/OJT/member/deleteMember/' + checkedMembers,
+		method: 'DELETE',
+		success: function(response) {
+			if(response === 'true'){
+				Swal.fire('성공', '삭제에 성공하였습니다.', 'success');
+			} else {
+				Swal.fire('실패', '삭제에 실패하였습니다!', 'error');
+			}
+		},
+		error: function(error) {
+			console.error(error);
+		}
+	}).then (() => { // 삭제 후 검색실행
+		searchAjax();
+	});
+}
+
+function modifyMemberProject(event) {
+	const target = event.target;
+	const memberNumber = target.dataset.membernumber;
+	const memberName = target.dataset.membername;
+	
+	location.href='/OJT/member/memberProject/info/' + memberNumber + '/' + memberName + '/';
+}
 </script>
 </html>

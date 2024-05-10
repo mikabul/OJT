@@ -40,6 +40,10 @@
 		<result property="endDate" column="ed_dt"/>
 		<result property="roleCode" column="roleCode"/>
 		<result property="roleName" column="roleName"/>
+		<result property="projectStartDate" column="prj_st_dt"/>
+		<result property="projectEndDate" column="prj_ed_dt"/>
+		<result property="projectMaintStartDate" column="maint_ed_dt"/>
+		<result property="projectMaintEndDate" column="maint_ed_dt"/>
 	</resultMap>
 
 	<!-- 사원 검색 -->
@@ -173,7 +177,12 @@
 		    cust.cust_nm,
 		    mem.st_dt,
 		    mem.ed_dt,
-		    ro.dtl_cd_nm as roleName
+		    ro.dtl_cd_nm as roleName,
+		    ro.dtl_cd as roleCode,
+		    prj.prj_st_dt,
+		    prj.prj_ed_dt,
+		    prj.maint_st_dt,
+		    prj.maint_ed_dt
 		from project_member_table mem
 		inner join project_info prj on mem.prj_seq = prj.prj_seq
 		inner join customer cust on prj.cust_seq = cust.cust_seq
@@ -214,9 +223,9 @@
 			#{memberNumber},
 			#{memberName},
 			#{memberId},
-			#{memberPW},
+			#{hashedMemberPW},
 			#{memberRrnPrefix},
-			#{memberRrnSuffix},
+			#{hashedMemberRrnSuffix},
 			#{tel},
 			#{emTel},
 			#{email},
@@ -282,6 +291,7 @@
 			)
 	</select>
 	
+	<!-- 사원 아이디 중복 체크(수정) -->
 	<select id="modifyMatchId" resultType="int">
 		select
 			count(mem_id)
@@ -290,4 +300,84 @@
     		mem_seq != #{memberNumber}
     		and mem_id = #{memberId}
 	</select>
+	
+	<!-- 사원 정보 수정 -->
+	<update id="memberInfoUpdate" parameterType="com.ojt.bean.MemberBean">
+		update member_info 
+		set
+			mem_nm = #{memberName},
+			mem_id = #{memberId},
+			<if test="hashedMemberPW != null and hashedMemberPW != ''">
+				mem_pw = #{hashedMemberPW},
+			</if>
+			mem_rrn_prefix = #{memberRrnPrefix},
+			<if test="hashedMemberRrnSuffix != null and hashedMemberRrnSuffix != ''">
+				mem_rrn_suffix =#{hashedMemberRrnSuffix},
+			</if>
+			mem_tel = #{tel}, 
+			mem_emtel = #{emTel},
+			mem_email = #{email},
+			gd_cd = #{genderCode}
+		where
+			mem_seq = #{memberNumber}
+	</update>
+	
+	<!-- 사원 주소 수정 -->
+	<update id="memberAddressUpdate" parameterType="com.ojt.bean.MemberBean">
+		update member_address
+		set
+			mem_zonecode = #{zoneCode},
+			mem_addr = #{address},
+			mem_detailaddr = #{detailAddress},
+			mem_extraaddr = #{extraAddress}
+		where
+			mem_seq = #{memberNumber};
+	</update>
+	
+	<!-- 사원 회사 관련 정보 수정 -->
+	<update id="memberCompanyUpdate" parameterType="com.ojt.bean.MemberBean">
+		update member_company
+		set
+			dp_cd = #{departmentCode},
+			ra_cd = #{positionCode},
+			<if test="pictureDir != null and pictureDir != ''">
+				mem_pic = #{pictureDir},
+			</if>
+			st_cd = #{statusCode},
+			mem_hire_date = #{hireDate},
+			mem_resignation_date = #{resignationDate}
+		where
+			mem_seq = #{memberNumber}
+	</update>
+	
+	<!-- 사원 보유 기술 삭제 -->
+	<delete id="deleteMemberSkill" parameterType="int">
+		delete member_sk where mem_seq = #{memberNumber}
+	</delete>
+	
+	<!-- 사원 삭제 -->
+	<delete id="deleteMember" parameterType="int">
+		delete member_info
+		where mem_seq in
+			(
+			<foreach item="number" collection="memberNumbers" separator=",">
+				#{number}
+			</foreach>
+			)
+	</delete>
+	
+	<!-- 사원 프로젝트 추가 -->
+	
+	<!-- 사원 프로젝트 업데이트 -->
+	
+	<!-- 사원 프로젝트 삭제 -->
+	<delete id="deleteMemberProject">
+		delete project_member_table
+		where mem_seq = #{memberNumber}
+			and prj_seq in (
+				<foreach item="projectNumber" collection="projectNumbers" separator=",">
+					#{projectNumber}
+				</foreach>
+			)
+	</delete>
 </mapper>

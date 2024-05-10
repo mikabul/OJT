@@ -216,14 +216,34 @@
 modalStack.push('#modalMemberInfo');
 currModal = getCurrModalDom();
 
-document.getElementById('memberInfoCloseButton').addEventListener('click', memberInfoCloseEvent);
+document.getElementById('memberInfoCloseButton').addEventListener('click', memberInfoCloseEvent);		// 닫기 이벤트
+document.getElementById('modifyMemberProjectButton').addEventListener('click', modifyMemberProject);	// 프로젝트 수정 버튼 클릭 이벤트
 
 addDropdownEvent();
 
+// 닫기 이벤트
 function memberInfoCloseEvent(){
 	$(modalStack.pop()).html('');
 	currModal = getCurrModalDom();
 	window.history.pushState({}, '', window.location.pathname);
+}
+
+// 프로젝트 수정 버튼 클릭 이벤트
+function modifyMemberProject(){
+	const memberNumber = `${ memberBean.memberNumber }`;
+	const memberName = `${ memberBean.memberName }`;
+	
+	$.ajax({
+		url: '/OJT/member/memberProject/info/' + memberNumber + '/' + memberName + '/',
+		method: 'GET',
+		dataType: 'html',
+		success: function(response) {
+			$('#modalMemberProject').html(response);
+		},
+		error: function(error) {
+			console.error(error);
+		}
+	})
 }
 
 </script>
