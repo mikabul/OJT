@@ -366,9 +366,88 @@
 			)
 	</delete>
 	
+	<!-- 사원이 참여중이지 않은 프로젝트 리스트 -->
+	<select id="nonParticipatingProjects" parameterType="int" resultMap="projectMemberDefaultMap">
+	SELECT
+		PRJ.PRJ_SEQ,
+		PRJ.PRJ_NM,
+		CUST.CUST_NM,
+		PRJ.PRJ_ST_DT,
+		PRJ.PRJ_ED_DT,
+		PRJ.MAINT_ST_DT,
+		PRJ.MAINT_ED_DT
+	FROM PROJECT_INFO PRJ
+	INNER JOIN CUSTOMER CUST ON CUST.CUST_SEQ = PRJ.CUST_SEQ
+	WHERE
+		PRJ.PRJ_SEQ NOT IN (
+			SELECT PRJ_SEQ
+			FROM PROJECT_MEMBER_TABLE
+			WHERE MEM_SEQ = #{memberNumber}
+		)
+	ORDER BY PRJ.PRJ_SEQ DESC
+	</select>
+	
+	<select id="validProjectAndMember" parameterType="com.ojt.bean.ProjectMemberBean" resultType="int">
+		SELECT COUNT(*) FROM (
+			SELECT PRJ_SEQ
+			FROM PROJECT_INFO
+			WHERE
+				PRJ_SEQ = #{projectNumber}
+				AND PRJ_ST_DT = #{projectStartDate}
+				AND PRJ_ED_DT = #{projectEndDate}
+				<choose>
+					<when test="maintStartDate != null and maintStartDate != ''">
+						AND MAINT_ST_DT = #{maintStartDate}
+					</when>
+					<otherwise>
+						AMD MAINT_ST_DT IS NULL
+					</otherwise>
+				</choose>
+				<choose>
+					<when test="maintEndDate != null and maintEndDate != ''">
+						AND MAINT_ED_DT = #{maintEndDate}
+					</when>
+					<otherwise>
+						AMD MAINT_ED_DT IS NULL
+					</otherwise>
+				</choose>
+			UNION ALL
+			SELECT MEM_SEQ
+			FROM MEMBER_INFO
+			WHERE
+				MEM_SEQ = #{memberNumber}
+		)
+	</select>
+	
 	<!-- 사원 프로젝트 추가 -->
+	<insert id="addMemberProject">
+	INSERT ALL
+	<foreach item="projectMemberBean" collection="projectMemberBeans">
+		INTO PROJECT_MEMBER_TABLE
+		(PRJ_SEQ, MEM_SEQ, ST_DT, ED_DT, RO_CD)
+		VALUES(
+			#{projectMemberBean.projectNumber},
+			#{projectMemberBean.memberNumber},
+			#{projectMemberBean.startDate},
+			#{projectMemberBean.endDate},
+			#{projectMemberBean.roleCode}
+		)
+	</foreach>
+	SELECT * FROM DUAL
+	</insert>
 	
 	<!-- 사원 프로젝트 업데이트 -->
+	<update id="updateMemberProject">
+	UPDATE
+		PROJECT_MEMBER_TABLE
+	SET
+		ST_DT = #{startDate},
+		ED_DT = #{endDate},
+		RO_CD = #{roleCode}
+	WHERE
+		PRJ_SEQ = #{projectNumber}
+		AND MEM_SEQ = #{memberNumber}
+	</update>
 	
 	<!-- 사원 프로젝트 삭제 -->
 	<delete id="deleteMemberProject">

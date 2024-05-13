@@ -100,12 +100,13 @@
 			</tbody>
 		</table>
 		<div class="text-right">
-			<button type="button" class="btn btn-blue" id="addMemberProject">추가</button>
-			<button type="button" class="btn btn-green" id="saveMemberProject">저장</button>
+			<button type="button" class="btn btn-blue" id="showAddMemberProject">추가</button>
+			<button type="button" class="btn btn-green" id="updateMemberProject">저장</button>
 			<button type="button" class="btn btn-red" id="deleteMemberProject">삭제</button>
 		</div>
 	</section>
 	<script src="${root}resources/javascript/Main.js"></script>
+	<div id="addMemberProjectModal"></div>
 </body>
 <script>
 modalStack = [];
@@ -119,6 +120,8 @@ document.querySelectorAll('input[type="checkbox"].check').forEach( checkbox => {
 	checkbox.addEventListener('click', clickCheckboxEvent);
 });
 
+document.getElementById('showAddMemberProject').addEventListener('click', showAddMemberPeojectModal); // 추가 버튼 클릭 이벤트
+document.getElementById('updateMemberProject').addEventListener('click', updateMemberProject); // 저장 버튼 클릭 이벤트
 document.getElementById('deleteMemberProject').addEventListener('click', deleteMemberProject); // 삭제 버튼 클릭 이벤트
 
 checkEvent(); // 체크박스 이벤트 주입
@@ -148,16 +151,6 @@ function clickCheckboxEvent() {
 		endDate.value = endDate.dataset.value;
 		select.value = select.dataset.value;
 	}
-}
-
-//추가 버튼 클릭 이벤트
-function showAddMemberProjectModal() {
-	
-}
-
-// 저장 버튼 클릭 이벤트
-function saveMemberProject() {
-	
 }
 
 //삭제 버튼 클릭 이벤트
@@ -234,5 +227,85 @@ function deleteMemberProject() {
 		}
 	});
 }
+
+// 추가 버튼 클릭 이벤트
+function showAddMemberPeojectModal() {
+	$.ajax({
+		url: '${root}member/memberProject/addMemberProjectModal/${memberNumber}',
+		method: 'GET',
+		success: function(result) {
+			$('#addMemberProjectModal').html(result);
+		},
+		error: function(error) {
+			console.error(error);
+		}
+	})
+}
+
+// 저장 버튼 클릭 이벤트
+function updateMemberProject() {
+	const memberNumber = `${memberNumber}`;
+	const tbody = document.getElementById('memberProjectList');
+	const rows = tbody.rows;
+	
+	let memberProjects = [];
+	
+	Array.from(rows).forEach(row => {
+		const checkbox = row.querySelector('input[type="checkbox"]');
+		if(checkbox.checked) {
+			
+			// 엘리먼트 들
+			const startDate = row.querySelector('input[name="startDate"]');
+			const endDate = row.querySelector('input[name="endDate"]');
+			const roleCode = row.querySelector('select[name="roleCode"]');
+			
+			// 원래의 값들
+			const originStartDate = startDate.dataset.value;
+			const originEndDate = endDate.dataset.value;
+			const originRoleCode = roleCode.dataset.value;
+			
+			// 하나라도 다를 경우에만 포함
+			if(originStartDate != startDate.value || originEndDate != endDate.value || originRoleCode != roleCode.value){
+				memberProjects.push({
+					memberNumber: memberNumber,
+					projectNumber: checkbox.dataset.projectnumber,
+					startDate: startDate.value,
+					endDate: endDate.value,
+					roleCode: roleCode.value
+				});
+			}
+		}
+	})
+	
+	if(memberProjects.length == 0){
+		Swal.fire({
+			icon: 'info',
+			text: '변경될 프로젝트가 없습니다.'
+		});
+		return;
+	}
+	
+	$.ajax({
+		url: '${root}member/memberProject/update',
+		method: 'PUT',
+		contentType: 'application/json',
+		data: JSON.stringify(memberProjects),
+		success: function(result) {
+			if(result) {
+				Swal.fire({
+					icon: 'success',
+					title: '성공',
+					text: '업데이트에 성공하였습니다.',
+				}).then(() => {
+					window.location.reload();
+				});
+			}
+		},
+		error: function(error){
+			console.error(error);
+		}
+	})
+}
+
 </script>
 </html>

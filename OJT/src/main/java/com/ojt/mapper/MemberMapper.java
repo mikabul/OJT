@@ -59,10 +59,17 @@ public interface MemberMapper {
 	// 사원 삭제
 	public void deleteMember(@Param("memberNumbers")int[] memberNumbers);
 	
+	// 사원이 참여중이지 않은 프로젝트 리스트
+	public ArrayList<ProjectMemberBean> nonParticipatingProjects(int memberNumber);
+	
+	// 프로젝트와 사원이 모두 존재하며 프로젝트(유지보수) 시작일, 종료일이 올바른 값인지
+	public int validProjectAndMember(ProjectMemberBean projectMemberBean);
+	
 	// 사원 프로젝트 추가
+	public void addMemberProject(@Param("projectMemberBeans") ArrayList<ProjectMemberBean> projectMemberBeans);
 	
 	// 사원 프로젝트 수정
-	
+	public void updateMemberProject(ProjectMemberBean projectMemberBean);
 	
 	// 사원 프로젝트 삭제
 	public void deleteMemberProject(@Param("projectNumbers") int[] projectNumbers, @Param("memberNumber") int memberNumber);

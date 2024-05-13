@@ -439,6 +439,7 @@ function deleteMemberAjax(checkedMembers) {
 	});
 }
 
+// 사원 프로젝트 수정
 function modifyMemberProject(event) {
 	const target = event.target;
 	const memberNumber = target.dataset.membernumber;

@@ -233,17 +233,7 @@ function modifyMemberProject(){
 	const memberNumber = `${ memberBean.memberNumber }`;
 	const memberName = `${ memberBean.memberName }`;
 	
-	$.ajax({
-		url: '/OJT/member/memberProject/info/' + memberNumber + '/' + memberName + '/',
-		method: 'GET',
-		dataType: 'html',
-		success: function(response) {
-			$('#modalMemberProject').html(response);
-		},
-		error: function(error) {
-			console.error(error);
-		}
-	})
+	location.href='/OJT/member/memberProject/info/' + memberNumber + '/' + memberName + '/';
 }
 
 </script>

@@ -22,12 +22,16 @@ public class ProjectMemberBean {
 	private String position; 		// 직급
 	private String roleName;		// 역할
 	
-	private String projectStartDate;
-	private String projectEndDate;
-	private String projectMaintStartDate;
-	private String projectMaintEndDate;
+	private String projectStartDate;		// 프로젝트 시작일
+	private String projectEndDate;			// 프로젝트 종료일
+	private String projectMaintStartDate;	// 프로젝트 유지보수 시작일
+	private String projectMaintEndDate;		// 프로젝트 유지보수 종료일
+	private int index;						// validation index
 	
 	public ProjectMemberBean() {
-		// TODO Auto-generated constructor stub
+		projectStartDate = "";
+		projectEndDate = "";
+		projectMaintStartDate = "";
+		projectMaintEndDate = "";
 	}
 }

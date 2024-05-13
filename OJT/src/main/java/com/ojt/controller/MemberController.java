@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -236,7 +238,7 @@ public class MemberController {
 		
 	}
 	
-	// 사원 개인 프로젝트 모달
+	// 사원 개인 프로젝트 관리
 	@GetMapping("/memberProject/info/{memberNumber}/{memberName}/")
 	public String memberProjectInfo(@PathVariable("memberNumber") int memberNumber,
 									@PathVariable("memberName") String memberName,
@@ -253,9 +255,43 @@ public class MemberController {
 		return "/member/MemberProject";
 	}
 	
+	@GetMapping("/memberProject/addMemberProjectModal/{memberNumber}")
+	public String addMemberProjectModal(@PathVariable("memberNumber") int memberNumber,
+										Model model) {
+		
+		ArrayList<ProjectMemberBean> projectList = memberService.nonParticipatingProjects(memberNumber);
+		ArrayList<CodeBean> roleList = codeService.getDetailCodeList("RO01");
+		
+		model.addAttribute("projectList", projectList);
+		model.addAttribute("roleList", roleList);
+		
+		return "/member/AddMemberProject";
+	}
+	
 	// 사원 프로젝트 추가
+	@PostMapping("/memberProject/add")
+	@ResponseBody
+	public Boolean addMemberProject(@RequestBody ArrayList<ProjectMemberBean> projectMemberBeans,
+									BindingResult bindingResult) {
+		
+		Boolean result = memberService.addMemberProject(projectMemberBeans);
+		
+		return result;
+	}
+	
 	
 	// 사원 프로젝트 수정
+	@PutMapping("/memberProject/update")
+	@ResponseBody
+	public ResponseEntity<Boolean> updateMemeberProject(@RequestBody ArrayList<ProjectMemberBean> projectMemberBeans,
+														BindingResult bidingResult) {
+		
+		Boolean result = memberService.updateMemberProject(projectMemberBeans);
+		System.out.println("UpdateResult : " + result);
+		
+		System.out.println(projectMemberBeans);
+		return ResponseEntity.ok(result);
+	}
 	
 	// 사원 프로젝트 삭제
 	@DeleteMapping("/memberProject/delete/{projectNumbers}/{memberNumber}/")
@@ -267,6 +303,7 @@ public class MemberController {
 		return result;
 	}
 	
+	// 페이지에 필요한 리스트를 처리하는 메서드
 	@ModelAttribute
 	private void initBinder(HttpServletRequest request, Model model) {
 		

@@ -200,7 +200,7 @@ function projectMemberDateAlert(option) {
 		toast: true,
 		position: 'top',
 		showConfirmButton: false,
-		timer: 2500,
+		timer: 3500,
 		timerProgressBar: true,
 		icon: 'warning'
 	};

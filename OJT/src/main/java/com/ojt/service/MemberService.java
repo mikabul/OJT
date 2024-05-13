@@ -313,9 +313,59 @@ public class MemberService {
 		return memberDao.getMemberProject(memberNumber);
 	}
 	
+	// 사원이 참여중이지 않는 프로젝트 리스트
+	public ArrayList<ProjectMemberBean> nonParticipatingProjects(int memberNumber) {
+		return memberDao.nonParticipatingProjects(memberNumber);
+	}
+	
+	// 프로젝트와 사원이 모두 존재하며 프로젝트(유지보수) 시작일, 종료일이 올바른 값인지
+	public int validProjectAndMember(ProjectMemberBean projectMemberBean) {
+		return memberDao.validProjectAndMember(projectMemberBean);
+	}
+	
 	// 사원 프로젝트 추가
+	public Boolean addMemberProject(ArrayList<ProjectMemberBean> projectMemberBeans) {
+		DefaultTransactionDefinition def = new DefaultTransactionDefinition();
+		TransactionStatus status = transactionManager.getTransaction(def);
+		
+		Boolean result;
+		
+		try {
+			
+			memberDao.addMemberProject(projectMemberBeans);
+			result = true;
+			transactionManager.rollback(status);
+		} catch (Exception e) {
+			result = false;
+			transactionManager.rollback(status);
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
 	
 	// 사원 프로젝트 수정
+	public Boolean updateMemberProject(ArrayList<ProjectMemberBean> projectMemberBeans) {
+		DefaultTransactionDefinition def = new DefaultTransactionDefinition();
+		TransactionStatus status = transactionManager.getTransaction(def);
+
+		Boolean result;
+
+		try {
+
+			for(ProjectMemberBean projectMemberBean : projectMemberBeans) {
+				memberDao.updateMemberProject(projectMemberBean);
+			}
+			
+			result = true;
+			transactionManager.rollback(status);
+		} catch (Exception e) {
+			result = false;
+			transactionManager.rollback(status);
+		}
+
+		return result;
+	}
 	
 	// 사원 프로젝트 삭제
 	public Boolean deleteMemberProject(int[] projectNumbers, int memberNumber) {
