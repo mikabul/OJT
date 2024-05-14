@@ -26,7 +26,9 @@ public class ProjectMemberBean {
 	private String projectEndDate;			// 프로젝트 종료일
 	private String projectMaintStartDate;	// 프로젝트 유지보수 시작일
 	private String projectMaintEndDate;		// 프로젝트 유지보수 종료일
+	
 	private int index;						// validation index
+	private String validProjectAndMember;   // Member And Project Validation
 	
 	public ProjectMemberBean() {
 		projectStartDate = "";

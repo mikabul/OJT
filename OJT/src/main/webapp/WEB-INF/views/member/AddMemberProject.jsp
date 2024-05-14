@@ -14,6 +14,14 @@
 	.modal section {
 		margin-top: 20px;
 	}
+	
+	[id$=".errors"][data-show="false"] {
+		display: none;
+	}
+	
+	[id$=".errors"][data-show="true"] {
+		display: table-row;
+	}
 </style>
 </head>
 <body>
@@ -43,8 +51,8 @@
 							<col style="width: 100px"/>
 							<col style="width: 100px"/>
 							<col style="width: 100px"/>
-							<col style="width: 100px"/>
-							<col style="width: 100px"/>
+							<col style="width: 131px"/>
+							<col style="width: 131px"/>
 							<col style="width: 100px"/>
 						</colgroup>
 						<thead>
@@ -62,9 +70,9 @@
 							</tr>
 						</thead>
 						<tbody>
-							<c:forEach var="item" items="${ projectList }">
+							<c:forEach var="item" items="${ projectList }" varStatus="status">
 								<c:set var="startDate" value="${ item.projectStartDate }" />
-								<c:set var="endDate" value="${ item.projectMaintStartDate != null ? item.projectMaintEndDate : item.projectEndDate }"/>
+								<c:set var="endDate" value="${ item.projectMaintStartDate != '' ? item.projectMaintEndDate : item.projectEndDate }"/>
 								<tr>
 									<td><input type="checkbox" class="check" data-projectnumber="${ item.projectNumber }"/></td>
 									<td class="text-left">${ item.projectName }</td>
@@ -87,6 +95,10 @@
 										</select>
 									</td>
 								</tr>
+								<tr id="${ status.index }.errors" data-show="false">
+									<td colspan="7"></td>
+									<td class="errors" colspan="3"></td>
+								</tr>
 							</c:forEach>
 						</tbody>
 					</table>
@@ -104,16 +116,16 @@ modalStack.push('#addMemberProjectModal');
 currModal = getCurrModalDom();
 let oldDate;
 
-currModal.querySelectorAll('input[type="date"]').forEach(date => { // 날짜 포커스, 포커스아웃 이벤트
-	date.addEventListener('focus', dateFocusEvent);
-	date.addEventListener('focusout', dateFocusoutEvent);
-});
-currModal.querySelectorAll('input[name="startDate"]').forEach(startDate => { // 투입일 포커스아웃 이벤트
-	startDate.addEventListener('focusout', startDateFocusoutEvent);
-});
-currModal.querySelectorAll('input[name="endDate"]').forEach(endDate => { // 철수일 포커스아웃 이벤트
-	endDate.addEventListener('focusout', endDateFocusoutEvent);
-});
+// currModal.querySelectorAll('input[type="date"]').forEach(date => { // 날짜 포커스, 포커스아웃 이벤트
+// 	date.addEventListener('focus', dateFocusEvent);
+// 	date.addEventListener('focusout', dateFocusoutEvent);
+// });
+// currModal.querySelectorAll('input[name="startDate"]').forEach(startDate => { // 투입일 포커스아웃 이벤트
+// 	startDate.addEventListener('focusout', startDateFocusoutEvent);
+// });
+// currModal.querySelectorAll('input[name="endDate"]').forEach(endDate => { // 철수일 포커스아웃 이벤트
+// 	endDate.addEventListener('focusout', endDateFocusoutEvent);
+// });
 currModal.querySelectorAll('input[name="startDate"], input[name="endDate"], select[name="roleCode"]').forEach(input => { // 투입일, 철수일, 역할 변경 이벤트
 	input.addEventListener('change', inputChangeEvent);
 });
@@ -187,11 +199,6 @@ function inputChangeEvent() {
 	const roleCode = row.querySelector('select[name="roleCode"]').value;
 	const checkbox = row.querySelector('input[type="checkbox"]');
 	
-	console.log('startDate : ' + startDate);
-	console.log('endDate : ' + endDate);
-	console.log('roleCode : ' + roleCode);
-	console.log(startDate != '' || endDate != '' || roleCode != 1);
-	
 	if( startDate != '' || endDate != '' || roleCode != 1) {
 		if(checkbox.checked === false) {
 			checkbox.click();
@@ -211,8 +218,13 @@ function addMemberProject() {
 	let memberProjects = [];
 	
 	Array.from(rows).forEach((row, index) => {
+		
+		if(index % 2 == 1) {
+			row.dataset.show = "false";
+		}
+		
 		const checkbox = row.querySelector('input[type="checkbox"]');
-		if(checkbox.checked === true) {
+		if(checkbox && checkbox.checked === true) {
 			const projectNumber = checkbox.dataset.projectnumber;
 			const startDate = row.querySelector('input[name="startDate"]').value;
 			const endDate = row.querySelector('input[name="endDate"]').value;
@@ -239,9 +251,54 @@ function addMemberProject() {
 		contentType: 'application/json',
 		data: JSON.stringify(memberProjects),
 		success: function(result) {
-			console.log(result);
+			const success = result.success;
+			const errorMessages = result.errorMessages;
+			
+			if(success === true) {
+				Swal.fire({
+					icon: 'success',
+					title: '성공',
+					text: '저장에 성공하였습니다.'
+				}).then(() => {
+					addMemberProjectClose();
+					window.location.reload();
+				})
+			} else if(errorMessages) {
+				for(let i = 0; i < rows.length; i++) {
+					const errorMessage = errorMessages[i];
+					if(typeof errorMessage != 'undefined') {
+						
+						let errorMessageHTML = '';
+						
+						errorMessage.forEach(error => {
+							errorMessageHTML += '<p>' + error + '</p>';
+						});
+						
+						const errorCell = rows[i + 1].querySelector('.errors');
+						errorCell.innerHTML = errorMessageHTML;
+						rows[i + 1].dataset.show = "true";
+						
+					}
+				}
+				
+				Swal.fire({
+					icon: 'error',
+					text: '입력데이터를 확인해주세요.'
+				});
+			} else {
+				Swal.fire({
+					icon: "error",
+					title: '실패',
+					text: '저장에 실패하였습니다.'
+				});
+			}
 		},
 		error: function(error) {
+			Swal.fire({
+				icon: "error",
+				title: '실패',
+				text: '서버와의 통신에 실패하였습니다.'
+			});
 			console.error(error);
 		}
 	})

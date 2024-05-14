@@ -12,6 +12,7 @@ import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import com.ojt.bean.CodeBean;
 import com.ojt.bean.MemberBean;
+import com.ojt.bean.ProjectBean;
 import com.ojt.bean.ProjectMemberBean;
 import com.ojt.bean.SearchMemberBean;
 import com.ojt.dao.CodeDao;
@@ -318,9 +319,10 @@ public class MemberService {
 		return memberDao.nonParticipatingProjects(memberNumber);
 	}
 	
-	// 프로젝트와 사원이 모두 존재하며 프로젝트(유지보수) 시작일, 종료일이 올바른 값인지
-	public int validProjectAndMember(ProjectMemberBean projectMemberBean) {
-		return memberDao.validProjectAndMember(projectMemberBean);
+	// 프로젝트 시작일, 종료일, 유지보수 시작일, 유지보수 종료일을 받아옴
+	// 프로젝트 시작일, 종료일, 유지보수 시작일, 유지보수 종료일
+	public ProjectBean getProjectInfo(int projectNumber) {
+		return memberDao.getProjectInfo(projectNumber);
 	}
 	
 	// 사원 프로젝트 추가

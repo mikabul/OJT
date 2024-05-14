@@ -206,21 +206,23 @@ public class ProjectValidator implements Validator {
 					String roleCode = pm.getRoleCode();
 
 					/*
-					 * 투입일과 철수일중에 하나라도 존재하고 에러가없다면 검사
-					 * 투입일이 비어있다면 에러
 					 * 투입일 패턴을 통해 검사
 					 * LocalDate를 이용하여 유효한 날짜인지 검사
 					 * 
 					 * 철수일이 비어있지않다면 패턴을 통해 검사
 					 * LocalDate를 이용하여 유효한 날짜인지 검사
 					 */
-					if( ((startDate != null && !startDate.isEmpty()) || (endDate != null && !endDate.isEmpty()))
-							&& !errors.hasFieldErrors("startDateError") && !errors.hasFieldErrors("endDateError")) {
+					
+					Boolean isStartDate = false;	// 투입일이 비어있지 않은지
+					Boolean isEndDate = false;		// 철수일이 비어있지 않은지
+					
+					// 투입일 검사
+					if(startDate != null && !startDate.isEmpty() && !errors.hasFieldErrors("startDateError")) {
 						
-						if((startDate == null || startDate.isEmpty())) {
+						isStartDate = true; // 비어있지 않으므로 true
+						
+						if(!Pattern.matches(REGEXP_PATTERN_DATE, startDate)) {
 							errors.rejectValue("startDateError", "Empty");
-						} else if(!Pattern.matches(REGEXP_PATTERN_DATE, startDate)){
-							errors.rejectValue("startDateError", "Pattern");
 						} else {
 							try {
 								LocalDate.parse(startDate);
@@ -229,7 +231,13 @@ public class ProjectValidator implements Validator {
 							}
 						}
 						
-						if(endDate != null && !endDate.isEmpty() && !Pattern.matches(REGEXP_PATTERN_DATE, endDate)) {
+					}
+					
+					// 철수일 검사
+					if(endDate != null && !endDate.isEmpty() && !errors.hasFieldErrors("endDateError")) {
+						isEndDate = true; // 비어있지 않으므로 true
+						
+						if(!Pattern.matches(REGEXP_PATTERN_DATE, endDate)) {
 							errors.rejectValue("endDateError", "Pattern");
 						} else {
 							try {
@@ -239,68 +247,81 @@ public class ProjectValidator implements Validator {
 							}
 						}
 					}
-
+					
 					if (!roleCdList.contains(roleCode)) {// 역할 전체 리스트내에 해당코드가 존재하는지
 						errors.rejectValue("roleCodeError", "NotRole");
 					}
-
-					// 프로젝트 시작일, 종료일(유지보수 종료일)과 비교
-					if (!errors.hasFieldErrors("startDateError") && !errors.hasFieldErrors("endDateError")
-							&& !errors.hasFieldErrors("projectStartDate") && !errors.hasFieldErrors("projectEndDate")
-							&& !errors.hasFieldErrors("maintEndDate")
-							&& ((startDate != null && !startDate.isEmpty()) || (endDate != null && !endDate.isEmpty()))) { // 투입일, 철수일, 시작일, 종료일, 유지보수 종료일 모두 에러가 없다면
+					
+					if(!errors.hasFieldErrors("projectStartDate")			// 프로젝트 시작일
+							&& !errors.hasFieldErrors("projectEndDate")		// 프로젝트 종료일
+							&& !errors.hasFieldErrors("maintEndDate")) {	// 유지보수 종료일
 						
-						LocalDate memberStartDateLocal = null;
-						LocalDate memberEndDateLocal = null;
-						LocalDate startDateLocal = LocalDate.parse(projectStartDate);
-						LocalDate endDateLocal;
+						LocalDate localProjectStartDate = LocalDate.parse(projectStartDate);
+						LocalDate localProjectEndDate = null;
+						LocalDate localStartDate = null;
+						LocalDate localEndDate = null;
 						
-						// 멤버 투입일 로컬데이트 변환
-						if(startDate != null && !startDate.isEmpty()) {
-							memberStartDateLocal = LocalDate.parse(startDate);
-						}
-						// 멤버 철수일 로컬데이트 변환
-						if(endDate != null && !endDate.isEmpty()) {
-							memberEndDateLocal = LocalDate.parse(endDate);
-						}
 						/*
-						 * 유지보수 시작일이 비어있지 않고 유지보수 종료일이 비어있지 않다면 
-						 * 유지보수 종료일을 이용하고
-						 * 유지보수 시작일이 비어있다면 프로젝트 종료일을 이용
-						 * 유지보수 시작일이 비어있지 않고 유지보수 종료일이 비어있다면
-						 * 종료일 관련 유효성 검사를 하지 않음
+						 * 유지보수 시작일이 비어있지 않을
+						 * 유지보수 종료일을 사용하며
+						 * 유지보수 종료일이 없을 경우 NULL
+						 * 유지보수 시작일이 비어있을 경우
+						 * 프로젝트 종료일을 사용
 						 */
-						if(maintStartDate != null && !maintStartDate.isEmpty()) { // 유지보수 시작일이 비어있지 않다면
-							if(maintEndDate != null && !maintEndDate.isEmpty()) { // 유지보수 종료일이 비어있지 않다면
-								endDateLocal = LocalDate.parse(maintEndDate);
-							} else { // 유지보수 종료일이 비어있다면
-								endDateLocal = null;
+						if(maintStartDate != null && !maintStartDate.isEmpty()) {
+							try {
+								localProjectEndDate = LocalDate.parse(maintEndDate);
+							} catch (Exception e) {
+								localProjectEndDate = null;
 							}
-						} else { // 유지보수 시작일이 비어있을때
-							endDateLocal = LocalDate.parse(projectEndDate);
+						} else {
+							localProjectEndDate = LocalDate.parse(projectEndDate);
 						}
 						
-						if(memberStartDateLocal != null) { // 투입일이 비어있지 않다면
-							if(memberStartDateLocal.isBefore(startDateLocal)) { // 투입일이 프로젝트시작일보다 이전이라면
+						/*
+						 * 투입일이 비어있지 않고 에러가 없다면
+						 * LocalDate로 변환 후
+						 * 프로젝트 시작일보다 이전인지
+						 * 프로젝트 종료일보다 이후인지
+						 * 검사
+						 */
+						if(isStartDate && !errors.hasFieldErrors("startDateError")) {
+							localStartDate = LocalDate.parse(startDate);
+							
+							if(localStartDate.isBefore(localProjectStartDate)) {
 								errors.rejectValue("startDateError", "StartBeforeProjectStart");
-							} else if(endDateLocal != null && memberStartDateLocal.isAfter(endDateLocal)) { // 투입일이 프로젝트 종료일보다 이후라면
+							} else if(localStartDate.isAfter(localProjectEndDate)) {
 								errors.rejectValue("startDateError", "StartAfterProjectEnd");
 							}
 						}
 						
-						if(memberEndDateLocal != null) { // 철수일이 비어있지 않다면
-							if(memberEndDateLocal.isBefore(startDateLocal)) { // 철수일이 프로젝트 시작일보다 이전이라면
+						/*
+						 * 철수일이 비어있지 않고 에러가 없다면
+						 * LocalDate로 변환 후
+						 * 프로젝트 시작일보다 이전인지
+						 * 프로젝트 종료일보다 이후인지
+						 * 검사
+						 */
+						if(isEndDate && !errors.hasFieldErrors("endDateError")) {
+							
+							localEndDate = LocalDate.parse(endDate);
+							
+							if(localEndDate.isBefore(localProjectStartDate)) {
 								errors.rejectValue("endDateError", "EndBeforeProjectStart");
-							} else if(endDateLocal != null && memberEndDateLocal.isAfter(endDateLocal)) { // 철수일이 프로젝트 종료일보다 이후라면
+							} else if(localEndDate.isAfter(localProjectEndDate)) {
 								errors.rejectValue("endDateError", "EndAfterProjectEnd");
 							}
 						}
-						if(memberStartDateLocal != null && memberEndDateLocal != null) { // 투입일, 철수일 모두 비어있지 않다면
-							if(memberStartDateLocal.isAfter(memberEndDateLocal)) { // 투입일이 철수일 이후라면
+						
+						// 투입일과 철수일 모두 비어있지 않다면 두날짜를 비교하여 검사
+						if(localStartDate != null && localEndDate != null) {
+							if(localStartDate.isAfter(localEndDate)) {
 								errors.rejectValue("startDateError", "StartAfterEnd");
 							}
 						}
-					}// End - 프로젝트 시작일, 종료일(유지보수 종료일)과 비교
+						
+					}
+
 				}// End - for (ProjectMemberBean pm : pmList)
 			}
 		}// End - 프로젝트 멤버

@@ -16,6 +16,15 @@
 <script src="${root}resources/lib/javascript/sweetalert2.min.js"></script>
 <!-- 외부 css -->
 <link rel="stylesheet" href="${root}resources/style/Main.css" />
+<style>
+	[id$=".errors"][data-show="false"] {
+		display: none;
+	}
+	
+	[id$=".errors"][data-show="true"] {
+		display: table-row;
+	}
+</style>
 </head>
 <body>
 	<c:import url="/WEB-INF/views/include/TopMenu.jsp"></c:import>
@@ -71,7 +80,9 @@
 				</tr>
 			</thead>
 			<tbody id="memberProjectList">
-				<c:forEach var="item" items="${ memberProjectList }">
+				<c:forEach var="item" items="${ memberProjectList }" varStatus="status">
+					<c:set var="startDate" value="${ item.projectStartDate }" />
+					<c:set var="endDate" value="${ item.projectMaintStartDate != '' ? item.projectMaintEndDate : item.projectEndDate }"/>
 					<tr>
 						<td>
 							<input type="checkbox" data-projectnumber="${ item.projectNumber }" class="check"/>
@@ -83,10 +94,10 @@
 						<td>${ item.projectMaintStartDate }</td>
 						<td>${ item.projectMaintEndDate }</td>
 						<td>
-							<input type="date" name="startDate" value="${ item.startDate }" data-value="${ item.startDate }"/>
+							<input type="date" name="startDate" value="${ item.startDate }" data-value="${ item.startDate }" min="${ startDate }" max="${ endDate }"/>
 						</td>
 						<td>
-							<input type="date" name="endDate" value="${ item.endDate }" data-value="${ item.endDate }"/>
+							<input type="date" name="endDate" value="${ item.endDate }" data-value="${ item.endDate }" min="${ startDate }" max="${ endDate }"/>
 						</td>
 						<td>
 							<select name="roleCode" data-value="${ item.roleCode }">
@@ -95,6 +106,10 @@
 								</c:forEach>
 							</select>
 						</td>
+					</tr>
+					<tr id="${ status.index }.errors" data-show="false">
+						<td colspan="7"></td>
+						<td class="errors" colspan="3"></td>
 					</tr>
 				</c:forEach>
 			</tbody>
@@ -250,9 +265,12 @@ function updateMemberProject() {
 	
 	let memberProjects = [];
 	
-	Array.from(rows).forEach(row => {
+	Array.from(rows).forEach((row, index) => {
+		if(index % 2 == 1) {
+			row.dataset.show = "false";
+		}
 		const checkbox = row.querySelector('input[type="checkbox"]');
-		if(checkbox.checked) {
+		if(checkbox && checkbox.checked) {
 			
 			// 엘리먼트 들
 			const startDate = row.querySelector('input[name="startDate"]');
@@ -271,7 +289,8 @@ function updateMemberProject() {
 					projectNumber: checkbox.dataset.projectnumber,
 					startDate: startDate.value,
 					endDate: endDate.value,
-					roleCode: roleCode.value
+					roleCode: roleCode.value,
+					index: index
 				});
 			}
 		}
@@ -291,17 +310,53 @@ function updateMemberProject() {
 		contentType: 'application/json',
 		data: JSON.stringify(memberProjects),
 		success: function(result) {
-			if(result) {
+			const success = result.success;
+			const errorMessages = result.errorMessages;
+			
+			if(success === true) {
 				Swal.fire({
 					icon: 'success',
 					title: '성공',
-					text: '업데이트에 성공하였습니다.',
+					text: '저장에 성공하였습니다.'
 				}).then(() => {
 					window.location.reload();
+				})
+			} else if(errorMessages) {
+				for(let i = 0; i < rows.length; i++) {
+					const errorMessage = errorMessages[i];
+					if(typeof errorMessage != 'undefined') {
+						
+						let errorMessageHTML = '';
+						
+						errorMessage.forEach(error => {
+							errorMessageHTML += '<p>' + error + '</p>';
+						});
+						
+						const errorCell = rows[i + 1].querySelector('.errors');
+						errorCell.innerHTML = errorMessageHTML;
+						rows[i + 1].dataset.show = "true";
+						
+					}
+				}
+				
+				Swal.fire({
+					icon: 'error',
+					text: '입력데이터를 확인해주세요.'
+				});
+			} else {
+				Swal.fire({
+					icon: 'error',
+					title: '실패',
+					text: '저장에 실패하였습니다.'
 				});
 			}
 		},
 		error: function(error){
+			Swal.fire({
+				icon: 'error',
+				title: '실패',
+				text: '서버와의 통신에 실패하였습니다.'
+			});
 			console.error(error);
 		}
 	})

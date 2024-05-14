@@ -2,18 +2,21 @@ package com.ojt.validator;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.regex.Pattern;
 
-import org.springframework.validation.Errors;
-import org.springframework.validation.Validator;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
 import com.ojt.bean.CodeBean;
+import com.ojt.bean.ProjectBean;
 import com.ojt.bean.ProjectMemberBean;
 import com.ojt.service.CodeService;
 import com.ojt.service.MemberService;
 
-public class MemberProjectValidator implements Validator{
+public class MemberProjectValidator{
 	
 	MemberService memberService;
 	
@@ -24,46 +27,41 @@ public class MemberProjectValidator implements Validator{
 	public MemberProjectValidator(MemberService memberService, CodeService codeService) {
 		this.memberService = memberService;
 		ArrayList<CodeBean> roleList = codeService.getDetailCodeList("RO01");
-		
+		roleCodeList = new ArrayList<String>();
 		for(CodeBean role : roleList) {
 			this.roleCodeList.add(role.getDetailCode());
 		}
 	}
 
-	@Override
 	public boolean supports(Class<?> clazz) {
 		return ArrayList.class.isAssignableFrom(clazz);
 	}
 
-	@Override
-	public void validate(Object target, Errors errors) {
+	public Map<Integer, MultiValueMap<String, Object>> validate(Object target) {
 		
 		ArrayList<ProjectMemberBean> projectMemberBeans;
+		Map<Integer, MultiValueMap<String, Object>> map = new HashMap<>();
 		
 		try {
 			projectMemberBeans = (ArrayList)target;
 		} catch (Exception e) {
-			System.out.println("ProjectMemberBean이 아님");
-			return;
+			e.printStackTrace();
+			return null;
 		}
 		
 		Iterator<ProjectMemberBean> it = projectMemberBeans.iterator();
 		while(it.hasNext()) {
-			
 			ProjectMemberBean projectMemberBean = it.next();
+			MultiValueMap<String, Object> errorMap = new LinkedMultiValueMap<String, Object>();
 			
-			// 멤버와 프로젝트가 존재하는지
-			int validCount = memberService.validProjectAndMember(projectMemberBean);
-			if(validCount != 2) {
-				errors.rejectValue("validProjectAndMember", "NotProjectOrMember");
-				return;
-			}
+			ProjectBean projectBean = memberService.getProjectInfo(projectMemberBean.getProjectNumber());
 			
 			// 데이터 분리
-			String projectStartDate = projectMemberBean.getProjectStartDate();	// 프로젝트 시작일
-			String projectEndDate = projectMemberBean.getProjectEndDate();		// 프로젝트 종료일
-			String maintEndDate = projectMemberBean.getProjectMaintStartDate();	// 유지보수 시작일
-			String maintStartDate = projectMemberBean.getProjectMaintEndDate();	// 유지보수 종료일
+			String projectStartDate = projectBean.getProjectStartDate();	// 프로젝트 시작일
+			String projectEndDate = projectBean.getProjectEndDate();		// 프로젝트 종료일
+			String maintStartDate = projectBean.getMaintStartDate();	// 유지보수 시작일
+			String maintEndDate = projectBean.getMaintEndDate();	// 유지보수 종료일
+			
 			String memberStartDate = projectMemberBean.getStartDate();			// 투입일
 			String memberEndDate = projectMemberBean.getEndDate();				// 철수일
 			String roleCode = projectMemberBean.getRoleCode();					// 역할 코드
@@ -81,24 +79,32 @@ public class MemberProjectValidator implements Validator{
 				endDate = projectEndDate;
 			}
 			
+			System.out.println("index : " + index);
+			System.out.println("projectStartDate : " + projectStartDate);
+			System.out.println("projectEndDate : " + projectEndDate);
+			System.out.println("maintStartDate : " + maintStartDate);
+			System.out.println("maintEndDate : " + maintEndDate);
+			System.out.println("memberStartDate:" + memberStartDate);
+			System.out.println("memberEndDate : " + memberEndDate);
+			
 			// 투입일 패턴
 			if(memberStartDate != null && !memberStartDate.isEmpty()) { // 투입일이 비어있지 않다면
 				if(!Pattern.matches(REGEXP_PATTERN_DATE, memberStartDate)) { // 투입일이 날짜 패턴에 일치하는지
-					errors.rejectValue("startDate[" + index + "]", "Pattern");
+					errorMap.add("startDate", "Pattern");
 				} else {
 					
 					LocalDate localMemberStartDate = LocalDate.parse(memberStartDate);
 					LocalDate localStartDate = LocalDate.parse(startDate);
 					
 					if(localMemberStartDate.isBefore(localStartDate)) { // 프로젝트 시작일 보다 이전이라면
-						errors.rejectValue("startDate[" + index + "]", "Before");
+						errorMap.add("startDate", "Before");
 						
 					} else if(endDate != null && !endDate.isEmpty()) { // 종료일 이 비어있지않다면
 						
 						LocalDate localEndDate = LocalDate.parse(endDate); // 로컬데이트로 변환
 						
 						if(localMemberStartDate.isAfter(localEndDate)) { // 투입일이 프로젝트 종료일 보다 이후인지
-							errors.rejectValue("startDate[" + index + "]", "After");
+							errorMap.add("startDate", "After");
 						}
 					}
 				}
@@ -111,19 +117,19 @@ public class MemberProjectValidator implements Validator{
 			// 철수일 패턴
 			if(memberEndDate != null && !memberEndDate.isEmpty()) { // 철수일이 비어있지 않다면
 				if(!Pattern.matches(REGEXP_PATTERN_DATE, memberEndDate)) {	// 철수일이 날짜 패턴에 일치하는지
-					errors.rejectValue("endDate[" + index + "]", "Pattern");
+					errorMap.add("endDate", "Pattern");
 					
 				} else {
 					LocalDate localMemberEndDate = LocalDate.parse(memberEndDate);
 					LocalDate localStartDate = LocalDate.parse(startDate);
 					
 					if(localMemberEndDate.isBefore(localStartDate)) {
-						errors.rejectValue("endDate[" + index + "]", "Before");
+						errorMap.add("endDate", "Before");
 						
 					} else if (endDate != null && !endDate.isEmpty()) {
 						LocalDate localEndDate = LocalDate.parse(endDate);
 						if(localMemberEndDate.isAfter(localEndDate)) {
-							errors.rejectValue("endDate[" + index + "]", "After");
+							errorMap.add("endDate", "After");
 						}
 					}
 				}
@@ -132,12 +138,29 @@ public class MemberProjectValidator implements Validator{
 				isMemberEndDate = false;
 			}
 			
-			// 투입일과 프로젝트 시작일, 종료일 비교
-			if(isMemberStartDate && !errors.hasFieldErrors("startDate[" + index + "]")) {
+			if(isMemberStartDate && isMemberEndDate
+				&& errorMap.get("startDate") == null 
+				&& errorMap.get("endDate") == null) {
 				
+				LocalDate localMemberStartDate = LocalDate.parse(memberStartDate);
+				LocalDate localMemberEndDate = LocalDate.parse(memberEndDate);
+				
+				if(localMemberStartDate.isAfter(localMemberEndDate)) {
+					errorMap.add("startDate", "AfterMemberEnd");
+				}
+			}
+			
+			if(!roleCodeList.contains(roleCode)) {
+				errorMap.add("roleCode", "NotRole");
+			}
+			
+			if(errorMap.size() != 0) { // 에러가 존재할때만 추가
+				map.put(index, errorMap);
 			}
 			
 		}
+		
+		return map;
 		
 	}
 

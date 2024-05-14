@@ -349,92 +349,126 @@ public class ModifyProjectValidator implements Validator {
 						String startDate = pm.getStartDate();
 						String endDate = pm.getEndDate();
 						String roleCode = pm.getRoleCode();
-
-						if (memberNumber == 0) {// 사원 번호가 0인지( = 비어있는지)
-							errors.rejectValue("MemberNumberError", "Empty");
+						
+						if(memberNumber == 0) {
+							errors.rejectValue("memberNumberError", "Empty");
 						}
 
-						if (startDate == null || startDate.isEmpty() && !errors.hasFieldErrors("startDateError")) {// 투입일이
-																													// 비어있는지
-							errors.rejectValue("startDateError", "Empty");
-						} else if (!Pattern.matches(REGEXP_PATTERN_DATE, startDate)
-								&& !errors.hasFieldErrors("startDate_error")) { // 투입일이 날짜 형식인지
-							errors.rejectValue("startDateError", "Pattern");
+						/*
+						 * 투입일 패턴을 통해 검사
+						 * LocalDate를 이용하여 유효한 날짜인지 검사
+						 * 
+						 * 철수일이 비어있지않다면 패턴을 통해 검사
+						 * LocalDate를 이용하여 유효한 날짜인지 검사
+						 */
+						
+						Boolean isStartDate = false;	// 투입일이 비어있지 않은지
+						Boolean isEndDate = false;		// 철수일이 비어있지 않은지
+						
+						// 투입일 검사
+						if(startDate != null && !startDate.isEmpty() && !errors.hasFieldErrors("startDateError")) {
+							
+							isStartDate = true; // 비어있지 않으므로 true
+							
+							if(!Pattern.matches(REGEXP_PATTERN_DATE, startDate)) {
+								errors.rejectValue("startDateError", "Empty");
+							} else {
+								try {
+									LocalDate.parse(startDate);
+								} catch (Exception e) {
+									errors.rejectValue("startDateError", "DateOver");
+								}
+							}
+							
 						}
-
-						if (endDate == null || endDate.isEmpty() && !errors.hasFieldErrors("endDateError")) { // 철수일이
-																												// 비어있는지
-							errors.rejectValue("endDateError", "Empty");
-						} else if (!Pattern.matches(REGEXP_PATTERN_DATE, endDate)
-								&& !errors.hasFieldErrors("endDate_error")) { // 철수일이 날짜 형식인지
-							errors.rejectValue("endDateError", "Pattern");
+						
+						// 철수일 검사
+						if(endDate != null && !endDate.isEmpty() && !errors.hasFieldErrors("endDateError")) {
+							isEndDate = true; // 비어있지 않으므로 true
+							
+							if(!Pattern.matches(REGEXP_PATTERN_DATE, endDate)) {
+								errors.rejectValue("endDateError", "Pattern");
+							} else {
+								try {
+									LocalDate.parse(endDate);
+								} catch (Exception e) {
+									errors.rejectValue("endDateError", "DateOver");
+								}
+							}
 						}
-
+						
 						if (!roleCdList.contains(roleCode)) {// 역할 전체 리스트내에 해당코드가 존재하는지
 							errors.rejectValue("roleCodeError", "NotRole");
 						}
-
-						// 프로젝트 시작일, 종료일(유지보수 종료일)과 비교
-						if (!errors.hasFieldErrors("startDateError") && !errors.hasFieldErrors("endDateError")
-								&& !errors.hasFieldErrors("projectStartDate")
-								&& !errors.hasFieldErrors("projectEndDate") && !errors.hasFieldErrors("maintEndDate")) { // 투입일,
-																															// 철수일,
-																															// 시작일,
-																															// 종료일,
-																															// 유지보수
-																															// 종료일
-																															// 모두
-																															// 에러가
-																															// 없다면
-
-							if (maintEndDate != null && !maintEndDate.isEmpty()) {
-								LocalDate memberStartDateLocal = LocalDate.parse(startDate);
-								LocalDate memberEndDateLocal = LocalDate.parse(endDate);
-								LocalDate projectStartDateLocal = LocalDate.parse(projectStartDate);
-								LocalDate mainEndDateLocal = LocalDate.parse(maintEndDate);
-
-								if (memberStartDateLocal.isBefore(projectStartDateLocal)) { // 프로젝트 시작일 보다 작은지
-									errors.rejectValue("startDateError", "MemberBeforeStartDate");
-								} else if (memberStartDateLocal.isAfter(mainEndDateLocal)) { // 유지보수 종료일 보다 큰지
-									errors.rejectValue("startDateError", "MemberAfterMaintEndDate");
-								}
-
-								if (memberEndDateLocal.isBefore(projectStartDateLocal)) { // 프로젝트 시작일 보다 작은지
-									errors.rejectValue("endDateError", "MemberBeforeStartDate");
-								} else if (memberEndDateLocal.isAfter(mainEndDateLocal)) { // 유지보수 종료일 보다 큰지
-									errors.rejectValue("endDateError", "MemberAfterMaintEndDate");
-								}
-							} else if (maintStartDate == null || maintStartDate.isEmpty()) {
-
-								LocalDate memberStartDateLocal = LocalDate.parse(startDate);
-								LocalDate memberEndDateLocal = LocalDate.parse(endDate);
-								LocalDate projectStartDateLocal = LocalDate.parse(projectStartDate);
-								LocalDate projectEndDateLocal = LocalDate.parse(projectEndDate);
-
-								if (memberStartDateLocal.isBefore(projectStartDateLocal)) { // 프로젝트 시작일 보다 작은지
-									errors.rejectValue("startDateError", "MemberBeforeStartDate");
-								} else if (memberStartDateLocal.isAfter(projectEndDateLocal)) { // 프로젝트 종료일 보다 큰지
-									errors.rejectValue("startDateError", "MemberAfterEndDate");
-								}
-
-								if (memberEndDateLocal.isBefore(projectStartDateLocal)) { // 프로젝트 시작일 보다 작은지
-									errors.rejectValue("endDateError", "MemberBeforeStartDate");
-								} else if (memberEndDateLocal.isAfter(projectEndDateLocal)) { // 프로젝트 종료일 보다 큰지
-									errors.rejectValue("endDateError", "MemberAfterEndDate");
+						
+						if(!errors.hasFieldErrors("projectStartDate")			// 프로젝트 시작일
+								&& !errors.hasFieldErrors("projectEndDate")		// 프로젝트 종료일
+								&& !errors.hasFieldErrors("maintEndDate")) {	// 유지보수 종료일
+							
+							LocalDate localProjectStartDate = LocalDate.parse(projectStartDate);
+							LocalDate localProjectEndDate = null;
+							LocalDate localStartDate = null;
+							LocalDate localEndDate = null;
+							
+							/*
+							 * 유지보수 시작일이 비어있지 않을
+							 * 유지보수 종료일을 사용하며
+							 * 유지보수 종료일이 없을 경우 NULL
+							 * 유지보수 시작일이 비어있을 경우
+							 * 프로젝트 종료일을 사용
+							 */
+							if(maintStartDate != null && !maintStartDate.isEmpty()) {
+								try {
+									localProjectEndDate = LocalDate.parse(maintEndDate);
+								} catch (Exception e) {
+									localProjectEndDate = null;
 								}
 							} else {
-								LocalDate memberStartDateLocal = LocalDate.parse(startDate);
-								LocalDate memberEndDateLocal = LocalDate.parse(endDate);
-								LocalDate projectStartDateLocal = LocalDate.parse(projectStartDate);
-
-								if (memberStartDateLocal.isBefore(projectStartDateLocal)) {// 프로젝트 시작일 보다 작은지
-									errors.rejectValue("startDateError", "MemberBeforeStartDate");
-								}
-
-								if (memberEndDateLocal.isBefore(projectStartDateLocal)) {// 프로젝트 시작일 보다 작은지
-									errors.rejectValue("endDateError", "MemberBeforeStartDate");
+								localProjectEndDate = LocalDate.parse(projectEndDate);
+							}
+							
+							/*
+							 * 투입일이 비어있지 않고 에러가 없다면
+							 * LocalDate로 변환 후
+							 * 프로젝트 시작일보다 이전인지
+							 * 프로젝트 종료일보다 이후인지
+							 * 검사
+							 */
+							if(isStartDate && !errors.hasFieldErrors("startDateError")) {
+								localStartDate = LocalDate.parse(startDate);
+								
+								if(localStartDate.isBefore(localProjectStartDate)) {
+									errors.rejectValue("startDateError", "StartBeforeProjectStart");
+								} else if(localStartDate.isAfter(localProjectEndDate)) {
+									errors.rejectValue("startDateError", "StartAfterProjectEnd");
 								}
 							}
+							
+							/*
+							 * 철수일이 비어있지 않고 에러가 없다면
+							 * LocalDate로 변환 후
+							 * 프로젝트 시작일보다 이전인지
+							 * 프로젝트 종료일보다 이후인지
+							 * 검사
+							 */
+							if(isEndDate && !errors.hasFieldErrors("endDateError")) {
+								
+								localEndDate = LocalDate.parse(endDate);
+								
+								if(localEndDate.isBefore(localProjectStartDate)) {
+									errors.rejectValue("endDateError", "EndBeforeProjectStart");
+								} else if(localEndDate.isAfter(localProjectEndDate)) {
+									errors.rejectValue("endDateError", "EndAfterProjectEnd");
+								}
+							}
+							
+							// 투입일과 철수일 모두 비어있지 않다면 두날짜를 비교하여 검사
+							if(localStartDate != null && localEndDate != null) {
+								if(localStartDate.isAfter(localEndDate)) {
+									errors.rejectValue("startDateError", "StartAfterEnd");
+								}
+							}
+							
 						}
 					}
 				}

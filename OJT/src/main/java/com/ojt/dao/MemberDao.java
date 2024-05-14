@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.ojt.bean.MemberBean;
+import com.ojt.bean.ProjectBean;
 import com.ojt.bean.ProjectMemberBean;
 import com.ojt.bean.SearchMemberBean;
 import com.ojt.mapper.MemberMapper;
@@ -105,9 +106,9 @@ public class MemberDao {
 		return memberMapper.nonParticipatingProjects(memberNumber);
 	}
 	
-	// 프로젝트와 사원이 모두 존재하며 프로젝트(유지보수) 시작일, 종료일이 올바른 값인지
-	public int validProjectAndMember(ProjectMemberBean projectMemberBean) {
-		return memberMapper.validProjectAndMember(projectMemberBean);
+	// 프로젝트 시작일, 종료일, 유지보수 시작일, 유지보수 종료일
+	public ProjectBean getProjectInfo(int projectNumber) {
+		return memberMapper.getProjectInfo(projectNumber);
 	}
 	
 	// 사원 프로젝트 추가
