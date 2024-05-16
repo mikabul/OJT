@@ -66,7 +66,7 @@ public class ProjectMemberService {
 		
 		try {
 			projectMemberDao.deleteProjectMember(memberNumbers, projectNumber);
-			
+			System.out.println("프로젝트 멤버 삭제중");
 			transactionManager.commit(status);
 			return true;
 		} catch (Exception e) {
@@ -134,8 +134,18 @@ public class ProjectMemberService {
 			ArrayList<ProjectMemberBean> pmList = projectBean.getPmList();
 			
 			for(ProjectMemberBean projectMemberBean : pmList) {
-				projectMemberBean.setProjectNumber(projectBean.getProjectNumber());
-				projectMemberDao.updateProjectMember(projectMemberBean);
+				
+				int projectNumber = projectBean.getProjectNumber();
+				int memberNumber = projectMemberBean.getMemberNumber();
+				
+				projectMemberBean.setProjectNumber(projectNumber);
+				if(projectMemberDao.hasProjectMember(projectNumber, memberNumber) == 0) {
+					projectMemberDao.insertProjectMember(projectMemberBean);
+				} else {
+					projectMemberDao.updateProjectMember(projectMemberBean);
+				}
+				
+				System.out.println("프로젝트 멤버 수정중");
 			}
 			
 			transactionManager.commit(status);

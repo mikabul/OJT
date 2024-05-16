@@ -73,7 +73,7 @@
 		</div>
 	</nav>
 	<!-- 로그인 -->
-	<form:form action="${root}Login" modelAttribute="memberBean" method="POST">
+	<form:form action="${root}login" modelAttribute="memberBean" method="POST">
 		<div class="container">
 			<div class="login-wrap">
 				<div class="w-100 text-center">

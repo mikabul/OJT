@@ -7,17 +7,17 @@
 		<button id="side_btn" class="top-btn top-btn-white">메뉴</button>
 	</div>
 	<div>
-		<a class="top-logo" href="${root}Main">INNOBL 관리 시스템</a>
+		<a class="top-logo" href="${root}main">INNOBL 관리 시스템</a>
 	</div>
 	<div>
 		<button class="top-btn" id="logout"
-			onclick="location.href='${root}Logout'">로그아웃</button>
+			onclick="location.href='${root}logout'">로그아웃</button>
 	</div>
 </nav>
 <div class="top-side-menu-bar">
 	<ul class="top-side-menu">
-		<li><a href="${root}project/Main">프로젝트</a></li>
-		<li><a href="${root}member/Main">사원</a></li>
+		<li><a href="${root}project/main">프로젝트</a></li>
+		<li><a href="${root}member/main">사원</a></li>
 	</ul>
 </div>
 <script>

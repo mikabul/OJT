@@ -24,6 +24,21 @@
 	[id$=".errors"][data-show="true"] {
 		display: table-row;
 	}
+	
+	header table {
+		font-size: 20px;
+		margin-bottom: 30px;
+	}
+	
+	header table td {
+		border: none;
+		text-align: left;
+		padding: 5px 10px;
+	}
+	
+	header table tr {
+		text-align: left;
+	}
 </style>
 </head>
 <body>
@@ -31,14 +46,16 @@
 	
 	<header>
 		<div class="flex">
-			<div class="flex">
-				<div>사원번호</div>
-				<div>${ memberNumber }</div>
-			</div>
-			<div class="flex">
-				<div>사원명</div>
-				<div>${ memberName }</div>
-			</div>
+			<table class="container-center">
+				<tr>
+					<th>사원번호</th>
+					<td>${ memberNumber }</td>
+				</tr>
+				<tr>
+					<th>사원명</th>
+					<td>${ memberName }</td>
+				</tr>
+			</table>
 		</div>
 	</header>
 	<section>
@@ -188,7 +205,7 @@ function deleteMemberProject() {
 	
 	Array.from(rows).forEach(row => {
 		const checkbox = row.querySelector('input[type="checkbox"]');
-		if(checkbox.checked){
+		if(checkbox && checkbox.checked){
 			projectNumbers.push(checkbox.dataset.projectnumber);
 			const projectName = row.cells[1].innerText;
 			const customerName = row.cells[2].innerText;
@@ -218,7 +235,7 @@ function deleteMemberProject() {
 	.then((confirm) => {
 		if(confirm.isConfirmed){
 			$.ajax({
-				url: '/OJT/member/memberProject/delete/' + projectNumbers + '/' + memberNumber +'/',
+				url: '/OJT/member/project/delete/' + projectNumbers + '/' + memberNumber,
 				method: 'DELETE',
 				success: function(result){
 					if(result){
@@ -246,7 +263,7 @@ function deleteMemberProject() {
 // 추가 버튼 클릭 이벤트
 function showAddMemberPeojectModal() {
 	$.ajax({
-		url: '${root}member/memberProject/addMemberProjectModal/${memberNumber}',
+		url: '${root}member/project/addModal/${memberNumber}',
 		method: 'GET',
 		success: function(result) {
 			$('#addMemberProjectModal').html(result);
@@ -305,7 +322,7 @@ function updateMemberProject() {
 	}
 	
 	$.ajax({
-		url: '${root}member/memberProject/update',
+		url: '${root}member/project/update',
 		method: 'PUT',
 		contentType: 'application/json',
 		data: JSON.stringify(memberProjects),

@@ -215,7 +215,7 @@ document.getElementById('modifyProjectInfoButton').addEventListener('click', mod
 isScroll();
 
 function projectInfoCloseEvent(){
-	window.history.pushState({}, '', '/OJT/project/Main');
+	window.history.pushState({}, '', '/OJT/project/main');
 	$(modalStack.pop()).html('');
 	currModal = getCurrModalDom();
 }
@@ -224,7 +224,7 @@ function modifyProjectInfoButtonEvent(){
 	const projectNumber = `${projectBean.projectNumber}`;
 	
 	$.ajax({
-		url: '/OJT/projectModify/',
+		url: '/OJT/project/modify/modal',
 		method: 'GET',
 		data: {
 			'projectNumber' : projectNumber

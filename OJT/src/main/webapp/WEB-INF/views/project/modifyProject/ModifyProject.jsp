@@ -340,7 +340,7 @@
 				text: '프로젝트 수정에 성공하였습니다.'
 			}).then(() => {
 				const form = document.querySelector('form');
-				form.action = '/OJT/project/Main?&success=' + success + '&projectNumber=' + projectNumber;
+				form.action = '/OJT/project/main?&success=' + success + '&projectNumber=' + projectNumber;
 				form.submit();
 			})
 		} else if(success == 'false') {
@@ -605,7 +605,7 @@
 		formData.append('deleteMemberNumbers', deleteMemberNumbers);
 		
 		$.ajax({
-			url: '/OJT/projectModify/modify',
+			url: '/OJT/project/modify/modify-project',
 			method: 'POST',
 			contentType: false,
 			processData: false,
@@ -635,7 +635,7 @@
 		}
 		
 		$.ajax({
-			url: '/OJT/projectModify/modalAddProjectMember',
+			url: '/OJT/project/modify/member-modal',
 			method: 'POST',
 			data: {
 				'startDate' : startDate,
@@ -673,7 +673,7 @@
 		formData.append('deleteIndex', deleteIndex);
 
 		$.ajax({
-			url: '/OJT/projectModify/deleteMember',
+			url: '/OJT/project/modify/delete-member',
 			method: 'POST',
 			contentType: false,
 			processData: false,

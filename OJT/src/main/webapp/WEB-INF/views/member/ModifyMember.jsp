@@ -82,7 +82,7 @@
 		<h1>사원 수정</h1>
 	</header>
 	<section>
-		<form action="${ root }member/modifyMember/modify" id="modifyMemberBean" method="post" enctype="multipart/form-data">
+		<form action="${ root }member/modify/modify-member" id="modifyMemberBean" method="post" enctype="multipart/form-data">
 			<div style="display: flex">
 				<div class="w-30">
 					<div class="container-center" style="width: 200px; height: 242px; border: 1px solid black;">

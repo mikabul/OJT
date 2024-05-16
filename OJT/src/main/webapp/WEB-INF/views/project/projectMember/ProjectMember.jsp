@@ -245,7 +245,7 @@
 		}).then((result) => {
 			if(result.isConfirmed){
 				$.ajax({
-					url: '/OJT/projectRest/deleteProjectMember',
+					url: '/OJT/project/member/delete',
 					method: 'POST',
 					traditional: true,
 					data: {
@@ -276,7 +276,7 @@
 	// 모달 새로 불러오기
 	function reloadProjectMember(projectNumber){
 		$.ajax({
-			url: '/OJT/projectMember/',
+			url: '/OJT/project/member/modal',
 			method: 'GET',
 			data: {
 				'projectNumber' : projectNumber
@@ -304,7 +304,7 @@
 		const projectEndDate = currModal.querySelector('input[type="hidden"][name="projectEndDate"]').value;
 		const maintEndDate = currModal.querySelector('input[type="hidden"][name="maintEndDate"]').value;
 		$.ajax({
-			url: '/OJT/projectMember/modalAddProjectMember',
+			url: '/OJT/project/member/addModal',
 			method: 'GET',
 			data: {
 				projectNumber : projectNumber,
@@ -523,7 +523,7 @@
 		const formData = new FormData(form);
 		
 		$.ajax({
-			url: '/OJT/projectMember/modifyProjectMember',
+			url: '/OJT/project/member/modify',
 			method: 'POST',
 			contentType: false,
 			processData: false,

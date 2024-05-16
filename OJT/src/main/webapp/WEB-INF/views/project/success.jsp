@@ -10,7 +10,6 @@
 <title>Insert title here</title>
 </head>
 <body>
-	성공
 	<script>
 		alert('성공');
 		$('#modalAddProject').html('');

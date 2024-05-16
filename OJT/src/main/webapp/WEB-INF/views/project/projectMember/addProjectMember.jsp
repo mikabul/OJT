@@ -137,7 +137,7 @@
 		}
 		
 		$.ajax({
-			url: '/OJT/projectMember/addProjectMemberSearch',
+			url: '/OJT/project/member/search',
 			method: 'POST',
 			traditional: true,
 			data: {
@@ -347,7 +347,7 @@
 		}
 		
 		$.ajax({
-			url: '/OJT/projectRest/addProjectMember',
+			url: '/OJT/project/member/add-member',
 			method: 'POST',
 			contentType: 'application/json',
 			data: JSON.stringify({

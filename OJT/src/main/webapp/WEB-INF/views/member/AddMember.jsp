@@ -76,7 +76,7 @@
 		<h1>사원 등록</h1>
 	</header>
 	<section style="margin-top: 35px;">
-		<form action="${ root }member/addMember/add" id="addMemberBean" method="post" enctype="multipart/form-data">
+		<form action="${ root }member/add/add-member" id="addMemberBean" method="post" enctype="multipart/form-data">
 			<div style="display: flex">
 				<!-- 사진 -->
 				<div class="w-20">
@@ -575,7 +575,7 @@ function resignationDateShowEvent(){
 function checkIdButtonEvent(){
 	const inputId = document.querySelector('input[name="memberId"]').value;
 	$.ajax({
-		url: '${root}member/addMember/matchId',
+		url: '${root}member/add/matchId',
 		data: {
 			'inputId' : inputId
 		},

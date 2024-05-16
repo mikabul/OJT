@@ -1,10 +1,11 @@
-package com.ojt.controller;
+package com.ojt.controller.project;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -26,7 +27,7 @@ import com.ojt.service.ProjectService;
 import com.ojt.validator.ProjectValidator;
 
 @Controller
-@RequestMapping("/projectModify")
+@RequestMapping("/project/modify")
 public class ProjectModifyController {
 	
 	@Autowired
@@ -36,7 +37,7 @@ public class ProjectModifyController {
 	private ProjectMemberService projectMemberService;
 
 	// 프로젝트 수정 모달 생성
-	@GetMapping("/")
+	@GetMapping("/modal")
 	public String modifyMain(@RequestParam("projectNumber")int projectNumber, Model model) {
 		
 		ProjectBean projectBean = projectService.getProjectInfo(projectNumber);
@@ -67,7 +68,7 @@ public class ProjectModifyController {
 	}
 	
 	// 프로젝트 수정
-	@PostMapping("/modify")
+	@PostMapping("/modify-project")
 	public String modifyProject(
 			@ModelAttribute("modifyProjectBean")ProjectBean modifyProjectBean,
 			@RequestParam("deleteMemberNumbers")int[] deleteMemberNumbers,
@@ -134,7 +135,7 @@ public class ProjectModifyController {
 	}
 	
 	// 프로젝트 멤버추가 모달 생성
-	@PostMapping("/modalAddProjectMember")
+	@PostMapping("/member-modal")
 	public String modalAddProjectMember(@RequestParam("startDate")String startDate,
 										@RequestParam("endDate")String endDate,
 										Model model) {
@@ -146,7 +147,7 @@ public class ProjectModifyController {
 	}
 	
 	// 프로젝트 멤버 테이블에 없는 멤버 검색
-	@PostMapping("/getNotAddProjectMember")
+	@PostMapping("/not-project-member")
 	public String getNotAddProjectMember(@RequestParam("search")String search,
 										@RequestParam(name = "memberNumbers[]", required = false)int[] memberNumbers,
 										@RequestParam("startDate")String startDate,
@@ -165,7 +166,7 @@ public class ProjectModifyController {
 	}
 	
 	// 프로젝트 수정 멤버 테이블에 멤버 추가
-	@PostMapping("/modifyProjectMember")
+	@PostMapping("/add-member")
 	public String modifyProjectMember(@RequestBody Map<String, Object> requestMap,
 									Model model) {
 		
@@ -181,7 +182,7 @@ public class ProjectModifyController {
 	}
 	
 	// 프로젝트 수정 멤버 테이블에서 멤버 제거
-	@PostMapping("/deleteMember")
+	@PostMapping("/delete-member")
 	public String deleteMember(
 			@ModelAttribute("modifyProjectBean") ProjectBean modifyProjectBean,
 			@RequestParam("deleteIndex") int[] deleteIndex,
@@ -207,5 +208,17 @@ public class ProjectModifyController {
 		model.addAttribute("roleList", roleList);
 		model.addAttribute("rowsLength", 0);
 		return "project/modifyProject/ModifyProjectMemberTable";
+	}
+	
+	// 프로젝트 상태 변경
+	@PostMapping("/update-state")
+	public ResponseEntity<String> searchMember(@RequestParam(name = "projectNumbers[]") int[] projectNumbers,
+			@RequestParam(name = "projectState[]") String[] projectState) {
+		Boolean result = projectService.updateProjectState(projectNumbers, projectState);
+		if (result) {
+			return ResponseEntity.ok("");
+		} else {
+			return ResponseEntity.status(500).body("");
+		}
 	}
 }

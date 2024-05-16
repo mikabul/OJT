@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/Accept")
 public class NotAcceptController {
 	
-	@RequestMapping(value = "/NotAccept")
+	@RequestMapping(value = "/not-accept")
 	public String notAccept() {
 		return "/NotAccept";
 	}

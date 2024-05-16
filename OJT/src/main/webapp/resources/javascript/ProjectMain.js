@@ -195,7 +195,7 @@ function deleteProjectAjax(projectValue) {
 	})
 	
 	$.ajax({
-		url: '/OJT/projectRest/deleteProjects',
+		url: '/OJT/project/delete',
 		method: 'POST',
 		traditional: true,
 		data: {
@@ -225,7 +225,7 @@ function deleteProjectAjax(projectValue) {
 // 프로젝트 등록 모달 호출
 function addProjectBtnEvent() {
 	$.ajax({
-		url: '/OJT/addProject/addProjectModal',
+		url: '/OJT/project/add/modal',
 		dataType: 'HTML',
 		success: function(result) {
 			$('#modalAddProject').html(result);
@@ -246,7 +246,7 @@ function projectAddSuccess() {
 
 	if (success && success == 'true') { //success가 undefiend가 아니고 'true'일때
 		$.ajax({
-			url: '/OJT/project/projectInfo',
+			url: '/OJT/project/info',
 			method: 'GET',
 			traditional: true,
 			data: {
@@ -404,7 +404,7 @@ function changeSubmitEvent() {
 	}
 
 	$.ajax({
-		url: "/OJT/projectRest/updateProjectState",
+		url: "/OJT/project/modify/update-state",
 		method: 'POST',
 		data: {
 			'projectNumbers': projectNumber,
@@ -470,7 +470,7 @@ function projectMemberBtnEvent() {
 	let projectNumber = this.value;
 
 	$.ajax({
-		url: '/OJT/projectMember/',
+		url: '/OJT/project/member/modal',
 		method: 'GET',
 		data: {
 			'projectNumber': projectNumber

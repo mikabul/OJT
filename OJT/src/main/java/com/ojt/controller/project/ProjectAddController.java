@@ -1,4 +1,4 @@
-package com.ojt.controller;
+package com.ojt.controller.project;
 
 import java.util.ArrayList;
 
@@ -29,7 +29,7 @@ import com.ojt.service.ProjectService;
 import com.ojt.validator.ProjectValidator;
 
 @Controller
-@RequestMapping(value = "/addProject")
+@RequestMapping(value = "/project/add")
 public class ProjectAddController {
 	
 	@Autowired
@@ -38,7 +38,8 @@ public class ProjectAddController {
 	@Autowired
 	private ProjectMemberService projectMemberService;
 	
-	@GetMapping("/addProjectModal")
+	// 프로젝트 추가 모달
+	@GetMapping("/modal")
 	public String addProjectModal(@ModelAttribute("addProjectBean") ProjectBean addProjectbean,
 								Model model) {
 		
@@ -53,7 +54,8 @@ public class ProjectAddController {
 		return "/project/addProject/AddProject";
 	}
 	
-	@GetMapping("showAddPMModal")
+	// 프로젝트 멤버 추가 모달
+	@GetMapping("/modal-member")
 	public String showAddPMModal(@RequestParam("startDate") String startDate,
 								@RequestParam("endDate") String endDate,
 								Model model) {
@@ -64,7 +66,8 @@ public class ProjectAddController {
 		return "/project/addProject/AddProjectMember";
 	}
 	
-	@GetMapping("/getNotAddProjectMember")
+	// 프로젝트에 참여중이지 않은 사원
+	@GetMapping("/not-project-member")
 	public String getNotAddProjectMember(@RequestParam("search") String search,
 										@RequestParam(name = "memberNumbers", required = false) int[] memberNumbers,
 										@RequestParam("startDate") String startDate,
@@ -82,7 +85,8 @@ public class ProjectAddController {
 		return "/project/addProject/AddProjectMemberTable";
 	}
 	
-	@PostMapping("/addProjectTable")
+	// 프로젝트 멤버 테이블
+	@PostMapping("/member-table")
 	public String AddProjectTable(@RequestBody String jsonString, Model model) {
 		
 		ObjectMapper mapper = new ObjectMapper();
@@ -132,7 +136,8 @@ public class ProjectAddController {
 		return "/project/addProject/AddProjectTable";
 	}
 	
-	@PostMapping("/deleteProjectMember")
+	// 멤버 테이블에서 삭제
+	@PostMapping("/delete-member")
 	public String deleteProjectMember(ProjectBean projectBean,
 									@RequestParam("deleteIndex")int[] deleteIndex,
 									Model model) {
@@ -158,8 +163,9 @@ public class ProjectAddController {
 		return "project/addProject/AddProjectTable";
 	}
 	
-	@PostMapping("/addProject")
-	public String addProject(@Valid @ModelAttribute("addProjectBean") ProjectBean addProjectBean,
+	// 프로젝트 추가
+	@PostMapping("/add-project")
+	public String addProject(@ModelAttribute("addProjectBean") ProjectBean addProjectBean,
 							BindingResult result, Model model) {
 		
 		if(result.hasErrors() || !projectService.insertProject(addProjectBean)) {// 에러가 존재하는지 또는 등록에 실패했는지

@@ -55,7 +55,7 @@ table tr {
 	<c:import url="/WEB-INF/views/include/TopMenu.jsp"></c:import>
 	<!-- 검색 -->
 	<header>
-		<form action="#" onsubmit="return false;" id="searchMember">
+		<form onsubmit="return false;" id="searchMember">
 			<div id="searchForm" class="container-center">
 				<div class="flex">
 					<div class="w-10">사원명</div>
@@ -186,7 +186,7 @@ table tr {
 					</c:if>
 				</div>
 				<div class="w-30 text-right">
-					<button class="btn btn-green" onclick="location.href='${root}member/addMember/'">등록</button>
+					<button class="btn btn-green" onclick="location.href='${root}member/add/main'">등록</button>
 					<button class="btn btn-red" id="deleteMemberButton">삭제</button>
 				</div>
 			</div>
@@ -267,7 +267,7 @@ function viewChangeEvent(){
 // 검색 ajax
 function searchAjax(){
 	$.ajax({
-		url: '/OJT/member/searchMember',
+		url: '/OJT/member/search-member',
 		method: 'POST',
 		dataType: 'json',
 		data: searchData,
@@ -337,7 +337,7 @@ function searchAjax(){
 // 사원 상세정보 모달
 function showMemberInfoModal(memberNumber){
 	$.ajax({
-		url: '/OJT/member/memberInfo',
+		url: '/OJT/member/info',
 		method: 'POST',
 		dataType: 'html',
 		data: {
@@ -422,7 +422,7 @@ function deleteMember(){
 function deleteMemberAjax(checkedMembers) {
 	
 	$.ajax({
-		url: '/OJT/member/deleteMember/' + checkedMembers,
+		url: '/OJT/member/delete/' + checkedMembers,
 		method: 'DELETE',
 		success: function(response) {
 			if(response === 'true'){
@@ -445,7 +445,7 @@ function modifyMemberProject(event) {
 	const memberNumber = target.dataset.membernumber;
 	const memberName = target.dataset.membername;
 	
-	location.href='/OJT/member/memberProject/info/' + memberNumber + '/' + memberName + '/';
+	location.href='/OJT/member/project/' + memberNumber + '/' + memberName;
 }
 </script>
 </html>

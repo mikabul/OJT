@@ -63,9 +63,9 @@
 							<!-- checkbox -->
 							<col style="width: 30px;"/>
 							<!-- 사원 번호 -->
-							<col style="width: 80px;"/>
+							<col style="width: 40px;"/>
 							<!-- 사원명 -->
-							<col style="width: 80px;"/>
+							<col style="width: 120px;"/>
 							<!-- 부서 -->
 							<col style="width: 80px;"/>
 							<!-- 직급 -->
@@ -80,7 +80,7 @@
 						<thead>
 							<tr>
 								<th scope="col"><input type="checkbox" class="allCheck"/></th>
-								<th scope="col">사원번호</th>
+								<th scope="col">번호</th>
 								<th scope="col">이름</th>
 								<th scope="col">부서</th>
 								<th scope="col">직급</th>
@@ -133,7 +133,7 @@ function searchMember(){
 	});
 	
 	$.ajax({
-		url: '/OJT/addProject/getNotAddProjectMember',
+		url: '/OJT/project/add/not-project-member',
 		method: 'GET',
 		traditional: true,
 		data: {
@@ -203,7 +203,7 @@ function addPMBtnEvent(){
 	}
 	
 	$.ajax({
-		url: '/OJT/addProject/addProjectTable',
+		url: '/OJT/project/add/member-table',
 		method: 'POST',
 		contentType: 'application/json',
 		data: JSON.stringify({
@@ -223,7 +223,7 @@ function addPMBtnEvent(){
 			
 			$(modalStack.pop()).html(''); // 창 닫기
 			currModal = getCurrModalDom();
-			//스코롤
+			//스크롤
 			isScroll();
 			pmDateEvent(); // 프로젝트 멤버 날짜 이벤트 추가
 		},

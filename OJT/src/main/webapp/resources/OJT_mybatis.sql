@@ -127,7 +127,7 @@ select
 from project_info prj
 inner join code_detail ps on ps.mst_cd = 'PS01' and prj.ps_cd = ps.dtl_cd
 inner join customer cust on cust.cust_seq = prj.cust_seq
-where prj.prj_seq = 203;
+where prj.prj_seq = 1;
 
 select 
 			mem.mem_seq, 
@@ -192,9 +192,8 @@ select count(prj_seq)
 from project_info
 where prj_seq = 763
     and prj_st_dt = '2024-04-03'
-    and prj_ed_dt = '2024-04-04'
-    AND maint_st_dt = ''
-    and maint_ed_dt = '';
+    and prj_ed_dt = '2024-04-04';
+   
 
 select * from project_info where prj_seq = 763;
 SELECT * FROM project_info;
@@ -202,3 +201,182 @@ SELECT * FROM project_info;
 SELECT count(mem_seq)
 FROM MEMBER_INFO
 WHERE mem_seq IN (1,2,3);
+
+
+
+select
+    mi.mem_seq,
+    mi.mem_nm,
+    mc.mem_hire_date,
+    de.dtl_cd as departmentCode,
+    ps.dtl_cd as positionCode,
+    st.dtl_cd as statusCode,
+    de.dtl_cd_nm as depatment,
+    ps.dtl_cd_nm as position,
+    st.dtl_cd_nm as status
+from member_info mi
+join member_company mc on mi.mem_seq = mc.mem_seq
+left join code_detail de on de.mst_cd='DP01' and mc.dp_cd = de.dtl_cd
+left join code_detail ps on ps.mst_cd='RA01' and mc.ra_cd = ps.dtl_cd
+left join code_detail st on st.mst_cd='ST01' and mc.st_cd = st.dtl_cd;
+
+select * from(
+    select
+        mi.mem_seq,
+        mi.mem_nm,
+        mc.mem_hire_date,
+        de.dtl_cd as departmentCode,
+        ps.dtl_cd as positionCode,
+        st.dtl_cd as statusCode,
+        de.dtl_cd_nm as depatment,
+        ps.dtl_cd_nm as position,
+        st.dtl_cd_nm as status,
+        row_number() over (order by mi.mem_seq) as rn
+    from member_info mi
+    join member_company mc on mi.mem_seq = mc.mem_seq
+    left join code_detail de on de.mst_cd='DP01' and mc.dp_cd = de.dtl_cd
+    left join code_detail ps on ps.mst_cd='RA01' and mc.ra_cd = ps.dtl_cd
+    left join code_detail st on st.mst_cd='ST01' and mc.st_cd = st.dtl_cd
+    where
+        mi.mem_nm like '%%'
+        and to_date(mc.mem_hire_date) between to_date('2000-01-01') and to_date('2024-12-31')
+--        and de.dtl_cd = '0'
+--          and ps.dtl_cd = '1'
+--        and st.dtl_cd = '1'
+)
+where rn between 4 and 6;
+
+select * from member_info;
+select * from member_company;
+select * from member_address;
+select * from code_detail;
+select * from code_master;
+
+select
+    mi.mem_nm,
+    mi.mem_seq,
+    mi.mem_id,
+    mi.mem_rrn_prefix,
+    mi.mem_tel,
+    mi.mem_phone,
+    mi.mem_email,
+    mc.mem_pic,
+    mc.mem_hire_date,
+    mc.mem_resignation_date,
+    ma.mem_zonecode,
+    ma.mem_addr,
+    ma.mem_detailaddr,
+    ma.mem_extraaddr,
+    dept.dtl_cd_nm,
+    posi.dtl_cd_nm,
+    st.dtl_cd_nm
+from member_info mi
+inner join member_company mc on mc.mem_seq = mi.mem_seq
+inner join member_address ma on ma.mem_seq = mi.mem_seq
+left join code_detail dept on dept.mst_cd = 'DP01' and dept.dtl_cd = mc.dp_cd
+left join code_detail posi on posi.mst_cd = 'RA01' and posi.dtl_cd = mc.ra_cd
+left join code_detail st on st.mst_cd = 'ST01' and st.dtl_cd = mc.st_cd
+where mi.mem_seq = 1;
+
+select
+    prj.prj_seq,
+    prj.prj_nm,
+    cust.cust_nm,
+    mem.st_dt,
+    mem.ed_dt,
+    ro.dtl_cd as role
+from project_member_table mem
+inner join project_info prj on mem.prj_seq = prj.prj_seq
+inner join customer cust on prj.cust_seq = cust.cust_seq
+left join code_detail ro on ro.mst_cd = 'RO01' and ro.dtl_cd = mem.ro_cd
+where mem_seq = 7;
+
+select
+    count(mem_seq)
+from member_info
+where mem_id = 'hong12';
+
+select MEMBER_SEQUENCE.nextval from dual;
+
+insert into member_info values(member_sequence.nextval, '홍길동', 'hong12', '12345', '891030', '1234567', '02-123-1234', '010-1293-1211', 'hong12@member.com', '1');
+insert into member_address values(member_sequence.currval, '12345', '서울시 금천구 가산로 122', '', '');
+insert into member_company values(member_sequence.currval, '0', '1', 'testpic1.jpg', '1', '2010-03-01', '');
+
+
+
+select * from member_company;
+
+update member_company set mem_pic='default.jpg'; 
+commit;
+
+alter table member_address modify mem_addr varchar2(120);
+alter table member_address modify mem_detailaddr varchar2(60);
+
+
+
+select * from project_sk;
+
+select * from member_info;
+select mem_id from member_info;
+
+select mem_id
+from member_info
+where
+    mem_seq != 1
+    and mem_id = 'ajaja31';
+
+select * from member_info;
+
+select * from project_member_table;
+
+UPDATE PROJECT_MEMBER_TABLE
+SET ST_DT = '', ED_DT = '', RO_CD = ''
+WHERE PRJ_SEQ = '' AND MEM_SEQ = '';
+
+INSERT INTO PROJECT_MEMBER_TABLE
+(PRJ_SEQ, MEM_SEQ, ST_DT, ED_DT, RO_CD)
+VALUES(2, 1, '2000-01-01', '2000-01-01', '1');
+
+INSERT ALL
+INTO PROJECT_MEMBER_TABLE
+(PRJ_SEQ, MEM_SEQ, ST_DT, ED_DT, RO_CD)
+VALUES(2, 1, '2000-01-01', '2000-01-01', '1')
+INTO PROJECT_MEMBER_TABLE
+(PRJ_SEQ, MEM_SEQ, ST_DT, ED_DT, RO_CD)
+VALUES(2, 2, '2000-01-01', '2000-01-01', '1')
+SELECT * FROM DUAL;
+
+SELECT
+    PRJ.PRJ_SEQ,
+    PRJ.PRJ_NM,
+    CUST.CUST_NM,
+    PRJ.PRJ_ST_DT,
+    PRJ.PRJ_ED_DT,
+    PRJ.MAINT_ST_DT,
+    PRJ.MAINT_ED_DT
+FROM PROJECT_INFO PRJ
+INNER JOIN CUSTOMER CUST ON CUST.CUST_SEQ = PRJ.CUST_SEQ
+WHERE
+    PRJ.PRJ_SEQ NOT IN (
+        SELECT PRJ_SEQ
+        FROM PROJECT_MEMBER_TABLE
+        WHERE MEM_SEQ = 1
+    );
+
+ROLLBACK;
+
+select * from project_info where prj_seq = 1;
+
+select count(*) from (
+    select prj_seq
+    from project_info
+    where prj_seq = 1
+        and prj_st_dt = '2023-11-07'
+        and prj_ed_dt = '2024-06-27'
+        and maint_st_dt IS NULL
+        and maint_ed_dt IS NULL
+    union all
+    select mem_seq
+    from member_info
+    where mem_seq = 1
+);

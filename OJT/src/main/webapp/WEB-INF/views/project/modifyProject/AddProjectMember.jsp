@@ -139,7 +139,7 @@
 		});
 		
 		$.ajax({
-			url: '/OJT/projectModify/getNotAddProjectMember',
+			url: '/OJT/project/modify/not-project-member',
 			method: 'POST',
 			data: {
 				'search' : search,
@@ -318,7 +318,7 @@
 		
 		// 멤버를 테이블에 추가
 		$.ajax({
-			url: '/OJT/projectModify/modifyProjectMember',
+			url: '/OJT/project/modify/add-member',
 			method: 'POST',
 			contentType: 'application/json',
 			dataType: 'HTML',

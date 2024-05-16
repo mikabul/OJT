@@ -165,7 +165,7 @@
 						</div>
 					</div>
 					<div class="text-right">
-						<button type="button" class="btn btn-green" onclick="location.href='${root}member/modifyMember/?memberNumber=${ memberBean.memberNumber }'">수정</button>
+						<button type="button" class="btn btn-green" onclick="location.href='${root}member/modify/main?memberNumber=${ memberBean.memberNumber }'">수정</button>
 					</div>
 				</section>
 				<section>
@@ -233,7 +233,7 @@ function modifyMemberProject(){
 	const memberNumber = `${ memberBean.memberNumber }`;
 	const memberName = `${ memberBean.memberName }`;
 	
-	location.href='/OJT/member/memberProject/info/' + memberNumber + '/' + memberName + '/';
+	location.href='/OJT/member/project/' + memberNumber + '/' + memberName;
 }
 
 </script>

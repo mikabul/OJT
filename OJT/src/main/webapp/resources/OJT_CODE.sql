@@ -5,6 +5,7 @@ insert into code_master values('SK01','기술 코드');
 insert into code_master values('PS01','프로젝트 상태 코드');
 insert into code_master values('RO01','역할 코드');
 insert into code_master values('GD01','성별 코드');
+insert into code_master values('EM01','이메일 코드');
 
 select * from code_master;
 
@@ -60,6 +61,15 @@ insert into code_detail values('RO01','5','QA');
 insert into code_detail values('GD01', '1', '남');
 insert into code_detail values('GD01', '2', '여');
 
+------- 이메일
+insert into code_detail values('EM01', '0', '직접입력');
+insert into code_detail values('EM01', '1', 'naver.com');
+insert into code_detail values('EM01', '2', 'gmail.com');
+insert into code_detail values('EM01', '3', 'daum.net');
+insert into code_detail values('EM01', '4', 'hanmail.net');
+insert into code_detail values('EM01', '5', 'yahoo.com');
+
 select * from code_detail;
+select * from code_detail where mst_cd='EM01';
 
 COMMIT;

@@ -29,6 +29,8 @@ import com.ojt.interceptor.AcceptLoginInterceptor;
 @Configuration
 @EnableWebMvc
 @ComponentScan("com.ojt.controller")
+@ComponentScan("com.ojt.controller.member")
+@ComponentScan("com.ojt.controller.project")
 @ComponentScan("com.ojt.service")
 @ComponentScan("com.ojt.dao")
 @ComponentScan("com.ojt.util")

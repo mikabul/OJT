@@ -17,7 +17,7 @@
 		text: '등록에 성공하였습니다.'
 	}).then(() => {
 		const memberNumber = `${memberNumber}`;
-		location.href="/OJT/member/Main?memberNumber=" + memberNumber;
+		location.href="/OJT/member/main?memberNumber=" + memberNumber;
 	});
 </script>
 </body>

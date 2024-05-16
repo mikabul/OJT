@@ -246,7 +246,7 @@ function addMemberProject() {
 	}
 	
 	$.ajax({
-		url: '/OJT/member/memberProject/add',
+		url: '/OJT/member/project/add',
 		method: 'POST',
 		contentType: 'application/json',
 		data: JSON.stringify(memberProjects),

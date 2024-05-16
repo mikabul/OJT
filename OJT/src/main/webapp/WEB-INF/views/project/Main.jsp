@@ -39,7 +39,7 @@ table tr {
 <body>
 	<!-- 검색 -->
 	<header>
-		<form:form action="${root}project/Main" method="POST"
+		<form:form action="${root}project/main" method="POST"
 			modelAttribute="projectSearchBean">
 			<div id="searchForm" class="container-center">
 				<!-- 프로젝트 명과 고객사 -->
@@ -162,7 +162,7 @@ table tr {
 									</td>
 									<td>${ item.projectNumber }</td>
 									<td class="text-left">
-										<a class="projectInfo" href="${root}project/projectInfo?projectNumber=${item.projectNumber}" title="${item.projectName} - 자세히">
+										<a class="projectInfo" href="${root}project/info?projectNumber=${item.projectNumber}" title="${item.projectName} - 자세히">
 											${ item.projectName }
 										</a>
 									</td>
@@ -181,8 +181,7 @@ table tr {
 			</table>
 			<div class="text-right">
 				<div id="BeforeSwitchBtn">
-					<button type="button" class="btn btn-blue" id="modifyProjectState">상태
-						수정</button>
+					<button type="button" class="btn btn-blue" id="modifyProjectState">상태 수정</button>
 					<button type="button" class="btn btn-red" id="removeBtn">삭제</button>
 					<button type="button" class="btn btn-green" id="addProjectBtn">등록</button>
 				</div>
@@ -191,8 +190,7 @@ table tr {
 					<button type="button" class="btn btn-orange" id="changeStateCancle">취소</button>
 				</div>
 			</div>
-			<form:form modelAttribute="projectSearchBean" id="paginationForm"
-				action="${root}project/Main" method="POST">
+			<form:form modelAttribute="projectSearchBean" id="paginationForm" action="${root}project/main" method="POST">
 				<form:hidden path="name" />
 				<form:hidden path="customer" />
 				<form:hidden path="dateType" />

@@ -242,7 +242,9 @@ public class ProjectService {
 			int projectNumber = projectBean.getProjectNumber();
 			String[] skillCodeList = projectBean.getSkillCodeList();
 			
+			// 프로젝트 정보 수정
 			projectDao.updateProject(projectBean);
+			
 			// 프로젝트 필요기술 삭제후 등록
 			projectDao.deleteProjectSK(projectNumber);
 			for(String skillCode : skillCodeList) {
@@ -318,10 +320,10 @@ public class ProjectService {
 		// 기간 검색 쿼리
 		String dateString;
 		switch(dateType) {
-		case(1):
+		case(0):
 			dateString = "prj_st_dt";
 			break;
-		case(2):
+		case(1):
 			dateString = "prj_ed_dt";
 			break;
 		default:
@@ -332,9 +334,9 @@ public class ProjectService {
 			!firstDate.isEmpty()&& !secondDate.isEmpty()) { // 두개 모두 비어있지 않다면
 			optionalQuery += " and to_date(prj." + dateString + ") between to_date('" + firstDate + "') and to_date('" + secondDate + "') ";
 		} else if(firstDate != null && !firstDate.isEmpty()) { // 첫번째 날짜가 null이 아니고 비어있지 않다면
-			optionalQuery += " and to_date(prj." + dateString + ") > to_date('" + firstDate + "') ";
+			optionalQuery += " and to_date(prj." + dateString + ") >= to_date('" + firstDate + "') ";
 		} else if(secondDate != null && !secondDate.isEmpty()) { // 두번째 날짜가 null이 아니고 비어있지 않다면
-			optionalQuery += " and to_date(prj." + dateString + ") < to_date('" + secondDate + "') ";
+			optionalQuery += " and to_date(prj." + dateString + ") <= to_date('" + secondDate + "') ";
 		}
 		
 		// 프로젝트 상태 검색 쿼리

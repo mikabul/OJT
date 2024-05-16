@@ -5,49 +5,60 @@
 <c:set var="root" value="${pageContext.request.contextPath}/" />
 <!DOCTYPE html>
 <body>
-	<c:forEach var="item" items="${addPMList}" varStatus="status">
-		<tr>
-			<td>
-				<input type="checkbox" class="checkAddProject"/>
-			</td>
-			<td>
-				<input id="pmList${rowsLength + status.index}.memberNumber" name="pmList[${rowsLength + status.index}].memberNumber" 
-					class="read-input" readonly="readonly" type="text" value="${item.memberNumber }" />
-			</td>
-			<td>
-				<input id="pmList${rowsLength + status.index}.memberName" name="pmList[${rowsLength + status.index}].memberName" 
-					class="read-input" readonly="readonly" type="text" value="${item.memberName }" />
-			</td>
-			<td>
-				<input id="pmList${rowsLength + status.index}.department" name="pmList[${rowsLength + status.index}].department" 
-					class="read-input" readonly="readonly" type="text" value="${item.department }" />
-			</td>
-			<td>
-				<input id="pmList${rowsLength + status.index}.position" name="pmList[${rowsLength + status.index}].position" 
-					class="read-input" readonly="readonly" type="text" value="${item.position }" />
-			</td>
-			<td>
-				<input id="pmList${rowsLength + status.index}.startDate" name="pmList[${rowsLength + status.index}].startDate"
-				type="date" class="startDate" value="${item.startDate}" min="${ startDate}" max="${ endDate }" index="${status.index}" required/>
-			</td>
-			<td>
-				<input id="pmList${rowsLength + status.index}.endDate" name="pmList[${rowsLength + status.index}].endDate"
-				type="date" class="endDate" value="${item.endDate}" min="${ startDate}" max="${ endDate}" index="${status.index}" required/>
-			</td>
-			<td>
-				<select id="pmList${rowsLength + status.index}.roleCode" name="pmList[${rowsLength + status.index }].roleCode" class="role text-left">
-					<c:forEach var="role" items="${roleList}">
-						<c:choose>
-							<c:when test="${role.detailCode == item.roleCode}">
-								<option value="${role.detailCode}" selected>${role.codeName}</option>
-							</c:when>
-							<c:otherwise>
-								<option value="${role.detailCode}">${role.codeName}</option>
-							</c:otherwise>
-						</c:choose>
-					</c:forEach>
-				</select>
-			</td>
-		</tr>
-	</c:forEach>
+	<c:choose>
+		<c:when test="${ fn:length(addPMList) == 0 }">
+			<tr>
+				<td colspan="8">
+					<span>추가된 인원이 없습니다.</span>
+				</td>
+			</tr>
+		</c:when>
+		<c:otherwise>
+			<c:forEach var="item" items="${addPMList}" varStatus="status">
+				<tr>
+					<td>
+						<input type="checkbox" class="check"/>
+					</td>
+					<td>
+						<input id="pmList${rowsLength + status.index}.memberNumber" name="pmList[${rowsLength + status.index}].memberNumber" 
+							class="read-input" readonly="readonly" type="text" value="${item.memberNumber }" />
+					</td>
+					<td>
+						<input id="pmList${rowsLength + status.index}.memberName" name="pmList[${rowsLength + status.index}].memberName" 
+							class="read-input" readonly="readonly" type="text" value="${item.memberName }" />
+					</td>
+					<td>
+						<input id="pmList${rowsLength + status.index}.department" name="pmList[${rowsLength + status.index}].department" 
+							class="read-input" readonly="readonly" type="text" value="${item.department }" />
+					</td>
+					<td>
+						<input id="pmList${rowsLength + status.index}.position" name="pmList[${rowsLength + status.index}].position" 
+							class="read-input" readonly="readonly" type="text" value="${item.position }" />
+					</td>
+					<td>
+						<input id="pmList${rowsLength + status.index}.startDate" name="pmList[${rowsLength + status.index}].startDate"
+						type="date" class="startDate" value="${item.startDate}" min="${ startDate}" max="${ endDate }" index="${status.index}" required/>
+					</td>
+					<td>
+						<input id="pmList${rowsLength + status.index}.endDate" name="pmList[${rowsLength + status.index}].endDate"
+						type="date" class="endDate" value="${item.endDate}" min="${ startDate}" max="${ endDate}" index="${status.index}" required/>
+					</td>
+					<td>
+						<select id="pmList${rowsLength + status.index}.roleCode" name="pmList[${rowsLength + status.index }].roleCode" class="role text-left">
+							<c:forEach var="role" items="${roleList}">
+								<c:choose>
+									<c:when test="${role.detailCode == item.roleCode}">
+										<option value="${role.detailCode}" selected>${role.codeName}</option>
+									</c:when>
+									<c:otherwise>
+										<option value="${role.detailCode}">${role.codeName}</option>
+									</c:otherwise>
+								</c:choose>
+							</c:forEach>
+						</select>
+					</td>
+				</tr>
+			</c:forEach>
+		</c:otherwise>
+	</c:choose>
 </body>

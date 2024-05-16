@@ -1,4 +1,4 @@
-package com.ojt.controller;
+package com.ojt.controller.member;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -57,7 +57,7 @@ public class MemberController {
 
 	public Map<String, Object> codeMap;
 
-	@GetMapping("/Main")
+	@GetMapping("/main")
 	public String main(@RequestParam(value = "memberNumber", required = false) Integer memberNumber, Model model) {
 
 		SearchMemberBean searchMemberBean = new SearchMemberBean();
@@ -76,7 +76,7 @@ public class MemberController {
 	}
 
 	// 사원 검색
-	@PostMapping(value = "/searchMember", produces = "application/json; charset=utf-8")
+	@PostMapping(value = "/search-member", produces = "application/json; charset=utf-8")
 	@ResponseBody
 	public ResponseEntity<Object> searchMember(@ModelAttribute SearchMemberBean searchMemberBean,
 			@RequestParam(name = "page", required = false, defaultValue = "0") int page) {
@@ -97,7 +97,7 @@ public class MemberController {
 	}
 
 	// 사원 상세 정보
-	@PostMapping(value = "/memberInfo", produces = "application/json; charset=utf-8")
+	@PostMapping(value = "/info", produces = "application/json; charset=utf-8")
 	public String memberInfo(@RequestParam("memberNumber") int memberNumber, Model model) {
 
 		Map<String, Object> memberInfoMap = memberService.getDetailMemberInfo(memberNumber);
@@ -108,7 +108,7 @@ public class MemberController {
 	}
 
 	// 사원 등록 페이지
-	@GetMapping(value = "/addMember/")
+	@GetMapping(value = "/add/main")
 	public String showAddMember(Model model) {
 
 		MemberBean memberBean = new MemberBean(); // 초기 사용을 위한 값이 비어있는 bean
@@ -118,7 +118,7 @@ public class MemberController {
 	}
 
 	// 아이디 중복 체크
-	@GetMapping(value = "/addMember/matchId")
+	@GetMapping(value = "/add/matchId")
 	@ResponseBody
 	public ResponseEntity<Boolean> matchId(String inputId) {
 		Boolean checkId = memberService.checkMemberId(inputId);
@@ -126,7 +126,7 @@ public class MemberController {
 	}
 
 	// 사원 등록
-	@PostMapping(value = "/addMember/add")
+	@PostMapping(value = "/add/add-member")
 	public String addMember(@ModelAttribute("addMemberBean") MemberBean addMemberBean, BindingResult result,
 			Model model) {
 
@@ -162,7 +162,7 @@ public class MemberController {
 		}
 	}
 
-	@GetMapping(value = "/modifyMember/")
+	@GetMapping(value = "/modify/main")
 	public String modifyMemberMain(@RequestParam("memberNumber") int memberNumber, Model model) {
 
 		MemberBean modifyMemberBean = memberService.getMemberInfo(memberNumber);
@@ -173,7 +173,7 @@ public class MemberController {
 	}
 
 	// 아이디 중복 체크(수정)
-	@GetMapping(value = "/modifyMember/matchId")
+	@GetMapping(value = "/modify/matchId")
 	@ResponseBody
 	public ResponseEntity<Boolean> modifyMatchId(String inputId, int memberNumber) {
 		Boolean matchResult = memberService.modifyMatchId(memberNumber, inputId);
@@ -182,7 +182,7 @@ public class MemberController {
 	}
 
 	// 멤버 수정
-	@PostMapping(value = "/modifyMember/modify")
+	@PostMapping(value = "/modify/modify-member")
 	public String modifyMember(@ModelAttribute("modifyMemberBean") MemberBean modifyMemberBean, Model model,
 			BindingResult result) {
 
@@ -226,7 +226,7 @@ public class MemberController {
 	}
 
 	// 사원 삭제
-	@DeleteMapping("/deleteMember/{numbers}")
+	@DeleteMapping("/delete/{numbers}")
 	@ResponseBody
 	public ResponseEntity<String> deleteMember(@PathVariable("numbers") int[] memberNumbers) {
 
@@ -241,7 +241,7 @@ public class MemberController {
 	}
 
 	// 사원 개인 프로젝트 관리
-	@GetMapping("/memberProject/info/{memberNumber}/{memberName}/")
+	@GetMapping("/project/{memberNumber}/{memberName}")
 	public String memberProjectInfo(@PathVariable("memberNumber") int memberNumber,
 			@PathVariable("memberName") String memberName, Model model) {
 
@@ -257,7 +257,7 @@ public class MemberController {
 	}
 
 	// 사원 프로젝트 추가 모달
-	@GetMapping("/memberProject/addMemberProjectModal/{memberNumber}")
+	@GetMapping("/project/addModal/{memberNumber}")
 	public String addMemberProjectModal(@PathVariable("memberNumber") int memberNumber, Model model) {
 
 		ArrayList<ProjectMemberBean> projectList = memberService.nonParticipatingProjects(memberNumber);
@@ -270,7 +270,7 @@ public class MemberController {
 	}
 
 	// 사원 프로젝트 추가
-	@PostMapping("/memberProject/add")
+	@PostMapping("/project/add")
 	@ResponseBody
 	public Map<String, Object> addMemberProject(@RequestBody ArrayList<ProjectMemberBean> projectMemberBeans) {
 
@@ -298,7 +298,7 @@ public class MemberController {
 	}
 
 	// 사원 프로젝트 수정
-	@PutMapping("/memberProject/update")
+	@PutMapping("/project/update")
 	@ResponseBody
 	public Map<String, Object> updateMemeberProject(@RequestBody ArrayList<ProjectMemberBean> projectMemberBeans) {
 
@@ -325,7 +325,7 @@ public class MemberController {
 	}
 
 	// 사원 프로젝트 삭제
-	@DeleteMapping("/memberProject/delete/{projectNumbers}/{memberNumber}/")
+	@DeleteMapping("/project/delete/{projectNumbers}/{memberNumber}")
 	@ResponseBody
 	public Boolean deleteMemberProject(@PathVariable("projectNumbers") int[] projectNumbers,
 			@PathVariable("memberNumber") int memberNumber) {
@@ -339,20 +339,21 @@ public class MemberController {
 	private void initBinder(HttpServletRequest request, Model model) {
 
 		String requestURI = request.getRequestURI();
-
+		System.out.println(requestURI);
 		switch (requestURI) {
-		case "/OJT/member/Main":
+		case "/OJT/member/main":
 			codeMap = memberService.getSearchCode();
 			model.addAttribute("departmentList", codeMap.get("departmentList"));
 			model.addAttribute("positionList", codeMap.get("positionList"));
 			model.addAttribute("statusList", codeMap.get("statusList"));
 			break;
 
-		case "/OJT/member/addMember/":
-		case "/OJT/member/addMember/add":
-		case "/OJT/member/modifyMember/":
-		case "/OJT/member/modifyMember/modify":
+		case "/OJT/member/add/main":
+		case "/OJT/member/add/add-member":
+		case "/OJT/member/modify/main":
+		case "/OJT/member/modify/modify-member":
 			codeMap = memberService.getAddMemberCode();
+			
 			model.addAttribute("departmentList", codeMap.get("departmentList"));
 			model.addAttribute("positionList", codeMap.get("positionList"));
 			model.addAttribute("statusList", codeMap.get("statusList"));

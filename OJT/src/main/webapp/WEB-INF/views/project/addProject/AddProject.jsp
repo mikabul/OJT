@@ -52,7 +52,7 @@
 				</div>
 			</header>
 			<section>
-				<form:form action="${root}project/addProject" method="POST" modelAttribute="addProjectBean" enctype="application/x-www-form-urlcencoded">
+				<form:form action="${root}project/add" method="POST" modelAttribute="addProjectBean" enctype="application/x-www-form-urlcencoded">
 					<div class="justify-content-center">
 						<div class="w-20">프로젝트 명<span class="required">*</span></div>
 						<div class="w-30">
@@ -200,7 +200,7 @@
 							</colgroup>
 							<thead>
 								<tr>
-									<th scope="col"><input type="checkbox" id="allCheckAddProject" value="false"/></th>
+									<th scope="col"><input type="checkbox" class="allCheck"/></th>
 									<th scope="col">사원 번호</th>
 									<th scope="col">이름</th>
 									<th scope="col">부서</th>
@@ -222,7 +222,7 @@
 									<c:otherwise>
 										<c:forEach var="item" items="${addProjectBean.pmList}" varStatus="status">
 											<tr>
-												<td><input type="checkbox" class="checkAddProject"/></td>
+												<td><input type="checkbox" class="check"/></td>
 												<td>
 													<form:input path="pmList[${status.index}].memberNumber" class="read-input" readonly="true"/>
 												</td>
@@ -506,13 +506,15 @@ function deletePMButtonEvent(){
 	formData.append("deleteIndex", deleteIndex);
 	
 	$.ajax({
-		url: '/OJT/addProject/deleteProjectMember',
+		url: '/OJT/project/add/delete-member',
 		method: 'POST',
 		contentType: false,
 		processData: false,
 		data: formData,
 		success: function(result){
 			tbody.innerHTML = result;
+			checkEvent();
+			pmDateEvent();
 		},
 		error: function(error){
 			console.error(error);
@@ -537,7 +539,7 @@ function addPMModalBtnEvent(){
 	}
 	
 	$.ajax({
-		url: '/OJT/addProject/showAddPMModal',
+		url: '/OJT/project/add/modal-member',
 		method: 'GET',
 		data: {
 			'startDate' : projectStart,
@@ -565,7 +567,7 @@ function addProjectBeanSubmitEvent(){
 	})
    	
     $.ajax({
-        url: '/OJT/addProject/addProject',
+        url: '/OJT/project/add/add-project',
         method: 'POST',
         contentType: false,
         processData: false,
@@ -597,7 +599,7 @@ function addSuccess(){
 		const success = document.querySelector('input[name="success"]').value;
 		const projectNumber = document.querySelector('input[name="projectNumber"]').value;
 		const form = document.querySelector('form');
-		form.action = '/OJT/project/Main?&success=' + success + '&projectNumber=' + projectNumber;
+		form.action = '/OJT/project/main?&success=' + success + '&projectNumber=' + projectNumber;
 		form.submit();
 	})
 }

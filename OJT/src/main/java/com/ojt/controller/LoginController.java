@@ -15,14 +15,14 @@ public class LoginController{
 	@Resource(name = "loginMemberBean")
 	MemberBean loginMemberBean;
 
-	@PostMapping("/Login")
+	@PostMapping("/login")
 	public String login(@ModelAttribute("loginMemberBean") MemberBean loginMemberBean) {
 		this.loginMemberBean.setLoginState(true);
-		return "redirect:/Main";
+		return "redirect:/main";
 		
 	}
 	
-	@GetMapping("/Logout")
+	@GetMapping("/logout")
 	public String logout() {
 		loginMemberBean.setLoginState(false);
 		return "redirect:/";

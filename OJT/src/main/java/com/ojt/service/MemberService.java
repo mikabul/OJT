@@ -336,7 +336,7 @@ public class MemberService {
 			
 			memberDao.addMemberProject(projectMemberBeans);
 			result = true;
-			transactionManager.rollback(status);
+			transactionManager.commit(status);
 		} catch (Exception e) {
 			result = false;
 			transactionManager.rollback(status);
@@ -360,7 +360,7 @@ public class MemberService {
 			}
 			
 			result = true;
-			transactionManager.rollback(status);
+			transactionManager.commit(status);
 		} catch (Exception e) {
 			result = false;
 			transactionManager.rollback(status);
