@@ -1,22 +1,41 @@
 package com.ojt.util;
 
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 
-import org.springframework.stereotype.Component;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-@Component
-public class Sha256 {
+public class Sha256 extends BCryptPasswordEncoder{
 	
-	public String encrypt(String str) {
+	@Override
+	public String encode(CharSequence rawPassword) {
+		
+		if (rawPassword == null) {
+			throw new IllegalArgumentException("rawPassword cannot be null");
+		}
+		
+		return encrypt(rawPassword.toString());
+	}
+
+	@Override
+	public boolean matches(CharSequence rawPassword, String encodedPassword) {
+		if (rawPassword == null) {
+			throw new IllegalArgumentException("rawPassword cannot be null");
+		}
+		if (encodedPassword == null || encodedPassword.length() == 0) {
+			return false;
+		}
+		
+		String hashedPassword = encrypt(rawPassword.toString());
+		
+		return MessageDigest.isEqual(encodedPassword.getBytes(StandardCharsets.UTF_8), hashedPassword.getBytes(StandardCharsets.UTF_8));
+	}
+
+	private String encrypt(String str) {
 		try {
 			MessageDigest md = MessageDigest.getInstance("SHA-256");
 			md.update(str.getBytes());
 			byte[] byteData = md.digest();
-			
-//			StringBuffer sb = new StringBuffer();
-//			for(int i = 0; i < byteData.length; i++) {
-//				sb.append(Integer.toString((byteData[i] & 0xff) + 0x100, 16).substring(1));
-//			}
 			
 			StringBuffer hexString = new StringBuffer();
 			for (int i = 0; i < byteData.length; i++) {

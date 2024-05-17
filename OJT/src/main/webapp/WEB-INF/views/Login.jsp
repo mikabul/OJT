@@ -69,26 +69,26 @@
 	<!-- 상단 바 -->
 	<nav class="top-nav">
 		<div class="w-100 text-center">
-			<a class="top-logo" href="${root}Main">INNOBL 관리 시스템</a>
+			<span class="top-logo">INNOBL 관리 시스템</span>
 		</div>
 	</nav>
 	<!-- 로그인 -->
-	<form:form action="${root}login" modelAttribute="memberBean" method="POST">
+	<form action="login" method="POST">
 		<div class="container">
 			<div class="login-wrap">
 				<div class="w-100 text-center">
 					<div>
-						<form:input path="memberId" class="input-box" placeholder="아이디" />
+						<input name="memberId" class="input-box" placeholder="아이디" value="${ memberId }"/>
 					</div>
 					<div>
-						<form:password path="memberPW" class="input-box" placeholder="비밀번호" />
+						<input type="password" name="memberPW" class="input-box" placeholder="비밀번호" />
 					</div>
 				</div>
 				<div class="w-100 text-center">
-					<form:button type="submit" class="loginBtn" style="">로그인</form:button>
+					<button type="submit" class="loginBtn">로그인</button>
 				</div>
 			</div>
 		</div>
-	</form:form>
+	</form>
 </body>
 </html>

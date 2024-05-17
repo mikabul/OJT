@@ -2,14 +2,20 @@ package com.ojt.mapper;
 
 import java.util.ArrayList;
 
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import com.ojt.bean.LoginMemberBean;
 import com.ojt.bean.MemberBean;
 import com.ojt.bean.ProjectBean;
 import com.ojt.bean.ProjectMemberBean;
 import com.ojt.bean.SearchMemberBean;
 
+@Mapper
 public interface MemberMapper {
+	
+	// 로그인
+	public LoginMemberBean findByUsername(String memberId);
 	
 	// 멤버 검색
 	public ArrayList<MemberBean> searchMember(SearchMemberBean searchMemberBean);

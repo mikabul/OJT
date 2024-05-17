@@ -1,8 +1,6 @@
 package com.ojt.config;
 
 import javax.servlet.Filter;
-import javax.servlet.MultipartConfigElement;
-import javax.servlet.ServletRegistration.Dynamic;
 
 import org.springframework.web.filter.CharacterEncodingFilter;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
@@ -24,7 +22,7 @@ public class SpringConfigClass extends AbstractAnnotationConfigDispatcherServlet
 	@Override
 	protected Class<?>[] getRootConfigClasses() {
 		// TODO Auto-generated method stub
-		return new Class[] { RootAppContext.class };
+		return new Class[] { RootAppContext.class, SecurityConfig.class };
 	}
 
 	@Override

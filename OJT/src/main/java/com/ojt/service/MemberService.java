@@ -147,8 +147,8 @@ public class MemberService {
 			addMemberBean.setMemberNumber(memberNumber);
 			
 			// 비밀번호와 주민번호 뒷자리 해싱
-			String hashPassword = encoder.encrypt(addMemberBean.getMemberPW());
-			String hashRrnSuffix = encoder.encrypt(addMemberBean.getMemberRrnSuffix());
+			String hashPassword = encoder.encode(addMemberBean.getMemberPW());
+			String hashRrnSuffix = encoder.encode(addMemberBean.getMemberRrnSuffix());
 			addMemberBean.setHashedMemberPW(hashPassword);
 			addMemberBean.setHashedMemberRrnSuffix(hashRrnSuffix);
 			
@@ -235,13 +235,13 @@ public class MemberService {
 			
 			// 비밀번호가 비어있지 않다면 해싱 후 저장
 			if(memberPW != null && !memberPW.isEmpty()) {
-				String hashPassword = encoder.encrypt(modifyMemberBean.getMemberPW());
+				String hashPassword = encoder.encode(modifyMemberBean.getMemberPW());
 				modifyMemberBean.setHashedMemberPW(hashPassword);
 			}
 			
 			// 주민등록번호 뒷자리가 비어있지 않다면 해싱 후 저장
 			if(memberRrnSuffix != null && !memberRrnSuffix.isEmpty()) {
-				String hashRrnSuffix = encoder.encrypt(modifyMemberBean.getMemberRrnSuffix());
+				String hashRrnSuffix = encoder.encode(modifyMemberBean.getMemberRrnSuffix());
 				modifyMemberBean.setHashedMemberRrnSuffix(hashRrnSuffix);
 			}
 

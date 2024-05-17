@@ -1,32 +1,17 @@
 package com.ojt.controller;
 
-import javax.annotation.Resource;
-
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-
-import com.ojt.bean.MemberBean;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 public class LoginController{
 	
-	@Resource(name = "loginMemberBean")
-	MemberBean loginMemberBean;
-
-	@PostMapping("/login")
-	public String login(@ModelAttribute("loginMemberBean") MemberBean loginMemberBean) {
-		this.loginMemberBean.setLoginState(true);
-		return "redirect:/main";
+	@RequestMapping("/login")
+	public String login(Boolean error, Model model) {
 		
+		model.addAttribute("error", error);
+		
+		return "/Login";
 	}
-	
-	@GetMapping("/logout")
-	public String logout() {
-		loginMemberBean.setLoginState(false);
-		return "redirect:/";
-	}
-	
-	
 }
