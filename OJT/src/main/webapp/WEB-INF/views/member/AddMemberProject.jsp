@@ -293,13 +293,12 @@ function addMemberProject() {
 				});
 			}
 		},
-		error: function(error) {
-			Swal.fire({
-				icon: "error",
-				title: '실패',
-				text: '서버와의 통신에 실패하였습니다.'
-			});
-			console.error(error);
+		error: function(request, status, error) {
+			if(request.status == 403) {
+				Swal.fire('실패', '접근 권한이 부족합니다.', 'warning');
+			} else {
+				Swal.fire('실패', '서버와의 통신에 실패하였습니다.', 'error');
+			}
 		}
 	})
 }

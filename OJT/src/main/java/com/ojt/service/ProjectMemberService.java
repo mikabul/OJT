@@ -66,7 +66,6 @@ public class ProjectMemberService {
 		
 		try {
 			projectMemberDao.deleteProjectMember(memberNumbers, projectNumber);
-			System.out.println("프로젝트 멤버 삭제중");
 			transactionManager.commit(status);
 			return true;
 		} catch (Exception e) {
@@ -144,8 +143,6 @@ public class ProjectMemberService {
 				} else {
 					projectMemberDao.updateProjectMember(projectMemberBean);
 				}
-				
-				System.out.println("프로젝트 멤버 수정중");
 			}
 			
 			transactionManager.commit(status);

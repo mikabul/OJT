@@ -22,13 +22,27 @@ public class MemberDetails implements UserDetails, Serializable{
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
+		
 		String roles = loginMemberBean.getRoles();
 		String[] roleList = roles.split(",");
 		
 		Collection<GrantedAuthority> collectors = new ArrayList<GrantedAuthority>();
 		
 		for(String role : roleList) {
-			collectors.add(() -> role);
+			collectors.add(new GrantedAuthority() {
+				
+				private static final long serialVersionUID = 1L;
+				
+				@Override
+				public String getAuthority() {
+					return "ROLE_" + role;
+				}
+			});
+		}
+		
+		// 현재 로그인 된 계정의 권한을 콘솔에 표시 -- 나중에 지울것
+		for(GrantedAuthority g : collectors) {
+			System.out.println("MemberDetails : " + g.getAuthority());
 		}
 		
 		return collectors;
@@ -44,7 +58,7 @@ public class MemberDetails implements UserDetails, Serializable{
 		return loginMemberBean.getMemberId();
 	}
 	
-	public String getMemberNumber() {
+	public int getMemberNumber() {
 		return loginMemberBean.getMemberNumber();
 	}
 	

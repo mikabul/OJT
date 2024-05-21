@@ -196,7 +196,9 @@
 			<section>
 				<div>
 					<div class="text-center">
-						<button type="button" class="btn btn-green" id="modifyProjectInfoButton">수정</button>
+						<c:if test="${ ROLE_CREATE_PROJECT == true || ROLE_SUPER == true }">
+							<button type="button" class="btn btn-green" onclick="modifyProjectInfoButtonEvent(event)">수정</button>
+						</c:if>
 						<button type="button" class="btn btn-orange" id="projectInfoCloseBtn">닫기</button>
 					</div>
 				</div>
@@ -210,7 +212,6 @@ currModal = getCurrModalDom();
 
 $('#projectInfoClose').on('click', projectInfoCloseEvent);// 모달 닫기 이벤트
 $('#projectInfoCloseBtn').on('click', projectInfoCloseEvent);// 모달 닫기 이벤트
-document.getElementById('modifyProjectInfoButton').addEventListener('click', modifyProjectInfoButtonEvent); // 프로젝트 수정 모달
 
 isScroll();
 
@@ -232,9 +233,14 @@ function modifyProjectInfoButtonEvent(){
 		success: function(result){
 			$('#modalModifyProject').html(result);
 		},
-		error: function(error){
-			Swal.fire('실패', '페이지로딩에 실패하였습니다.', 'error');
-			console.error(error);
+		error: function(request, status, error){
+			
+			if(request.status == 403) {
+				Swal.fire('실패', '접근 권한이 부족합니다.', 'warning');
+			} else {
+				Swal.fire('실패', '페이지로딩에 실패하였습니다.', 'error');
+				console.error(error);
+			}
 		}
 	});
 }

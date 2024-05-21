@@ -84,6 +84,11 @@
 						<input type="password" name="memberPW" class="input-box" placeholder="비밀번호" />
 					</div>
 				</div>
+				<c:if test="${ error == true }">
+					<div class="text-center">
+						<span class="errors">아이디 혹은 비밀번호를 확인해주세요.</span>
+					</div>
+				</c:if>
 				<div class="w-100 text-center">
 					<button type="submit" class="loginBtn">로그인</button>
 				</div>

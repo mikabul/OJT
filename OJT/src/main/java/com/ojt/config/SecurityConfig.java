@@ -1,29 +1,27 @@
 package com.ojt.config;
 
-import org.apache.commons.dbcp2.BasicDataSource;
-import org.apache.ibatis.session.SqlSessionFactory;
-import org.mybatis.spring.SqlSessionFactoryBean;
+import java.util.ArrayList;
+
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.ComponentScans;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
-import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.annotation.web.configurers.ExpressionUrlAuthorizationConfigurer;
 
+import com.ojt.bean.AuthorityBean;
+import com.ojt.service.AuthorityService;
 import com.ojt.service.MemberDetailService;
 import com.ojt.util.Sha256;
 
 @Configuration
-@EnableWebSecurity
+@EnableWebSecurity(debug = true)
 @ComponentScans({
     @ComponentScan("com.ojt.controller"),
     @ComponentScan("com.ojt.service"),
@@ -31,20 +29,17 @@ import com.ojt.util.Sha256;
     @ComponentScan("com.ojt.util")
 })
 @MapperScan("com.ojt.mapper")
-@PropertySource("/WEB-INF/properties/db.properties")
+@EnableMethodSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter{
 	
-	@Value("${db.classname}")
-	String classname;
-	@Value("${db.url}")
-	String url;
-	@Value("${db.username}")
-	String username;
-	@Value("${db.password}")
-	String password;
-
 	@Autowired
 	private MemberDetailService memberDetailService;
+	
+	@Autowired
+	private Sha256 encoder;
+	
+	@Autowired
+	private AuthorityService authorityService;
 	
 	@Override
 	public void configure(WebSecurity web) throws Exception {
@@ -58,7 +53,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 	 */
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-		auth.userDetailsService(memberDetailService).passwordEncoder(encoder());
+		auth.userDetailsService(memberDetailService).passwordEncoder(encoder);
 	}
 
 	/*
@@ -68,14 +63,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 	 */
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
+		
 		http
         .csrf().disable()
-        .authorizeRequests()
-            .antMatchers("/", "/login").permitAll()
-            .anyRequest().authenticated()
-        .and()
         .formLogin()
-            .loginPage("/")
+            .loginPage("/login")
             .loginProcessingUrl("/login")
             .defaultSuccessUrl("/main", true)
             .failureUrl("/login?error=true")
@@ -85,39 +77,22 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
         .and()
         .logout()
             .logoutUrl("/logout")
-            .logoutSuccessUrl("/");
-	}
-	
-	@Bean
-	public BasicDataSource dataSource() {
-		BasicDataSource source = new BasicDataSource();
-		source.setDriverClassName(classname);
-		source.setUrl(url);
-		source.setUsername(username);
-		source.setPassword(password);
+            .logoutSuccessUrl("/")
+        .and()
+        .exceptionHandling()
+        	.accessDeniedPage("/access-denied");
 		
-		return source;
-	}
-	
-	@Bean
-	public DataSourceTransactionManager transactionManager(BasicDataSource source) {
-		return new DataSourceTransactionManager(source);
-	}
-	
-	@Bean
-	public SqlSessionFactory factory(BasicDataSource source) throws Exception {
+		ExpressionUrlAuthorizationConfigurer<HttpSecurity>.ExpressionInterceptUrlRegistry obj = http.authorizeRequests();
+		obj.antMatchers("/", "/login", "/error").permitAll();
 		
-		SqlSessionFactoryBean factoryBean = new SqlSessionFactoryBean();
-		factoryBean.setDataSource(source);
-		factoryBean.setConfigLocation(new PathMatchingResourcePatternResolver().getResource("classpath:mybatis-config.xml"));
-		SqlSessionFactory factory = factoryBean.getObject();
+		ArrayList<AuthorityBean> authorityList = authorityService.getAllAuthority();
 		
-		return factory;
+		for (AuthorityBean authorityBean : authorityList) {
+			obj.antMatchers(authorityBean.getMenuUrl()).hasAnyRole(authorityBean.getAuthorityNameList());
+		}
+		
+		obj.anyRequest().denyAll();
 		
 	}
 	
-	@Bean
-	public Sha256 encoder() {
-		return new Sha256();
-	}
 }

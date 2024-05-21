@@ -149,8 +149,12 @@ function searchMember(){
 			addPMDateEvent(); // 날짜 이벤트 추가
 			addPMInputChangeEvent(); //변경시 체크 이벤트 추가
 		},
-		error: function(error){
-			console.error(error);
+		error: function(request, status, error){
+			if(request.status == 403) {
+				Swal.fire('실패', '접근 권한이 부족합니다.', 'warning');
+			} else {
+				Swal.fire('실패', '조회에 실패하였습니다.', 'error');
+			}
 		}
 	});
 }
@@ -227,8 +231,12 @@ function addPMBtnEvent(){
 			isScroll();
 			pmDateEvent(); // 프로젝트 멤버 날짜 이벤트 추가
 		},
-		error: function(error){
-			console.error(error);
+		error: function(request, status, error){
+			if(request.status == 403) {
+				Swal.fire('실패', '접근 권한이 부족합니다.', 'warning');
+			} else {
+				Swal.fire('실패', '저장에 실패하였습니다.', 'error');
+			}
 		}
 	});
 }
@@ -253,10 +261,6 @@ function addPMDateEvent(){
 // 프로젝트 멤버 추가 날짜 포커스 이벤트
 function addPMDateFocusEvent(){
 	preDate = this.value;
-	const startDate = `${startDate}`;
-	const endDate = `${endDate}`;
-	console.log(startDate);
-	console.log(endDate);
 }
  
 // 프로젝트 멤버 추가 시작일 포커스 아웃 이벤트

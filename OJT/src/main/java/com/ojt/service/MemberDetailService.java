@@ -18,20 +18,16 @@ public class MemberDetailService implements UserDetailsService {
 	
 	@Override
 	public UserDetails loadUserByUsername(String memberId) throws UsernameNotFoundException {
-		System.out.println("UserDetailService userName : " + memberId);
+		
 		try {
 			LoginMemberBean loginMemberBean = memberMapper.findByUsername(memberId);
-			System.out.println("loginMemberBean");
-			System.out.println(loginMemberBean.toString());
 			
 			if(loginMemberBean != null) {
-				System.out.println(loginMemberBean);
 				return new MemberDetails(loginMemberBean);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
 		
 		return null;
 	}

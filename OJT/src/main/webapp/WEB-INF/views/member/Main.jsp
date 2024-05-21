@@ -186,8 +186,12 @@ table tr {
 					</c:if>
 				</div>
 				<div class="w-30 text-right">
-					<button class="btn btn-green" onclick="location.href='${root}member/add/main'">등록</button>
-					<button class="btn btn-red" id="deleteMemberButton">삭제</button>
+					<c:if test="${ ROLE_CREATE_MEMBER == true || ROLE_SUPER == true }">
+						<button class="btn btn-green" onclick="location.href='${root}member/add/main'">등록</button>
+					</c:if>
+					<c:if test="${ ROLE_DELETE_MEMBER == true || ROLE_SUPER == true }">
+						<button class="btn btn-red" onclick="deleteMember(event)">삭제</button>
+					</c:if>
 				</div>
 			</div>
 		</section>
@@ -211,7 +215,6 @@ let searchData = {
 
 document.getElementById('searchMember').addEventListener('submit', searchMemberSubmitEvent);	// 조회버튼 클릭 이벤트
 document.querySelector('select[name="view"]').addEventListener('change', viewChangeEvent);		// view 변경 이벤트
-document.getElementById('deleteMemberButton').addEventListener('click', deleteMember);			// 삭제 버튼 이벤트
 
 memberMainStartup();
 checkEvent();
@@ -328,8 +331,12 @@ function searchAjax(){
 			pageButton.innerHTML = pageButtonHtml;
 			addPageButtonEvnet();
 		},
-		error: function(error){
-			console.error(error);
+		error: function(request, status, error){
+			if(request.status == 403) {
+				Swal.fire('실패', '접근 권한이 부족합니다.', 'warning');
+			} else {
+				Swal.fire('실패', '조회에 실패하였습니다.', 'error');
+			}
 		}
 	});
 }
@@ -346,8 +353,12 @@ function showMemberInfoModal(memberNumber){
 		success: function(result){
 			$('#modalMemberInfo').html(result);
 		},
-		error: function(error){
-			Swal.fire('존재하지 않는 사원입니다.', '', 'error');
+		error: function(request, status, error){
+			if(request.status == 403) {
+				Swal.fire('실패', '접근 권한이 부족합니다.', 'warning');
+			} else {
+				Swal.fire('실패', '존재하지 않는 회원 입니다.', 'error');
+			}
 		}
 	});
 }
@@ -412,7 +423,6 @@ function deleteMember(){
 		if(result.isConfirmed){
 			deleteMemberAjax(checkedMembers);
 		} else {
-			console.log('취소');
 			return;
 		}
 	});
@@ -431,8 +441,12 @@ function deleteMemberAjax(checkedMembers) {
 				Swal.fire('실패', '삭제에 실패하였습니다!', 'error');
 			}
 		},
-		error: function(error) {
-			console.error(error);
+		error: function(request, status, error) {
+			if(request.status == 403) {
+				Swal.fire('실패', '접근 권한이 부족합니다.', 'warning');
+			} else {
+				Swal.fire('실패', '삭제에 실패하였습니다.', 'error');
+			}
 		}
 	}).then (() => { // 삭제 후 검색실행
 		searchAjax();

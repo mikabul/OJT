@@ -4,12 +4,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@RequestMapping("/Accept")
 public class NotAcceptController {
 	
-	@RequestMapping(value = "/not-accept")
+	@RequestMapping(value = "/access-denied")
 	public String notAccept() {
-		return "/NotAccept";
+		
+		return "/AccessDenied";
 	}
 	
 }

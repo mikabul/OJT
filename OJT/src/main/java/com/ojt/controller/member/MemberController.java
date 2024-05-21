@@ -57,7 +57,7 @@ public class MemberController {
 
 	public Map<String, Object> codeMap;
 
-	@GetMapping("/main")
+	@GetMapping({"/main", ""})
 	public String main(@RequestParam(value = "memberNumber", required = false) Integer memberNumber, Model model) {
 
 		SearchMemberBean searchMemberBean = new SearchMemberBean();
@@ -108,7 +108,7 @@ public class MemberController {
 	}
 
 	// 사원 등록 페이지
-	@GetMapping(value = "/add/main")
+	@GetMapping(value = {"/add/main", "/add"})
 	public String showAddMember(Model model) {
 
 		MemberBean memberBean = new MemberBean(); // 초기 사용을 위한 값이 비어있는 bean
@@ -130,14 +130,12 @@ public class MemberController {
 	public String addMember(@ModelAttribute("addMemberBean") MemberBean addMemberBean, BindingResult result,
 			Model model) {
 
-		System.out.println(addMemberBean.toString());
 		MemberValidator memberValidator = new MemberValidator(memberService);
 		memberValidator.validate(addMemberBean, result);
 
 		if (result.hasErrors()) {
 			List<FieldError> fieldError = result.getFieldErrors();
 			MultiValueMap<String, String> errorMessageMap = errorMessage.getErrorMessage(fieldError);
-			System.out.println(errorMessageMap.toString());
 			model.addAttribute("errorMessage", errorMessageMap);
 			return "/member/AddMember";
 		}
@@ -150,7 +148,6 @@ public class MemberController {
 		} else { // 사원 등록 실패
 			model.addAttribute("success", false);
 			int code = (int) map.get("code");
-			System.out.println("code : " + code);
 			if (code == 401) {
 				model.addAttribute("message", "부적절한 파일입니다.");
 			} else if (code == 500) {
@@ -187,16 +184,13 @@ public class MemberController {
 			BindingResult result) {
 
 		// 유효성 검사
-		System.out.println(modifyMemberBean.toString());
 		MemberValidator memberValidator = new MemberValidator(memberService);
 		memberValidator.validate(modifyMemberBean, result);
 
 		if (result.hasErrors()) { // 에러가 존재 한다면
 			List<FieldError> fieldError = result.getFieldErrors(); // 에러를 리스트로 추출
 			MultiValueMap<String, String> errorMessageMap = errorMessage.getErrorMessage(fieldError); // 에러메세지를
-																										// MultiValueMap으로
-																										// 받아옴
-			System.out.println(errorMessageMap.toString());
+																	
 			model.addAttribute("errorMessage", errorMessageMap);
 
 			return "/member/ModifyMember";
@@ -209,7 +203,7 @@ public class MemberController {
 
 			model.addAttribute("success", false); // 모델에 실패저장
 			int code = (int) modifyResult.get("code"); // 코드를 추출
-			System.out.println("code : " + code);
+			
 			if (code == 401) { // 코드에 따른 에러메세지 저장
 				model.addAttribute("message", "부적절한 파일입니다.");
 			} else if (code == 500) {
@@ -247,7 +241,7 @@ public class MemberController {
 
 		ArrayList<ProjectMemberBean> memberProjectList = memberService.getMemberProjectList(memberNumber);
 		ArrayList<CodeBean> roleList = codeService.getDetailCodeList("RO01");
-		System.out.println(memberProjectList.toString());
+		
 		model.addAttribute("memberNumber", memberNumber);
 		model.addAttribute("memberName", memberName);
 		model.addAttribute("memberProjectList", memberProjectList);
@@ -339,7 +333,7 @@ public class MemberController {
 	private void initBinder(HttpServletRequest request, Model model) {
 
 		String requestURI = request.getRequestURI();
-		System.out.println(requestURI);
+		
 		switch (requestURI) {
 		case "/OJT/member/main":
 			codeMap = memberService.getSearchCode();

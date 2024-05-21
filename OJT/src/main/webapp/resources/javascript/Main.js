@@ -30,7 +30,6 @@ function lengthLimit(event){
 
 	let limit = this.getAttribute('maxlength');
 	let name = this.getAttribute('name');
-	console.log(name);
 	if(limit != '' && this.value.length >= limit && (event.keyCode !== 8 || event.which !== 8)){
 		document.getElementById(name + "Length.errors").innerHTML = limit + '글자까지 가능합니다.';
 	}

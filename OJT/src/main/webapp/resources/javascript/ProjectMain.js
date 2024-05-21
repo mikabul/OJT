@@ -6,15 +6,12 @@ document.addEventListener('DOMContentLoaded', function() {
 	})
 	document.getElementById('resetBtn').addEventListener('click', resetBtn);// 리셋 버튼
 	document.getElementById('viewSelect').addEventListener('change', changeView);// view 변경 이벤트
-	document.getElementById('removeBtn').addEventListener('click', deleteProject);// 프로젝트 삭제 버튼
-	document.getElementById('addProjectBtn').addEventListener('click', addProjectBtnEvent); // 등록 버튼 이벤트
 	document.querySelectorAll("a.projectInfo").forEach(a => { //프로젝트 명 클릭 이벤트
 		a.addEventListener('click', projectNameClickEvent);
 	})
 	document.querySelectorAll('input[type="checkbox"][name="state"]').forEach(check => {// 드롭다운 메뉴 내부 체크박스 클릭 시 이벤트
 		check.addEventListener('change', dropdownCheckboxClickEvent);
 	})
-	document.getElementById('modifyProjectState').addEventListener('click', modifyProjectStateButtonEvent);// 상태 수정 버튼 이벤트 추가
 	document.querySelectorAll('#resultBody tr').forEach(tr => { // 프로젝트의 체크박스 셀을 클릭 했을 때의 이벤트
 		tr.querySelector('td:nth-child(1)').addEventListener('click', projectCheckboxCellClickEvent);
 	})
@@ -22,8 +19,6 @@ document.addEventListener('DOMContentLoaded', function() {
 	const table = tableBody.closest('table');
 	const theadCheckboxCell = table.querySelector('thead tr th:nth-child(1)');
 	theadCheckboxCell.addEventListener('click', projectCheckboxCellClickEvent); // 프로젝트 전체 선택 체크박스의 셀을 클릭했을 때의 이벤트
-	document.getElementById('changeStateSubmit').addEventListener('click', changeSubmitEvent); // 프로젝트 상태 수정 저장 버튼 이벤트
-	document.getElementById('changeStateCancle').addEventListener('click', changeStateCancleEvent); // 프로젝트 상태 수정 취소 버튼 이벤트
 	document.querySelectorAll('.projectMemberBtn').forEach(btn => { // 인원 관리 버튼 클릭 이벤트
 		btn.addEventListener('click', projectMemberBtnEvent);
 	})
@@ -62,8 +57,12 @@ function projectNameClickEvent(event) {
 		success: function(response) {
 			$('#modalProject').html(response);
 		},
-		error: function(error) {
-			console.error(error);
+		error: function(request, status, error) {
+			if(request.status == 403) {
+				Swal.fire('실패', '접근 권한이 부족합니다.', 'warning');
+			} else {
+				Swal.fire('실패', '로딩에 실패하였습니다.', 'error');
+			}
 		}
 	})
 }
@@ -140,9 +139,7 @@ function deleteProject() {
 	}).then((result) => {
 		if(result.isConfirmed){
 			deleteProjectAjax(projectValue);
-			console.log('confirm');
 		} else {
-			console.log('cancel');
 			return;
 		}
 	});
@@ -215,9 +212,12 @@ function deleteProjectAjax(projectValue) {
 				Swal.fire('삭제에 실패하였습니다.', '', 'error');
 			}
 		},
-		error: function(error) {
-			console.error("ajax 실패");
-			console.error(error);
+		error: function(request, status, error) {
+			if(request.status == 403) {
+				Swal.fire('실패', '접근 권한이 부족합니다.', 'warning');
+			} else {
+				Swal.fire('실패', '삭제에 실패하였습니다.', 'error');
+			}
 		}
 	})
 }
@@ -230,8 +230,12 @@ function addProjectBtnEvent() {
 		success: function(result) {
 			$('#modalAddProject').html(result);
 		},
-		error: function(error) {
-			console.error("error\n", error);
+		error: function(request, status, error) {
+			if (request.status == 403) {
+				Swal.fire('실패', '접근 권한이 부족합니다.', 'warning');
+			} else {
+				Swal.fire('실패', '로딩에 실패하였습니다.', 'error');
+			}
 		}
 	})
 
@@ -255,8 +259,12 @@ function projectAddSuccess() {
 			success: function(response) {
 				$('#modalProject').html(response);
 			},
-			error: function(error) {
-				console.error(error);
+			error: function(request, status, error) {
+				if(request.status == 403) {
+					Swal.fire('실패', '접근 권한이 부족합니다.', 'warning');
+				} else {
+					Swal.fire('실패', '로딩에 실패하였습니다.', 'error');
+				}
 			}
 		})
 	}
@@ -331,7 +339,6 @@ function modifyProjectStateButtonEvent() {
 
 // 프로젝트 상태 변경 이벤트
 function stateChangeEvent(){
-	console.log(this);
 	const row = this.closest('tr');
 	const cell = row.cells[0];
 	const cd = row.cells[6].dataset.cd;
@@ -347,7 +354,6 @@ function stateChangeEvent(){
 // 프로젝트 체크 해제 버튼 이벤트
 function stateChangeCheckEvent(){
 	if (!this.checked) {
-		console.log(this);
 		const row = this.closest('tr');
 		const cell = row.cells[6];
 		const select = cell.querySelector('select');
@@ -419,13 +425,12 @@ function changeSubmitEvent() {
 				location.reload();
 			});
 		},
-		error: function(error) {
-			Swal.fire({
-				icon: 'error',
-				title: '실패',
-				text: '업데이트에 실패하였습니다.'
-			});
-			console.error(error);
+		error: function(request, status, error) {
+			if(request.status == 403) {
+				Swal.fire('실패', '접근 권한이 부족합니다.', 'warning');
+			} else {
+				Swal.fire('실패', '업데이트에 실패하였습니다.', 'error');
+			}
 		}
 	})
 }
@@ -478,9 +483,12 @@ function projectMemberBtnEvent() {
 		success: function(result) {
 			$('#modalProjectMember').html(result);
 		},
-		error: function(error) {
-			Swal.fire('로딩에 실패하였습니다.', '', 'error');
-			console.error(error);
+		error: function(request, status, error) {
+			if(request.status == 403) {
+				Swal.fire('실패', '접근 권한이 부족합니다.', 'warning');
+			} else {
+				Swal.fire('실패', '로딩에 실패하였습니다.', 'error');
+			}
 		}
 	});
 }

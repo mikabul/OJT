@@ -110,19 +110,28 @@
 						<td>${ item.projectEndDate }</td>
 						<td>${ item.projectMaintStartDate }</td>
 						<td>${ item.projectMaintEndDate }</td>
-						<td>
-							<input type="date" name="startDate" value="${ item.startDate }" data-value="${ item.startDate }" min="${ startDate }" max="${ endDate }"/>
-						</td>
-						<td>
-							<input type="date" name="endDate" value="${ item.endDate }" data-value="${ item.endDate }" min="${ startDate }" max="${ endDate }"/>
-						</td>
-						<td>
-							<select name="roleCode" data-value="${ item.roleCode }">
-								<c:forEach var="role" items="${ roleList }">
-									<option value="${ role.detailCode }" ${ role.detailCode == item.roleCode ? 'selected' : '' }>${ role.codeName }</option>
-								</c:forEach>
-							</select>
-						</td>
+						<c:choose>
+							<c:when test="${ ROLE_CREATE_MEMBER == true || ROLE_SUPER == true }">
+								<td>
+									<input type="date" name="startDate" value="${ item.startDate }" data-value="${ item.startDate }" min="${ startDate }" max="${ endDate }"/>
+								</td>
+								<td>
+									<input type="date" name="endDate" value="${ item.endDate }" data-value="${ item.endDate }" min="${ startDate }" max="${ endDate }"/>
+								</td>
+								<td>
+									<select name="roleCode" data-value="${ item.roleCode }">
+										<c:forEach var="role" items="${ roleList }">
+											<option value="${ role.detailCode }" ${ role.detailCode == item.roleCode ? 'selected' : '' }>${ role.codeName }</option>
+										</c:forEach>
+									</select>
+								</td>
+							</c:when>
+							<c:otherwise>
+								<td>${ item.startDate }</td>
+								<td>${ item.endDate }</td>
+								<td>${ item.roleName }</td>
+							</c:otherwise>
+						</c:choose>
 					</tr>
 					<tr id="${ status.index }.errors" data-show="false">
 						<td colspan="7"></td>
@@ -132,9 +141,11 @@
 			</tbody>
 		</table>
 		<div class="text-right">
-			<button type="button" class="btn btn-blue" id="showAddMemberProject">추가</button>
-			<button type="button" class="btn btn-green" id="updateMemberProject">저장</button>
-			<button type="button" class="btn btn-red" id="deleteMemberProject">삭제</button>
+			<c:if test="${ ROLE_CREATE_MEMBER == true || ROLE_SUPER == true }">
+				<button type="button" class="btn btn-blue" onclick="showAddMemberPeojectModal(event)">추가</button>
+				<button type="button" class="btn btn-green" onclick="updateMemberProject(event)">저장</button>
+				<button type="button" class="btn btn-red" onclick="deleteMemberProject(event)">삭제</button>
+			</c:if>
 		</div>
 	</section>
 	<script src="${root}resources/javascript/Main.js"></script>
@@ -151,10 +162,6 @@ document.querySelectorAll('input[type="date"], select').forEach(input => {			// 
 document.querySelectorAll('input[type="checkbox"].check').forEach( checkbox => {	// 체크박스 클릭 이벤트
 	checkbox.addEventListener('click', clickCheckboxEvent);
 });
-
-document.getElementById('showAddMemberProject').addEventListener('click', showAddMemberPeojectModal); // 추가 버튼 클릭 이벤트
-document.getElementById('updateMemberProject').addEventListener('click', updateMemberProject); // 저장 버튼 클릭 이벤트
-document.getElementById('deleteMemberProject').addEventListener('click', deleteMemberProject); // 삭제 버튼 클릭 이벤트
 
 checkEvent(); // 체크박스 이벤트 주입
 
@@ -250,8 +257,12 @@ function deleteMemberProject() {
 						Swal.fire('실패', '삭제에 실패하였습니다.', 'error');
 					}
 				},
-				error: function(error){
-					console.error(error);
+				error: function(request, status, error){
+					if(request.status == 403) {
+						Swal.fire('실패', '접근 권한이 부족합니다.', 'warning');
+					} else {
+						Swal.fire('실패', '삭제에 실패하였습니다.', 'error');
+					}
 				}
 			});
 		} else {
@@ -268,8 +279,12 @@ function showAddMemberPeojectModal() {
 		success: function(result) {
 			$('#addMemberProjectModal').html(result);
 		},
-		error: function(error) {
-			console.error(error);
+		error: function(request, status, error) {
+			if(request.status == 403) {
+				Swal.fire('실패', '접근 권한이 부족합니다.', 'warning');
+			} else {
+				Swal.fire('실패', '추가에 실패하였습니다.', 'error');
+			}
 		}
 	})
 }
@@ -368,13 +383,12 @@ function updateMemberProject() {
 				});
 			}
 		},
-		error: function(error){
-			Swal.fire({
-				icon: 'error',
-				title: '실패',
-				text: '서버와의 통신에 실패하였습니다.'
-			});
-			console.error(error);
+		error: function(request, status, error){
+			if(request.status == 403) {
+				Swal.fire('실패', '접근 권한이 부족합니다.', 'warning');
+			} else {
+				Swal.fire('실패', '저장에 실패하였습니다.', 'error');
+			}
 		}
 	})
 }

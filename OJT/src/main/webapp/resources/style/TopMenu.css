@@ -53,12 +53,28 @@ a {
 .top-side-menu-bar {
 	height: 100%;
 	width: 300px;
-	background-color: gray;
+	background-color: black;
 	position: fixed;
 	left: -500px;
 	top:  60px;
 	transition-duration: 0.7s;
 	z-index: 5;
+}
+
+.top-side-menu-bar li {
+	height: 30px;
+	width: 100%;
+}
+
+.top-side-menu-bar li a{
+	color: white;
+	font-size: 20px;
+	transition-duration: 0.7s;
+}
+
+.top-side-menu-bar li a:hover{
+	font-size: 25px;
+	color: #CCFFCC;
 }
 
 .top-show {

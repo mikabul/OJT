@@ -380,7 +380,7 @@
 						</div>
 						<div id="resignationDateDiv" data-show="false">
 							<div>퇴사일<span class="required">*</span></div>
-							<input type="date" name="resignationDate" value="${ addMemberBean.resignationDate }"/>
+							<input type="date" name="resignationDate" value="${ modifyMemberBean.resignationDate }"/>
 						</div>
 					</div>
 					<div class="content">
@@ -501,7 +501,6 @@ function memberImageChangeEvent(){
 	const file = document.querySelector('input[name="memberImage"]').files[0];
 	const preview = document.getElementById('preview');
 	const reader = new FileReader();
-	console.log(file);
 	if(file){
 		
 		if(file.size > 5242880){
@@ -520,7 +519,6 @@ function memberImageChangeEvent(){
 			preview.src = this.result;
 			preview.dataset.show = 'true';
 		}
-		console.log(preview.src);
 		reader.readAsDataURL(file);
 		
 	} else {
@@ -586,13 +584,12 @@ function checkIdButtonEvent(){
 	const inputId = document.querySelector('input[name="memberId"]').value;
 	const memberNumber = document.querySelector('input[name="memberNumber"]').value;
 	$.ajax({
-		url: '${root}member//modifyMember/matchId',
+		url: '${root}member/modify/matchId',
 		data: {
 			'inputId' : inputId,
 			'memberNumber' : memberNumber
 		},
 		success: function(result){
-			console.log(result);
 			if(result){
 				Swal.fire('사용가능한 아이디 입니다.', '' ,'success');
 				checkId = true;
@@ -601,8 +598,12 @@ function checkIdButtonEvent(){
 				checkId = false;
 			}
 		},
-		error: function(error){
-			console.error(error);
+		error: function(request, status, error){
+			if(request.status == 403) {
+				Swal.fire('실패', '접근 권한이 부족합니다.', 'warning');
+			} else {
+				Swal.fire('실패', '중복 확인에 실패하였습니다.', 'error');
+			}
 		}
 	});
 }
@@ -849,7 +850,6 @@ function emTelFocusoutEvent(){
 function telKeyupEvent(){
 	const value = this.value.replace(/[^\d]/g, '');
 	let replaceValue;
-	console.log('value : ' + value);
 	if(value.length >= 2){
 		if(/^(01[016789])\d*$/.test(value)){
 			replaceValue = value.replace(/^(\d{0,3})(\d{0,4})(\d{0,4})$/, '$1-$2-$3').replace(/(\-{1,2})$/, '');

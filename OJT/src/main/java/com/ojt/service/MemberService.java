@@ -260,7 +260,6 @@ public class MemberService {
 					modifyMemberBean.setPictureDir(fileName);
 				} else {
 					map.put("success", false);
-					System.out.println("code : " + resultMap.get("code"));
 					map.put("code", resultMap.get("code"));
 					return map;
 				}

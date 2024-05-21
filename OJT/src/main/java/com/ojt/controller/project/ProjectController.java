@@ -28,7 +28,7 @@ public class ProjectController {
 	@Autowired
 	private ProjectService projectService;
 	
-	@RequestMapping("/main")
+	@RequestMapping({"/main", ""})
 	public String main(@ModelAttribute("projectSearchBean") ProjectSearchBean projectSearchBean,
 						@RequestParam(name="page", defaultValue = "0", required=false) int page,
 						BindingResult result,

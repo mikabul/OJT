@@ -124,7 +124,7 @@ public class ProjectService {
 		if(projectStartDate.isAfter(now)) { // 현재 날짜가 프로젝트 시작일 보다 이전일 경우
 			addProjectBean.setProjectStateCode("1");
 		}
-		// 혼재 날짜가 프로젝트 시작일, 종료일 사이에 위치하거나 시작일 또는 종료일과 같을 경우
+		// 현재 날짜가 프로젝트 시작일, 종료일 사이에 위치하거나 시작일 또는 종료일과 같을 경우
 		else if ((projectStartDate.isBefore(now) && projectEndDate.isAfter(now)) || now.equals(projectStartDate)  || now.equals(projectEndDate) ){
 			addProjectBean.setProjectStateCode("2");
 		}
@@ -134,7 +134,7 @@ public class ProjectService {
 			LocalDate localMaintEndDate = LocalDate.parse(maintEndDate);
 			
 			// 현재 날짜가 유지보수 시작일과 종료일 사이에 위치하거나 종료일과 같을 경우
-			if((localMaintStartDate.isBefore(now) && localMaintEndDate.isAfter(now)) || maintEndDate.equals(now)) {
+			if((localMaintStartDate.isBefore(now) && localMaintEndDate.isAfter(now)) || localMaintStartDate.equals(now) || localMaintEndDate.equals(now)) {
 				addProjectBean.setProjectStateCode("3");
 			} else {
 				addProjectBean.setProjectStateCode("4");
@@ -143,8 +143,16 @@ public class ProjectService {
 		}
 		// 유지보수 시작일이 비어있지 않을 경우
 		else if(maintStartDate != null && !maintStartDate.isEmpty()){
-			// 종료일이 없으므로 유지보수 기간인 것으로 판단(ex 2023-01-01 ~ )
-			addProjectBean.setProjectStateCode("3");
+			
+			LocalDate localMaintStartDate = LocalDate.parse(maintStartDate);
+			
+			// 현재 날짜가 유지보수시작일보다 크거나 같을 경우 유지보수
+			if(localMaintStartDate.isAfter(now) || localMaintStartDate.equals(now)) {
+				addProjectBean.setProjectStateCode("3");
+			} else {
+				addProjectBean.setProjectStateCode("4");
+			}
+			
 		}
 		else {
 			addProjectBean.setProjectStateCode("4");

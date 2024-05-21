@@ -13,10 +13,9 @@ public class LoginMemberDao {
 	private MemberMapper memberMapper;
 	
 	public LoginMemberBean findByUsername(String memberId) {
-		System.out.println("loginMemberDao : " + memberId);
+		
 		LoginMemberBean b = memberMapper.findByUsername(memberId);
-		System.out.println("login");
-		System.out.println(b.toString());
+		
 		return memberMapper.findByUsername(memberId);
 	}
 	

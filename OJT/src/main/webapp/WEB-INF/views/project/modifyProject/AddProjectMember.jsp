@@ -158,8 +158,12 @@
 					input.addEventListener('change', addProjectMemberChangeEvent);
 				});
 			},
-			error: function(error){
-				console.error(error);
+			error: function(request, status, error){
+				if(request.status == 403) {
+					Swal.fire('실패', '접근 권한이 부족합니다.', 'warning');
+				} else {
+					Swal.fire('실패', '조회에 실패하였습니다.', 'error');
+				}
 			}
 		});
 	}
@@ -356,8 +360,12 @@
 					});
 				});
 			},
-			error: function(error){
-				console.error(error);
+			error: function(request, status, error){
+				if(request.status == 403) {
+					Swal.fire('실패', '접근 권한이 부족합니다.', 'warning');
+				} else {
+					Swal.fire('실패', '추가에 실패하였습니다.', 'error');
+				}
 			}
 		});
 	}

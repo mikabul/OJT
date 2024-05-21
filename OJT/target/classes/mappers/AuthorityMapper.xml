@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ojt.mapper.AuthorityMapper">
+
+	<resultMap id="AuthorityMap" type="com.ojt.bean.AuthorityBean">
+		<result property="authorityNumber" column="AUTHORITY_NUM"/>
+		<result property="authorityName" column="AUTHORITY_NM"/>
+		<result property="authorityNames" column="AUTHORITY_NMS"/>
+		<result property="menuUrl" column="MENU_URL"/>
+		<result property="menuUrls" column="MENU_URLS"/>
+	</resultMap>
+	
+	<resultMap id="menuMap" type="com.ojt.bean.MenuBean">
+		<result property="menuNumber" column="MENU_NUM" />
+		<result property="menuName" column="MENU_NM" />
+		<result property="menuUrl" column="MENU_URL" />
+		<result property="menuShow" column="MENU_SHOW" />
+		<result property="menuPrioritu" column="MENU_PRIORITU" />
+	</resultMap>
+	
+	<!-- 권한정보를 모두 가져옴 -->
+	<!-- url : authority ? 1 : any -->
+	<select id="getAllAuthority" resultMap="AuthorityMap">
+		SELECT
+			MENU.MENU_URL ||
+			CASE WHEN (SUBSTR(MENU.MENU_URL, -1)) != '/' 
+			THEN '/' END || '**' AS MENU_URL,
+			LISTAGG(AUTH.AUTHORITY_NM, ',') AS AUTHORITY_NMS
+		FROM AUTHORITY AUTH
+		LEFT JOIN AUTHORITY_MENU AM ON AM.AUTHORITY_NUM = AUTH.AUTHORITY_NUM
+		LEFT JOIN MENU ON MENU.MENU_NUM = AM.MENU_NUM
+		GROUP BY MENU.MENU_PRIORITU, MENU.MENU_URL
+		ORDER BY REGEXP_COUNT(MENU.MENU_URL, '/') DESC, MENU.MENU_PRIORITU DESC
+	</select>
+	
+	<!-- 보여줄 메뉴 리스트를 가져옴 -->
+	<!-- 해당하는 사원의 번호를 이용 -->
+	<!-- menu_show가 Y인 메뉴만   -->
+	<select id="getShowMenu" resultMap="menuMap" parameterType="int">
+		SELECT
+			*
+		FROM MENU
+		WHERE
+			MENU_NUM IN (SELECT
+							AM.MENU_NUM
+						FROM AUTHORITY_MENU AM
+						INNER JOIN MEMBER_AUTHORITY MA ON MA.MEM_SEQ = #{memberNumber}
+						WHERE
+							AM.AUTHORITY_NUM = ma.authority_num
+						)
+			AND MENU_SHOW = 'Y'
+	</select>
+	
+</mapper>

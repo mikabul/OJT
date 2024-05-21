@@ -2,8 +2,6 @@ package com.ojt.controller.project;
 
 import java.util.ArrayList;
 
-import javax.validation.Valid;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -39,7 +37,7 @@ public class ProjectAddController {
 	private ProjectMemberService projectMemberService;
 	
 	// 프로젝트 추가 모달
-	@GetMapping("/modal")
+	@GetMapping({"/modal", ""})
 	public String addProjectModal(@ModelAttribute("addProjectBean") ProjectBean addProjectbean,
 								Model model) {
 		
@@ -146,7 +144,6 @@ public class ProjectAddController {
 		for(int i = deleteIndex.length - 1; i >= 0; i--) {
 			pmList.remove(deleteIndex[i]);
 		}
-		System.out.println(pmList);
 		
 		ArrayList<CodeBean> roleList = projectService.getRole();
 		

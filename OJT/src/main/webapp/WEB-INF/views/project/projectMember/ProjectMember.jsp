@@ -263,8 +263,12 @@
 							reloadProjectMember(projectNumber); //삭제후 모달 재생성
 						});
 					},
-					error: function(error){
-						console.error(error);
+					error: function(request, status, error){
+						if(request.status == 403) {
+							Swal.fire('실패', '접근 권한이 부족합니다.', 'warning');
+						} else {
+							Swal.fire('실패', '삭제에 실패하였습니다.', 'error');
+						}
 					}
 				});
 			} else {
@@ -290,8 +294,10 @@
 					Swal.fire('', '인원을 다시한번 확인해주시기 바랍니다.', 'error');
 				} else if(xhr.status === 500 && error === false){
 					Swal.fire('', '삭제에 실패하였습니다.\n문제가 계속되면 관리자에게 문의해주시기 바랍니다.', 'error');
+				} else if(request.status == 403) {
+					Swal.fire('실패', '접근 권한이 부족합니다.', 'warning');
 				} else {
-					console.error(error);
+					Swal.fire('실패', '로딩에 실패하였습니다.', 'error');
 				}
 			}
 		})
@@ -315,8 +321,12 @@
 			success: function(result){
 				$('#modalAddProjectMember').html(result);
 			},
-			error: function(error){
-				console.error(error);
+			error: function(request, status, error){
+				if(request.status == 403) {
+					Swal.fire('실패', '접근 권한이 부족합니다.', 'warning');
+				} else {
+					Swal.fire('실패', '로딩에 실패하였습니다.', 'error');
+				}
 			}
 		})
 	}
@@ -531,13 +541,12 @@
 			success: function(result){
 				$(modalStack.pop()).html(result);
 			},
-			error: function(error){
-				Swal.fire({
-					icon: 'error',
-					title: '실패',
-					text: '등록에 실패하였습니다. 문제가 계속 될시 관리자에게 문의 바랍니다.'
-				});
-				console.error(error);
+			error: function(request, status, error){
+				if(request.status == 403) {
+					Swal.fire('실패', '접근 권한이 부족합니다.', 'warning');
+				} else {
+					Swal.fire('실패', '저장에 실패하였습니다.', 'error');
+				}
 			}
 		});
 	}

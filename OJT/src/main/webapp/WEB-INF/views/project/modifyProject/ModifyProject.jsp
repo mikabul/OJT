@@ -613,8 +613,12 @@
 			success: function(result){
 				$(modalStack.pop()).html(result);
 			},
-			error: function(error){
-				console.error(error);
+			error: function(request, status, error){
+				if(request.status == 403) {
+					Swal.fire('실패', '접근 권한이 부족합니다.', 'warning');
+				} else {
+					Swal.fire('실패', '저장에 실패하였습니다.', 'error');
+				}
 			}
 		});
 	}
@@ -644,8 +648,12 @@
 			success: function(result){
 				$('#modalAddProjectMember').html(result);
 			},
-			error: function(error){
-				console.error(error);
+			error: function(request, status, error){
+				if(request.status == 403) {
+					Swal.fire('실패', '접근 권한이 부족합니다.', 'warning');
+				} else {
+					Swal.fire('실패', '로딩에 실패하였습니다.', 'error');
+				}
 			}
 		});
 	}
@@ -681,8 +689,12 @@
 			success: function(result){
 				tbody.innerHTML = result;
 			},
-			error: function(error){
-				console.error(error);
+			error: function(request, status, error){
+				if(request.status == 403) {
+					Swal.fire('실패', '접근 권한이 부족합니다.', 'warning');
+				} else {
+					Swal.fire('실패', '삭제에 실패하였습니다.', 'error');
+				}
 			}
 			
 		});

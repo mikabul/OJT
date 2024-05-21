@@ -9,7 +9,7 @@ import lombok.ToString;
 @ToString
 public class LoginMemberBean {
 	
-	private String memberNumber;
+	private int memberNumber;
 	private String memberId;
 	private String memberPW;
 	private String memberName;

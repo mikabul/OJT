@@ -32,10 +32,7 @@ public class DevMultiPartFile {
 		
 		map = new HashMap<String, Object>(); // 결과 반환을 위한 HashMap
 		
-		System.out.println("resourcesPath : " + resourcesPath);
-		
 		String savePath = resourcesPath + path; // 저장 경로
-		System.out.println("savePath : " + savePath);
 		
 		// 폴더가 없을시 생성
 		folder = new File(savePath);
@@ -60,7 +57,6 @@ public class DevMultiPartFile {
 		 */
 		try {
 			fileType = originFileName.substring(originFileName.lastIndexOf("."));
-			System.out.println("fileType : " + fileType);
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 			System.out.println("파일 확장자 분리 실패 - " + originFileName);
@@ -76,11 +72,9 @@ public class DevMultiPartFile {
 		try {
 			// 실제로 저장될 파일의 이름
 			fileName = System.currentTimeMillis() + "_" + name + fileType;
-			System.out.println(fileName);
 			
 			// 저장을 위해 경로와 파일이름을 가진 객체 객성
 			uploadFile = new File(savePath + fileName);
-			System.out.println("저장 경로 : " + savePath + fileName);
 			
 			// 파일 저장
 			file.transferTo(uploadFile);

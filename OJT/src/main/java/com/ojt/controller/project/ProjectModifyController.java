@@ -79,11 +79,11 @@ public class ProjectModifyController {
 		projectValidator.validate(modifyProjectBean, result);
 		
 		// 멤버 에러 메세지 추출
-		List<FieldError> fieldErrors = result.getFieldErrors();
-		for(FieldError error : fieldErrors) {
-			System.out.println(error.getField());
-			System.out.println(error.getCode());
-		}
+//		List<FieldError> fieldErrors = result.getFieldErrors();
+//		for(FieldError error : fieldErrors) {
+//			System.out.println(error.getField());
+//			System.out.println(error.getCode());
+//		}
 		
 		// 삭제 될 멤버 정보 유지를 위해 리스트에 저장
 		ArrayList<Integer> deleteMemberList = new ArrayList<Integer>();
@@ -189,12 +189,11 @@ public class ProjectModifyController {
 			Model model) {
 		
 		ArrayList<ProjectMemberBean> pmList = modifyProjectBean.getPmList();
-		System.out.println(pmList.toString());
+		
 		for(int i = deleteIndex.length - 1; i >= 0; i--) {
-			System.out.println("deleteIndex : " + deleteIndex[i] );
 			pmList.remove(deleteIndex[i]);
 		}
-		System.out.println(pmList.toString());
+		
 		ArrayList<CodeBean> roleList = projectService.getRole();
 		
 		model.addAttribute("pmList", pmList);

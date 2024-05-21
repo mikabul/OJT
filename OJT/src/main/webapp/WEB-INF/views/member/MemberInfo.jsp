@@ -165,7 +165,9 @@
 						</div>
 					</div>
 					<div class="text-right">
-						<button type="button" class="btn btn-green" onclick="location.href='${root}member/modify/main?memberNumber=${ memberBean.memberNumber }'">수정</button>
+						<c:if test="${ ROLE_CREATE_MEMBER == true || ROLE_SUPER == true }">
+							<button type="button" class="btn btn-green" onclick="location.href='${root}member/modify/main?memberNumber=${ memberBean.memberNumber }'">수정</button>
+						</c:if>
 					</div>
 				</section>
 				<section>
@@ -205,7 +207,9 @@
 						</table>
 					</div>
 					<div class="text-right">
-						<button type="button" class="btn btn-green" id="modifyMemberProjectButton">수정</button>
+						<c:if test="${ ROLE_CREATE_MEMBER == true || ROLE_SUPER == true }">
+							<button type="button" class="btn btn-green" onclick="modifyMemberProject(event)">수정</button>
+						</c:if>
 					</div>
 				</section>
 			</div>
@@ -217,7 +221,6 @@ modalStack.push('#modalMemberInfo');
 currModal = getCurrModalDom();
 
 document.getElementById('memberInfoCloseButton').addEventListener('click', memberInfoCloseEvent);		// 닫기 이벤트
-document.getElementById('modifyMemberProjectButton').addEventListener('click', modifyMemberProject);	// 프로젝트 수정 버튼 클릭 이벤트
 
 addDropdownEvent();
 

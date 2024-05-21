@@ -151,6 +151,13 @@
 				isScroll();
 				checkEvent();
 				projectMemberAddEventFunction();
+			},
+			error: function(request, status, error) {
+				if(request.status == 403) {
+					Swal.fire('실패', '접근 권한이 부족합니다.', 'warning');
+				} else {
+					Swal.fire('실패', '조회에 실패하였습니다.', 'error');
+				}
 			}
 		})
 	}
@@ -378,8 +385,10 @@
 			error: function(xhr, status, error){
 				if(status == 515){
 					Swal.fire('실패', error, 'error');
+				} else if(request.status == 403) {
+					Swal.fire('실패', '접근 권한이 부족합니다.', 'warning');
 				} else {
-					console.error(error);
+					Swal.fire('실패', '저장에 실패하였습니다.', 'error');
 				}
 			}
 		});

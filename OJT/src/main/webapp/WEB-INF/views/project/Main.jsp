@@ -39,7 +39,7 @@ table tr {
 <body>
 	<!-- 검색 -->
 	<header>
-		<form:form action="${root}project/main" method="POST"
+		<form:form action="${root}project" method="POST"
 			modelAttribute="projectSearchBean">
 			<div id="searchForm" class="container-center">
 				<!-- 프로젝트 명과 고객사 -->
@@ -130,8 +130,10 @@ table tr {
 					<col style="width: 130px" />
 					<!-- 상태 -->
 					<col style="width: 130px" />
-					<!-- 인원 관리 -->
-					<col style="width: 110px" />
+					<c:if test="${ ROLE_CREATE_PROJECT == true || ROLE_SUPER == true }">
+						<!-- 인원 관리 -->
+						<col style="width: 110px" />
+					</c:if>
 				</colgroup>
 				<thead>
 					<tr>
@@ -142,7 +144,9 @@ table tr {
 						<th scope="col">시작일</th>
 						<th scope="col">종료일</th>
 						<th scope="col">상태</th>
-						<th scope="col">인원 관리</th>
+						<c:if test="${ ROLE_CREATE_PROJECT == true || ROLE_SUPER == true }">
+							<th scope="col">인원 관리</th>
+						</c:if>
 					</tr>
 				</thead>
 				<tbody id="resultBody">
@@ -170,9 +174,11 @@ table tr {
 									<td>${ item.projectStartDate }</td>
 									<td>${ item.projectEndDate }</td>
 									<td data-cd="${ item.projectStateCode }">${ item.projectStateName }</td>
-									<td>
-										<button type="button" class="btn projectMemberBtn" value="${ item.projectNumber }">인원 관리</button>
-									</td>
+									<c:if test="${ ROLE_CREATE_PROJECT == true || ROLE_SUPER == true }">
+										<td>
+											<button type="button" class="btn projectMemberBtn" value="${ item.projectNumber }">인원 관리</button>
+										</td>
+									</c:if>
 								</tr>
 							</c:forEach>
 						</c:otherwise>
@@ -181,16 +187,20 @@ table tr {
 			</table>
 			<div class="text-right">
 				<div id="BeforeSwitchBtn">
-					<button type="button" class="btn btn-blue" id="modifyProjectState">상태 수정</button>
-					<button type="button" class="btn btn-red" id="removeBtn">삭제</button>
-					<button type="button" class="btn btn-green" id="addProjectBtn">등록</button>
+					<c:if test="${ ROLE_CREATE_PROJECT == true || ROLE_SUPER == true }">
+						<button type="button" class="btn btn-blue" onclick="modifyProjectStateButtonEvent(event)">상태 수정</button>
+						<button type="button" class="btn btn-green" onclick="addProjectBtnEvent(event)">등록</button>
+					</c:if>
+					<c:if test="${ ROLE_DELETE_PROJECT == true || ROLE_SUPER == true }">
+						<button type="button" class="btn btn-red" onclick="deleteProject(event)">삭제</button>
+					</c:if>
 				</div>
 				<div id="AfterSwitchBtn" class="none">
-					<button type="button" class="btn btn-green" id="changeStateSubmit">저장</button>
-					<button type="button" class="btn btn-orange" id="changeStateCancle">취소</button>
+					<button type="button" class="btn btn-green" onclick="changeSubmitEvent(event)">저장</button>
+					<button type="button" class="btn btn-orange" onclick="changeStateCancleEvent(event)">취소</button>
 				</div>
 			</div>
-			<form:form modelAttribute="projectSearchBean" id="paginationForm" action="${root}project/main" method="POST">
+			<form:form modelAttribute="projectSearchBean" id="paginationForm" action="${root}project" method="POST">
 				<form:hidden path="name" />
 				<form:hidden path="customer" />
 				<form:hidden path="dateType" />
@@ -230,8 +240,6 @@ table tr {
 </body>
 <script src="${root}resources/javascript/Main.js"></script>
 <script src="${root}resources/javascript/ProjectMain.js"></script>
-<script src="${root}resources/javascript/AddProject.js"></script>
-<script src="${root}resources/javascript/AddProjectMember.js"></script>
 <script>
 	modalStack = [];
 	addDropdownEvent(); // 처음 진입시 드롭다운 이벤트 설정
