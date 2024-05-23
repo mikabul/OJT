@@ -9,7 +9,7 @@ public class TestMain {
 	public static void main(String[] args) {
 		Sha256 encoder = new Sha256();
 		
-		String str = " ";
+		String str = "Password01!";
 		
 		String hashedString = encoder.encode(str);
 		System.out.println(hashedString);

@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ojt.mapper.BatchMapper">
+
+<resultMap id="projectBeanMap" type="com.ojt.bean.ProjectBean">
+	<id property="projectNumber" column="PRJ_SEQ"/>
+	<result property="projectName" column="PRJ_NM"/>
+	<result property="projectStartDate" column="PRJ_ST_DT"/>
+	<result property="projectEndDate" column="PRJ_ED_DT"/>
+	<result property="maintStartDate" column="MAINT_ST_DT"/>
+	<result property="maintEndDate" column="MAINT_ED_DT"/>
+	<result property="projectStateCode" column="PS_CD"/>
+</resultMap>
+
+<!-- 시작 전인 프로젝트 -->
+<select id="getPreStartProject" resultMap="projectBeanMap">
+SELECT
+    *
+FROM (
+    SELECT
+    	PRJ_SEQ,
+        PRJ_NM,
+        PRJ_ST_DT,
+        PRJ_ED_DT,
+        MAINT_ST_DT,
+        MAINT_ED_DT,
+        PS_CD,
+        ROW_NUMBER() OVER (ORDER BY PRJ_SEQ) AS RN
+    FROM PROJECT_INFO
+    WHERE
+    	SYSDATE BETWEEN TO_DATE(PRJ_ST_DT) AND TO_DATE(PRJ_ED_DT)
+        AND PS_CD = '1'
+        AND ROWNUM &lt;= (#{_page}+1) * #{_pagesize}
+    )
+WHERE
+    RN > #{_page} * #{_pagesize}
+</select>
+
+<!-- 진행 중인 프로젝트 혹은 종료되었지만 유지보수 예정인 프로젝트 -->
+<select id="getPostStartProject" resultMap="projectBeanMap">
+SELECT
+    *
+FROM (
+    SELECT
+    	PRJ_SEQ,
+        PRJ_NM,
+        PRJ_ST_DT,
+        PRJ_ED_DT,
+        MAINT_ST_DT,
+        MAINT_ED_DT,
+        PS_CD,
+        ROW_NUMBER() OVER (ORDER BY PRJ_SEQ) AS RN
+    FROM PROJECT_INFO
+    WHERE
+        ((SYSDATE >= TO_DATE(PRJ_ED_DT) AND PS_CD = '2') OR (SYSDATE >= TO_DATE(MAINT_ST_DT) AND PS_CD = '4'))
+        AND ROWNUM &lt;= (#{_page}+1) * #{_pagesize}
+    )
+WHERE
+    RN > #{_page} * #{_pagesize}
+</select>
+
+<!-- 유지보수 종료예정 프로젝트 -->
+<select id="getEndProject" resultMap="projectBeanMap">
+SELECT
+    *
+FROM (
+    SELECT
+    	PRJ_SEQ,
+        PRJ_NM,
+        PRJ_ST_DT,
+        PRJ_ED_DT,
+        MAINT_ST_DT,
+        MAINT_ED_DT,
+        PS_CD,
+        ROW_NUMBER() OVER (ORDER BY PRJ_SEQ) AS RN
+    FROM PROJECT_INFO
+    WHERE
+        SYSDATE >= TO_DATE(MAINT_ED_DT)
+        AND PS_CD = '3'
+        AND ROWNUM &lt;= (#{_page}+1) * #{_pagesize}
+    )
+WHERE
+    RN > #{_page} * #{_pagesize}
+</select>
+
+<!-- 프로젝트 상태 업데이트 -->
+<update id="projectStatusUpdate">
+UPDATE
+    PROJECT_INFO
+SET
+    PS_CD = #{projectStateCode}
+WHERE
+    PRJ_SEQ = #{projectNumber}
+</update>
+</mapper>

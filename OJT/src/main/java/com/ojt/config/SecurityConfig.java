@@ -21,7 +21,7 @@ import com.ojt.service.MemberDetailService;
 import com.ojt.util.Sha256;
 
 @Configuration
-@EnableWebSecurity(debug = true)
+@EnableWebSecurity
 @ComponentScans({
     @ComponentScan("com.ojt.controller"),
     @ComponentScan("com.ojt.service"),

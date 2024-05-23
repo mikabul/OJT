@@ -17,7 +17,7 @@ import com.ojt.dao.ProjectMemberDao;
 public class ProjectMemberService {
 
 	@Autowired
-	private DataSourceTransactionManager transactionManager;
+	private DataSourceTransactionManager dataSourceTransactionManager;
 	
 	@Autowired
 	private ProjectMemberDao projectMemberDao;
@@ -58,18 +58,19 @@ public class ProjectMemberService {
 	public boolean deleteProjectMember(int[] memberNumbers, int projectNumber) {
 		
 		DefaultTransactionDefinition def = new DefaultTransactionDefinition();
-		TransactionStatus status = transactionManager.getTransaction(def);
+		TransactionStatus status = dataSourceTransactionManager.getTransaction(def);
 		
-		if(memberNumbers.length == 0) {
+		if(memberNumbers == null || memberNumbers.length == 0) {
 			return true;
 		}
 		
 		try {
 			projectMemberDao.deleteProjectMember(memberNumbers, projectNumber);
-			transactionManager.commit(status);
+			dataSourceTransactionManager.commit(status);
 			return true;
 		} catch (Exception e) {
-			transactionManager.rollback(status);
+			e.printStackTrace();
+			dataSourceTransactionManager.rollback(status);
 			return false;
 		}
 	}
@@ -78,7 +79,7 @@ public class ProjectMemberService {
 	public Boolean insertProjectMemberList(ProjectBean modifyProjectBean) {
 		
 		DefaultTransactionDefinition def = new DefaultTransactionDefinition();
-		TransactionStatus status = transactionManager.getTransaction(def);
+		TransactionStatus status = dataSourceTransactionManager.getTransaction(def);
 		
 		try {
 			int projectNumber = modifyProjectBean.getProjectNumber();
@@ -93,10 +94,11 @@ public class ProjectMemberService {
 				}
 			}
 			
-			transactionManager.commit(status);
+			dataSourceTransactionManager.commit(status);
 			return false;
 		} catch (Exception e) {
-			transactionManager.rollback(status);
+			e.printStackTrace();
+			dataSourceTransactionManager.rollback(status);
 			return false;
 		}
 		
@@ -106,7 +108,7 @@ public class ProjectMemberService {
 	public Boolean insertProjectMemberList(ArrayList<ProjectMemberBean> pmList) {
 		
 		DefaultTransactionDefinition def = new DefaultTransactionDefinition();
-		TransactionStatus status = transactionManager.getTransaction(def);
+		TransactionStatus status = dataSourceTransactionManager.getTransaction(def);
 		
 		try {
 			
@@ -114,11 +116,11 @@ public class ProjectMemberService {
 				projectMemberDao.insertProjectMember(projectMemberBean);
 			}
 			
-			transactionManager.commit(status);
+			dataSourceTransactionManager.commit(status);
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
-			transactionManager.rollback(status);
+			dataSourceTransactionManager.rollback(status);
 			return false;
 		}
 	}
@@ -127,10 +129,14 @@ public class ProjectMemberService {
 	public Boolean updateProjectMember(ProjectBean projectBean) {
 		
 		DefaultTransactionDefinition def = new DefaultTransactionDefinition();
-		TransactionStatus status = transactionManager.getTransaction(def);
+		TransactionStatus status = dataSourceTransactionManager.getTransaction(def);
 		
 		try {
 			ArrayList<ProjectMemberBean> pmList = projectBean.getPmList();
+			
+			if(pmList == null || pmList.size() == 0) {
+				return true;
+			}
 			
 			for(ProjectMemberBean projectMemberBean : pmList) {
 				
@@ -145,11 +151,11 @@ public class ProjectMemberService {
 				}
 			}
 			
-			transactionManager.commit(status);
+			dataSourceTransactionManager.commit(status);
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
-			transactionManager.rollback(status);
+			dataSourceTransactionManager.rollback(status);
 			return false;
 		}
 	}

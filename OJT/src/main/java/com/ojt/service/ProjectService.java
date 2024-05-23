@@ -12,7 +12,6 @@ import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import com.ojt.bean.CodeBean;
 import com.ojt.bean.CustomerBean;
-import com.ojt.bean.MemberBean;
 import com.ojt.bean.ProjectBean;
 import com.ojt.bean.ProjectMemberBean;
 import com.ojt.bean.ProjectSearchBean;
@@ -33,7 +32,7 @@ public class ProjectService {
 	private Pagination pagination;
 	
 	@Autowired
-	private DataSourceTransactionManager transactionManager;
+	private DataSourceTransactionManager dataSourceTransactionManager;
 	
 	// 프로젝트 검색
 	public Map<String, Object> searchProjectList(ProjectSearchBean projectSearchBean, int page){
@@ -101,7 +100,7 @@ public class ProjectService {
 	public Boolean insertProject(ProjectBean addProjectBean) {
 		
 		DefaultTransactionDefinition def = new DefaultTransactionDefinition();
-		TransactionStatus status = transactionManager.getTransaction(def);
+		TransactionStatus status = dataSourceTransactionManager.getTransaction(def);
 		
 		/*
 		 * prj_st_dt와 prj_ed_dt는 not null 이므로 LocalDate로 바로 변환하지만
@@ -177,11 +176,11 @@ public class ProjectService {
 					projectDao.insertProjectSK(projectNumber, skillCode);
 				}
 			}
-			transactionManager.commit(status);
+			dataSourceTransactionManager.commit(status);
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
-			transactionManager.rollback(status);
+			dataSourceTransactionManager.rollback(status);
 			return false;
 		}
 		
@@ -226,17 +225,18 @@ public class ProjectService {
 	// 프로젝트 삭제(여러개)
 	public Boolean deleteProjects(Integer[] projectNumbers) {
 		DefaultTransactionDefinition def = new DefaultTransactionDefinition();
-		TransactionStatus status = transactionManager.getTransaction(def);
+		TransactionStatus status = dataSourceTransactionManager.getTransaction(def);
 		try {
 			for(Integer projectNumber : projectNumbers) {
 				if(projectNumber != null) {
 					projectDao.deleteProject(projectNumber);
 				}
 			}
-			transactionManager.commit(status);
+			dataSourceTransactionManager.commit(status);
 			return true;
 		} catch (Exception e) {
-			transactionManager.rollback(status);
+			e.printStackTrace();
+			dataSourceTransactionManager.rollback(status);
 			return false;
 		}
 	}
@@ -244,7 +244,7 @@ public class ProjectService {
 	// 프로젝트 수정
 	public Boolean modifyProject(ProjectBean projectBean) {
 		DefaultTransactionDefinition def = new DefaultTransactionDefinition();
-		TransactionStatus status = transactionManager.getTransaction(def);
+		TransactionStatus status = dataSourceTransactionManager.getTransaction(def);
 		
 		try {
 			int projectNumber = projectBean.getProjectNumber();
@@ -259,11 +259,11 @@ public class ProjectService {
 				projectDao.insertProjectSK(projectNumber, skillCode);
 			}
 			
-			transactionManager.commit(status);
+			dataSourceTransactionManager.commit(status);
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
-			transactionManager.rollback(status);
+			dataSourceTransactionManager.rollback(status);
 			return false;
 		}
 	}
@@ -272,7 +272,7 @@ public class ProjectService {
 	public Boolean updateProjectState(int[] projectNumbers, String[] projectState) {
 		
 		DefaultTransactionDefinition def = new DefaultTransactionDefinition();
-		TransactionStatus status = transactionManager.getTransaction(def);
+		TransactionStatus status = dataSourceTransactionManager.getTransaction(def);
 		Boolean result = true;
 		try {
 			ProjectBean testProjectBean;
@@ -296,15 +296,15 @@ public class ProjectService {
 			
 			
 			if(result) {
-				transactionManager.commit(status);
+				dataSourceTransactionManager.commit(status);
 				return true;
 			} else {
-				transactionManager.rollback(status);
+				dataSourceTransactionManager.rollback(status);
 				return false;
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			transactionManager.rollback(status);
+			dataSourceTransactionManager.rollback(status);
 			return false;
 		}
 	}

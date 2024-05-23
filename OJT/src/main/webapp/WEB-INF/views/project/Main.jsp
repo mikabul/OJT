@@ -231,12 +231,6 @@ table tr {
 			</div>
 		</div>
 	</div>
-	<div style="height: 100px"></div>
-	<div id="modalAddProject"></div>
-	<div id="modalProject"></div>
-	<div id="modalModifyProject"></div>
-	<div id="modalProjectMember"></div>
-	<div id="modalAddProjectMember"></div>
 </body>
 <script src="${root}resources/javascript/Main.js"></script>
 <script src="${root}resources/javascript/ProjectMain.js"></script>

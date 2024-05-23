@@ -40,7 +40,7 @@ public class MemberService {
 	Sha256 encoder;
 	
 	@Autowired
-	private DataSourceTransactionManager transactionManager;
+	private DataSourceTransactionManager dataSourceTransactionManager;
 	
 	// 사원 검색
 	public Map<String, Object> searchMember(SearchMemberBean searchMemberBean, int page){
@@ -137,7 +137,7 @@ public class MemberService {
 	public Map<String, Object> addMember(MemberBean addMemberBean) {
 		
 		DefaultTransactionDefinition def = new DefaultTransactionDefinition();
-		TransactionStatus status = transactionManager.getTransaction(def);
+		TransactionStatus status = dataSourceTransactionManager.getTransaction(def);
 		
 		Map<String, Object> map = new HashMap<String, Object>();
 		
@@ -183,11 +183,11 @@ public class MemberService {
 			map.put("success", true);
 			map.put("memberNumber", memberNumber);
 			
-			transactionManager.commit(status);
+			dataSourceTransactionManager.commit(status);
 			return map;
 		} catch (Exception e) {
 			e.printStackTrace();
-			transactionManager.rollback(status);
+			dataSourceTransactionManager.rollback(status);
 			map.put("success", false);
 			map.put("code", 500);
 			return map;
@@ -222,7 +222,7 @@ public class MemberService {
 	public Map<String, Object> memberUpdate(MemberBean modifyMemberBean){
 		
 		DefaultTransactionDefinition def = new DefaultTransactionDefinition();
-		TransactionStatus status = transactionManager.getTransaction(def);
+		TransactionStatus status = dataSourceTransactionManager.getTransaction(def);
 		
 		Map<String, Object> map = new HashMap<String, Object>();
 		
@@ -279,12 +279,12 @@ public class MemberService {
 				}
 			}
 			
-			transactionManager.commit(status);
+			dataSourceTransactionManager.commit(status);
 			map.put("success", true);
 			return map;
 			
 		} catch (Exception e) {
-			transactionManager.rollback(status);
+			dataSourceTransactionManager.rollback(status);
 			e.printStackTrace();
 			map.put("success", false);
 			map.put("code", 500);
@@ -295,15 +295,15 @@ public class MemberService {
 	// 사원 삭제
 	public Boolean deleteMember(int[] memberNumbers) {
 		DefaultTransactionDefinition def = new DefaultTransactionDefinition();
-		TransactionStatus status = transactionManager.getTransaction(def);
+		TransactionStatus status = dataSourceTransactionManager.getTransaction(def);
 		
 		try {
 			memberDao.deleteMember(memberNumbers);
-			transactionManager.commit(status);
+			dataSourceTransactionManager.commit(status);
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
-			transactionManager.rollback(status);
+			dataSourceTransactionManager.rollback(status);
 			return false;
 		}
 	}
@@ -327,7 +327,7 @@ public class MemberService {
 	// 사원 프로젝트 추가
 	public Boolean addMemberProject(ArrayList<ProjectMemberBean> projectMemberBeans) {
 		DefaultTransactionDefinition def = new DefaultTransactionDefinition();
-		TransactionStatus status = transactionManager.getTransaction(def);
+		TransactionStatus status = dataSourceTransactionManager.getTransaction(def);
 		
 		Boolean result;
 		
@@ -335,10 +335,10 @@ public class MemberService {
 			
 			memberDao.addMemberProject(projectMemberBeans);
 			result = true;
-			transactionManager.commit(status);
+			dataSourceTransactionManager.commit(status);
 		} catch (Exception e) {
 			result = false;
-			transactionManager.rollback(status);
+			dataSourceTransactionManager.rollback(status);
 			e.printStackTrace();
 		}
 		
@@ -348,7 +348,7 @@ public class MemberService {
 	// 사원 프로젝트 수정
 	public Boolean updateMemberProject(ArrayList<ProjectMemberBean> projectMemberBeans) {
 		DefaultTransactionDefinition def = new DefaultTransactionDefinition();
-		TransactionStatus status = transactionManager.getTransaction(def);
+		TransactionStatus status = dataSourceTransactionManager.getTransaction(def);
 
 		Boolean result;
 
@@ -359,10 +359,10 @@ public class MemberService {
 			}
 			
 			result = true;
-			transactionManager.commit(status);
+			dataSourceTransactionManager.commit(status);
 		} catch (Exception e) {
 			result = false;
-			transactionManager.rollback(status);
+			dataSourceTransactionManager.rollback(status);
 		}
 
 		return result;
@@ -372,7 +372,7 @@ public class MemberService {
 	public Boolean deleteMemberProject(int[] projectNumbers, int memberNumber) {
 		
 		DefaultTransactionDefinition def = new DefaultTransactionDefinition();
-		TransactionStatus status = transactionManager.getTransaction(def);
+		TransactionStatus status = dataSourceTransactionManager.getTransaction(def);
 		
 		Boolean result;
 		
@@ -380,10 +380,10 @@ public class MemberService {
 			memberDao.deleteMemberProject(projectNumbers, memberNumber);
 			
 			result = true;
-			transactionManager.commit(status);
+			dataSourceTransactionManager.commit(status);
 		} catch (Exception e) {
 			result = false;
-			transactionManager.rollback(status);
+			dataSourceTransactionManager.rollback(status);
 			e.printStackTrace();
 		}
 		

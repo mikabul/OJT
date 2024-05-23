@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -12,7 +14,8 @@ import lombok.ToString;
 @ToString
 public class MemberDetails implements UserDetails, Serializable{
 	
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1;
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	
 	private final LoginMemberBean loginMemberBean;
 	
@@ -42,12 +45,12 @@ public class MemberDetails implements UserDetails, Serializable{
 		
 		// 현재 로그인 된 계정의 권한을 콘솔에 표시 -- 나중에 지울것
 		for(GrantedAuthority g : collectors) {
-			System.out.println("MemberDetails : " + g.getAuthority());
+			logger.info("MemberDetails : " + g.getAuthority());
 		}
 		
 		return collectors;
 	}
-
+	
 	@Override
 	public String getPassword() {
 		return loginMemberBean.getMemberPW();

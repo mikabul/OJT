@@ -9,5 +9,6 @@
        	<mapper resource="mappers/MemberMapper.xml"/>
        	<mapper resource="mappers/CodeMapper.xml"/>
        	<mapper resource="mappers/AuthorityMapper.xml"/>
+       	<mapper resource="mappers/BatchMapper.xml"/>
     </mappers>
 </configuration>

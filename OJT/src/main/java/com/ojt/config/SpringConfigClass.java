@@ -5,6 +5,8 @@ import javax.servlet.Filter;
 import org.springframework.web.filter.CharacterEncodingFilter;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
+import com.ojt.batch.ProjectStateJob;
+
 public class SpringConfigClass extends AbstractAnnotationConfigDispatcherServletInitializer {
 
 	@Override
@@ -22,7 +24,7 @@ public class SpringConfigClass extends AbstractAnnotationConfigDispatcherServlet
 	@Override
 	protected Class<?>[] getRootConfigClasses() {
 		// TODO Auto-generated method stub
-		return new Class[] { RootAppContext.class, SecurityConfig.class };
+		return new Class[] { RootAppContext.class, SecurityConfig.class, ProjectStateJob.class };
 	}
 
 	@Override

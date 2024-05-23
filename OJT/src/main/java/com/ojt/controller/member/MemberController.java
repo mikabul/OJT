@@ -336,12 +336,14 @@ public class MemberController {
 		
 		switch (requestURI) {
 		case "/OJT/member/main":
+		case "/OJT/member":
 			codeMap = memberService.getSearchCode();
 			model.addAttribute("departmentList", codeMap.get("departmentList"));
 			model.addAttribute("positionList", codeMap.get("positionList"));
 			model.addAttribute("statusList", codeMap.get("statusList"));
 			break;
 
+		case "/OJT/member/add":
 		case "/OJT/member/add/main":
 		case "/OJT/member/add/add-member":
 		case "/OJT/member/modify/main":

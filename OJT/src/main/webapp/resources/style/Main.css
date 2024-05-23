@@ -348,6 +348,10 @@ a {
 	overflow-y: scroll;
 }
 
+.dropdown *{
+	cursor: default;
+}
+
 .dropdown-header {
 	width: 100%;
 	border: 1px solid black;

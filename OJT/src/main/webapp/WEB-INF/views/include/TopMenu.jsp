@@ -24,10 +24,13 @@
 		</c:forEach>
 	</ul>
 </div>
+<div id="modalAddProject"></div>
+<div id="modalProject"></div>
+<div id="modalModifyProject"></div>
+<div id="modalProjectMember"></div>
+<div id="modalAddProjectMember"></div>
 <c:forEach var="item" items="${ menuList }">
 	<c:if test="${ item.menuUrl == '/project/add' }">
-		<div id="modalAddProject"></div>
-		<div id="modalAddProjectMember"></div>
 		<script>
 			document.querySelector('a[href="${root}/project/add"]').addEventListener('click', showAddProjectModal);
 
